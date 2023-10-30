@@ -1,0 +1,9 @@
+## Save file
+
+*.sav
+
+## Trash
+
+__pycache__/
+*~
+*#
