@@ -7,15 +7,10 @@ from random import randint as rand
 
 from SourceExtractor import sourceExtractor as extractor
 from Parameters import Parameters, getParameters
+from Types import Goodnight, WeightedList as Wlist
 from CtrlC import handler as CtrlCHandler
 
-Goodnight = str # type alias for the result
-
-def addEmoji(gn: Goodnight, emoji: list[list[str]]) -> Goodnight:
-    nbEmoji = rand(2, 3)
-    gn += " "
-    for _ in range(nbEmoji):
-        gn += emoji[rand(0, len(emoji) - 1)]
+def addEmoji(gn: Goodnight, emoji: list[Wlist]) -> Goodnight:
     return gn + " "
 
 def goodnight(p: Parameters) -> Goodnight:
@@ -23,9 +18,14 @@ def goodnight(p: Parameters) -> Goodnight:
     (phrases, emoji, nicks) = extractor(p.source, p.toggleEmoji)
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
 
+    if (p.debugMode):
+        print(f"phrases: {phrases}\n" \
+              f"emoji: {emoji}\n" \
+              f"nicks: {nicks}\n")
     for _ in range(p.nbFragments):
         # TODO pick a phrase and blend it in
         if (p.toggleEmoji): gn = addEmoji(gn, emoji)
+    # TODO ignore --for-whom if nicks are given
     return gn.strip().replace("  ", " ")
 
 def main(ac: int, av: list[str]):

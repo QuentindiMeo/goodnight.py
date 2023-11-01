@@ -19,14 +19,12 @@ python goodnight.py [OPTIONS]
 ``` bash
 -n, --nb-fragments <int>  Number of fragments to draw (def: 2..5)
 -e, --emoji               Add emoji between fragments (def: False)
--s, --source       <str>  Source file to read fragments and emoji from (def: [source.log](./source.log))
--w, --for-whom     <str>  For whom the goodnight is (def: "")
--D                 Set used parameters as preferences (preferences.sav file) (def: True)
+-s, --source       <str>  Source file to read fragments and emoji from (def: source.log)
+-w, --for-whom     <str>  For whom the goodnight is (def: "" (no name used))
 -i, --ignore       Ignore preferences (preferences.sav file) (def: False)
+--debug            Debug mode (def: False)
 -h, --help         Display this help and exit
 ```
-
-*-D and -i are mutually exclusive; they cannot be used conjointly.*
 
 - **General**
 
@@ -43,7 +41,8 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 ## Project log
 
 - ***[D 0.0.0]** Oct 30 2023* - Project creation
-- ***[D 0.0.1]** Oct 30 2023* - Adding Parameters class (-new) and first elementary components
-- ***[D 0.0.2]** Oct 31 2023* - Adding parameter handling (- and --), Exit and Help setup
-- ***[D 0.0.3]** Nov 01 2023* - Adding -s (wip), preferences.sav with -D and -i, Ctrl+C handler
-- ***[D 0.0.4]** Nov 01 2023* - Adding sources extractor (phrases, emoji and nicknames)
+- ***[D 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
+- ***[D 0.0.2]** Oct 31 2023* - Added parameter handling (- and --), Exit and Help setup
+- ***[D 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav with -D and -i, Ctrl+C handler
+- ***[D 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), handles multioptional parameters
+- ***[D 0.0.5]** Nov 01 2023* - Added nicknames to source extractor, removed -D, added --debug, added Types for clarity

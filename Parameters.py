@@ -6,6 +6,7 @@ from random import randint as rand
 from Exit import exitCode, gnUsage, gnExit
 
 SAVE_FILE:        str  = "preferences.sav"
+DEF_NB_FRAGMENTS: int  = 0
 DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "source.log"
 DEF_FOR_WHOM:     str  = ""
@@ -17,11 +18,12 @@ class Parameters:
                 f"source: '{self.source}', " \
                 f"to '{self.forWhom}'"
 
-    def __init__(self, n: int, e: bool = DEF_TOGGLE_EMOJI, source: str = DEF_SOURCE, forWhom: str = DEF_FOR_WHOM):
+    def __init__(self, n: int, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, debug: bool = False):
         self.nbFragments = n
         self.toggleEmoji = e
-        self.source      = source
-        self.forWhom     = forWhom
+        self.source      = s
+        self.forWhom     = w
+        self.debugMode   = debug
 
 def saveParameters(p: Parameters):
     print(f"Saving preferences in file '{SAVE_FILE}'...")
@@ -36,24 +38,27 @@ def saveParameters(p: Parameters):
         gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
 
-def fromCommandLine(p: Parameters, saving: bool = False) -> Parameters:
+def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
     nbFragments: int  = p.nbFragments
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
     forWhom:     str  = p.forWhom
+    debugMode:   bool = p.debugMode
 
     while (nbFragments == 0):
         try:
             buf: str = input("Number of fragments to draw: ")
-            nbFragments = (rand(2, 4) if buf == "" else int(buf))
+            nbFragments = (rand(2, 5) if buf == "" else int(buf))
             if (buf == ""):
                 print(f"\t... using default value: {nbFragments}, picked randomly between 2 and 4.")
         except Exception as e:
             print(f"Invalid input: {e}")
+        if (debugMode): print(f"\tNumber of fragments set to {nbFragments}.")
     if (toggleEmoji == DEF_TOGGLE_EMOJI):
         buf: str = input("Add emoji between fragments (y/n): ")
         if (buf.lower() == "y" or buf.lower().startswith("yes")):
             toggleEmoji = True
+            if (debugMode): print("\tEmoji toggle set to True.")
         elif (not (buf.lower() == "n" or buf.lower().startswith("no"))):
             print("\t... using default value: no (False).")
     if (source == DEF_SOURCE):
@@ -61,56 +66,53 @@ def fromCommandLine(p: Parameters, saving: bool = False) -> Parameters:
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE}.")
+        elif (debugMode): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM):
         forWhom = input("For whom the goodnight is: ")
         if (forWhom == ""):
             print("\t... using default value: \"\" (no name used)).")
-    newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom)
+        elif (debugMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+    newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode)
     if (saving): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     return newP
 
-def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
-    newAc: int = 1
-    newAv: list[str] = [av[0]]
-
-    def isMultiOptional(s: str) -> bool: return (s.startswith("-") and len(s) > 2)
-
-    for i in range(1, ac):
-        s = "".join(dict.fromkeys(av[i])) # av[i] without duplicates
-        if (not isMultiOptional(s)):
-            newAv.append(s); newAc += 1
-        else:
-            s = s[1:]
-            for c in s:
-                newAv.append("-" + c); newAc += 1
-
-    newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
-    # if newAv has -i or --ignore, move them to the end (bc they instantly jump)
-    if ("-i" in newAv):
-        newAv.remove("-i"); newAv.append("-i")
-    if ("--ignore" in newAv):
-        newAv.remove("--ignore"); newAv.append("--ignore")
-    return (newAc, newAv)
-
+# TODO make random nbFragments boundable ("2,5", "1,7"...)
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     nbFragments: int  = 0
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
     source:      str  = DEF_SOURCE
     forWhom:     str  = DEF_FOR_WHOM
-    saving:      bool = False
+    debugMode:   bool = False
 
+    def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
+        newAc: int = 1
+        newAv: list[str] = [av[0]]
+
+        def isMultiOptional(s: str) -> bool: return (s[0] == '-' and s[1] != '-' and len(s) > 2)
+
+        for i in range(1, ac):
+            if (not isMultiOptional(av[i])):
+                newAv.append(av[i]); newAc += 1
+            else:
+                s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
+                for c in s:
+                    newAv.append("-" + c); newAc += 1
+
+        newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
+        # if newAv has -i or --ignore, move them to the end (bc they instantly jump)
+        if ("-i" in newAv):
+            newAv.remove("-i"); newAv.append("-i")
+        if ("--ignore" in newAv):
+            newAv.remove("--ignore"); newAv.append("--ignore")
+        return (newAc, newAv)
     (ac, av) = getPurifiedAv(ac, av)
-    if ("-D" in av and ("-i" in av or "--ignore" in av)):
-        if ("-h" in av or "--help" in av):
-            gnExit(exitCode.HELP)
-        print("Cannot use both '-D' and '-i'/'--ignore' at the same time.")
-        gnUsage()
-        gnExit(exitCode.ERR_INV_ARG)
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
+        elif (av[i] == "--debug"):
+            debugMode = True
         elif (av[i] == "-n" or av[i] == "--nb-fragments"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'.")
@@ -144,22 +146,21 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}")
                 gnExit(exitCode.ERR_INV_ARG)
-        elif (av[i] == "-D"):
-            saving = True
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbFragments, toggleEmoji, source, forWhom))
+            return fromCommandLine(Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode), False)
         else:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    p: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom)
-    return fromCommandLine(p, True) if (saving) else p
+    if (debugMode): print(f"av: {av}")
+    p: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode)
+    return fromCommandLine(p)
 
 def fromFile(file: str = SAVE_FILE) -> Parameters:
     p: Parameters = defaultParameters()
     if (not path.isfile(file)):
         print(f"File '{file}' does not exist. Creating preferences file...")
-        return fromCommandLine(p, True)
+        return fromCommandLine(p)
     try:
         with open(file, "r") as f:
             lines = f.readlines()
@@ -175,7 +176,7 @@ def fromFile(file: str = SAVE_FILE) -> Parameters:
     return p
 
 def defaultParameters() -> Parameters:
-    return Parameters(rand(2, 4))
-
+    return Parameters(rand(2, 5))
+# TODO set random nbFragments as a possible preference
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()
