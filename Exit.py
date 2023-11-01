@@ -19,14 +19,17 @@ def gnExit(code: exitCode):
     if (code.value == 0x01):
         gnUsage(); code = exitCode.SUCCESS
     if (code.value > 0x10):
-        print(f"Exit: {switch.get(code, 'Unknown error')}")
+        print(f"Exit: {switch.get(code.value, 'Unknown error')}")
     exit(code.value)
 
 def gnUsage():
     print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
-        "\n-n, --nb-fragments <int>  (def: 2..4)    Number of fragments to draw" \
-        "\n-e, --emoji        <bool> (def: false)   Add emoji between fragments" \
-        "\n-w, --for-whom     <str>  (def: \"\")      For whom the goodnight is" \
+        "\n-n, --nb-fragments <int>  Number of fragments to draw (def: 2..4)" \
+        "\n-e, --emoji        <bool> Add emoji between fragments (def: false)" \
+        "\n-w, --for-whom     <str>  For whom the goodnight is (def: \"\")" \
+        "\n-s, --source       <str>  Source file (def: \"source.log\")" \
+        "\n-D                 Save used parameters as preferences (.sav file)" \
+        "\n-i, --ignore       Ignore preferences (.sav file)" \
         "\n-h, --help         Display this help and exit")
