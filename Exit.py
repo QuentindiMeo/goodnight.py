@@ -23,7 +23,7 @@ def gnExit(code: exitCode):
     exit(code.value)
 
 def gnUsage():
-    print("Usage: goodnight [OPTIONS]" \
+    print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
         "\n-n, --nb-fragments <int>  (def: 2..4)    Number of fragments to draw" \

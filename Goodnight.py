@@ -1,14 +1,16 @@
 #!/usr/bin/env python3.10
 
-from pyperclip import copy
+from pyperclip import copy # for copying the result to the clipboard
 
 from sys import argv as av
 from random import randint as rand
 
 from Parameters import Parameters, getParameters
+from CtrlC import handler as CtrlCHandler
 
-Goodnight = str
+Goodnight = str # type alias for the result
 
+# TODO draw them from the source file
 phrases: list[str] = [
     "have a good night",
 ]
@@ -31,6 +33,8 @@ def goodnight(p: Parameters) -> Goodnight:
     return gn.strip().replace("  ", " ")
 
 def main(ac: int, av: list[str]):
+    CtrlCHandler()
+
     p: Parameters = getParameters(ac, av)
     result: Goodnight = goodnight(p)
     print(f"Result: \"{result}\"")

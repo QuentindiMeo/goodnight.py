@@ -1,6 +1,7 @@
-## Save file
+## Save & Source files
 
 *.sav
+*.log
 
 ## Trash
 
