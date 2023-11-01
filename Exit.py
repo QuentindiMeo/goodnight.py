@@ -31,9 +31,9 @@ def gnUsage():
         "\n" \
         "\nOptions:" \
         "\n-n, --nb-fragments <int>  Number of fragments to draw (def: 2..4)" \
-        "\n-e, --emoji        <bool> Add emoji between fragments (def: false)" \
-        "\n-s, --source       <str>  Source file (def: \"source.log\")" \
+        "\n-e, --emoji               Add emoji between fragments (def: False)" \
+        "\n-s, --source       <str>  Source file to read fragments and emoji from (def: source.log)" \
         "\n-w, --for-whom     <str>  For whom the goodnight is (def: \"\")" \
-        "\n-D                 Save used parameters as preferences (.sav file)" \
-        "\n-i, --ignore       Ignore preferences (.sav file)" \
+        "\n-D                 Save used parameters as preferences (preferences.sav)" \
+        "\n-i, --ignore       Ignore preferences (preferences.sav)" \
         "\n-h, --help         Display this help and exit")
