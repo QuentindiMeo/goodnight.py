@@ -19,10 +19,11 @@ NICKS_LOG:   str = "## NICKNAMES.log"
 def extractor(lines: list[str], i: int) -> (list[list[str]], int):
     output: list[list[str]] = []
 
+    diff: int = 1
     while (i < len(lines) and not lines[i].startswith("## ")):
         output.append(lines[i].split(","))
-        i += 1
-    return (output, i)
+        i += 1; diff += 1
+    return (output, diff)
 
 def sourceExtractor(sourceFile: str, toggleEmoji: bool) -> (list[str], str):
     phrases: list[list[str]] = []
@@ -38,21 +39,16 @@ def sourceExtractor(sourceFile: str, toggleEmoji: bool) -> (list[str], str):
                 while ("  " in line or ", " in line): line = line.replace("  ", " ").replace(", ", ",")
             if (PHRASES_LOG not in lines or (toggleEmoji and EMOJI_LOG not in lines)):
                 raise FileNotFoundError("Corrupted or invalid file: missing header")
-            i: int = 0
+            i: int = 0; skipLines: int = 0
             while (i < len(lines)):
-                skipLines: int = 0
                 if   (lines[i] == PHRASES_LOG): (phrases, skipLines) = extractor(lines, i + 1)
                 elif (lines[i] == EMOJI_LOG):   (emoji,   skipLines) = extractor(lines, i + 1)
                 elif (lines[i] == NICKS_LOG):   (nicks,   skipLines) = extractor(lines, i + 1)
-                # FIXME nicks don't get extracted (??)
-                i += skipLines
+                i += skipLines; skipLines = 0
     except FileNotFoundError as e:
-        print(f"Error reading from file '{sourceFile}': {e}")
-        gnExit(exitCode.ERR_INV_FIL)
+        print(f"Error reading from file '{sourceFile}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     if (len(phrases) == 0):
-        print(f"No phrase was found in '{sourceFile}'.")
-        gnExit(exitCode.ERR_INV_PHR)
+        print(f"No phrase was found in '{sourceFile}'."); gnExit(exitCode.ERR_INV_PHR)
     if (toggleEmoji and len(emoji) == 0):
-        print(f"No emoji was found in '{sourceFile}'.")
-        gnExit(exitCode.ERR_INV_EMO)
+        print(f"No emoji was found in '{sourceFile}'."); gnExit(exitCode.ERR_INV_EMO)
     return (phrases, emoji, nicks)
