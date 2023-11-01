@@ -67,25 +67,49 @@ def fromCommandLine(p: Parameters, saving: bool = False) -> Parameters:
             print("\t... using default value: \"\" (no name used)).")
     newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom)
     if (saving): saveParameters(newP)
+    else: print("") # newline for separation from the final prompt
     return newP
 
+def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
+    newAc: int = 1
+    newAv: list[str] = [av[0]]
+
+    def isMultiOptional(s: str) -> bool: return (s.startswith("-") and len(s) > 2)
+
+    for i in range(1, ac):
+        s = "".join(dict.fromkeys(av[i])) # av[i] without duplicates
+        if (not isMultiOptional(s)):
+            newAv.append(s); newAc += 1
+        else:
+            s = s[1:]
+            for c in s:
+                newAv.append("-" + c); newAc += 1
+
+    newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
+    # if newAv has -i or --ignore, move them to the end (bc they instantly jump)
+    if ("-i" in newAv):
+        newAv.remove("-i"); newAv.append("-i")
+    if ("--ignore" in newAv):
+        newAv.remove("--ignore"); newAv.append("--ignore")
+    return (newAc, newAv)
+
 def fromParameters(ac: int, av: list[str]) -> Parameters:
-    nbFragments: int = 0
+    nbFragments: int  = 0
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
     source:      str  = DEF_SOURCE
     forWhom:     str  = DEF_FOR_WHOM
     saving:      bool = False
 
+    (ac, av) = getPurifiedAv(ac, av)
     if ("-D" in av and ("-i" in av or "--ignore" in av)):
         if ("-h" in av or "--help" in av):
             gnExit(exitCode.HELP)
         print("Cannot use both '-D' and '-i'/'--ignore' at the same time.")
         gnUsage()
         gnExit(exitCode.ERR_INV_ARG)
-    # TODO add support for strings like "-nsew"
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
-        if (av[i] == "-h" or av[i] == "--help"):
+        if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
         elif (av[i] == "-n" or av[i] == "--nb-fragments"):
             if (i + 1 >= ac):
@@ -148,5 +172,5 @@ def fromFile(file: str = SAVE_FILE) -> Parameters:
 def defaultParameters() -> Parameters:
     return Parameters(rand(2, 4))
 
-def getParameters(ac: int = 1, av: list[str] = []) -> Parameters:
+def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()
