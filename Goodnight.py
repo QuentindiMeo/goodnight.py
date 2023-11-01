@@ -5,20 +5,13 @@ from pyperclip import copy # for copying the result to the clipboard
 from sys import argv as av
 from random import randint as rand
 
+from SourceExtractor import sourceExtractor as extractor
 from Parameters import Parameters, getParameters
 from CtrlC import handler as CtrlCHandler
 
 Goodnight = str # type alias for the result
 
-# TODO draw them from the source file
-phrases: list[str] = [
-    "have a good night",
-]
-emoji: list[str] = [
-    "🌙",
-]
-
-def addEmoji(gn: Goodnight) -> Goodnight:
+def addEmoji(gn: Goodnight, emoji: list[list[str]]) -> Goodnight:
     nbEmoji = rand(2, 3)
     gn += " "
     for _ in range(nbEmoji):
@@ -27,9 +20,12 @@ def addEmoji(gn: Goodnight) -> Goodnight:
 
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
+    (phrases, emoji, nicks) = extractor(p.source, p.toggleEmoji)
+    usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
+
     for _ in range(p.nbFragments):
         # TODO pick a phrase and blend it in
-        if (p.toggleEmoji): gn = addEmoji(gn)
+        if (p.toggleEmoji): gn = addEmoji(gn, emoji)
     return gn.strip().replace("  ", " ")
 
 def main(ac: int, av: list[str]):
@@ -39,7 +35,7 @@ def main(ac: int, av: list[str]):
     result: Goodnight = goodnight(p)
     print(f"Result: \"{result}\"")
     print(f"for parameters: {p}")
-    copy(result); print("Copied to clipboard!")
+    copy(result); print("Copied the result to your clipboard!")
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))

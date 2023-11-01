@@ -24,7 +24,7 @@ class Parameters:
         self.forWhom     = forWhom
 
 def saveParameters(p: Parameters):
-    print(f"Saving parameters to file '{SAVE_FILE}'...")
+    print(f"Saving preferences in file '{SAVE_FILE}'...")
     try:
         with open(SAVE_FILE, "w") as f:
             f.write(f"nbFragments={p.nbFragments}\n")
@@ -162,8 +162,13 @@ def fromFile(file: str = SAVE_FILE) -> Parameters:
         return fromCommandLine(p, True)
     try:
         with open(file, "r") as f:
-            # TODO draw parameters from file
-            pass
+            lines = f.readlines()
+            for line in lines:
+                if   (line.startswith("nbFragments=")): p.nbFragments = int( line[len("nbFragments="):-1])
+                elif (line.startswith("emoji=")):       p.toggleEmoji = eval(line[len("emoji="):-1])
+                elif (line.startswith("src=")):         p.source      = str( line[len("src="):-1])
+                elif (line.startswith("who=")):         p.forWhom     = str( line[len("who="):-1])
+                else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{file}': {e}")
         gnExit(exitCode.ERR_INV_FIL)
