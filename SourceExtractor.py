@@ -2,13 +2,14 @@
 
 from random import randint as rand
 
+from Types import WeightedList as Wlist
 from Exit import exitCode, gnExit
 
 # TODO apply vvv to the code
 def pickRandElement(line: list[str]) -> str: return line[rand(0, len(line) - 1)]
 
-def applyWeighting(input: list[list[str]]) -> list[list[{str, int}]]:
-    output: list[list[{str, int}]] = []
+def applyWeighting(input: list[list[str]]) -> list[Wlist]:
+    output: list[Wlist] = []
     # TODO weighting; do smart weighting, not just multiplying entries (str :: int)
     return output
 
