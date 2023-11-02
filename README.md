@@ -1,20 +1,24 @@
-# :crescent_moon: <center>goodnight.py</center> :crescent_moon:
+#
 
-<div align="center" markdown="1">
-    [Description](#full_moon_with_face-description) &#xa0; | &#xa0;
-    [Usage](#city_sunset-usage) &#xa0; | &#xa0;
-    [Compatability](#linked_paperclips-compatability) &#xa0; | &#xa0;
-    [Project log](#card_file_box-project-log) &#xa0; | &#xa0;
+<div id="top">
+    <h1 markdown="1"> :crescent_moon: <center>goodnight.py</center> :crescent_moon:</h1>
 </div>
-<div align="center" markdown="1">
-    ![GitHub top language](https://img.shields.io/github/languages/top/QuentindiMeo/goodnight.py?color=blue)
-    ![Development status](https://img.shields.io/badge/development-WIP-blue)
-    ![GitHub stars](https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow)
-    ![GitHub last commit](https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet)
-    ![GitHub contributors](https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=green)
-    ![GitHub issues](https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=red)
-    ![Repository size](https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue)
-    ![Lines of code](https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green)
+
+<div align="center">
+    <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
+    <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
+    <a href="#linked_paperclips-compatability">Compatability</a> &#xa0; | &#xa0;
+    <a href="#card_file_box-project-log">Project log</a>
+</div>
+<div align="center">
+    <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue" />
+    <img alt="Development status" src="https://img.shields.io/badge/development-WIP-blue" />
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow" />
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet" />
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=green" />
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=red" />
+    <img alt="Repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue" />
+    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green" />
 </div>
 
 ## :full_moon_with_face: Description
@@ -25,13 +29,13 @@ The author of this script declines all responsibility for any conflict caused by
 
 ## :city_sunset: Usage
 
-- :checkered_flag: **Launch**
+&nbsp;&nbsp;&nbsp;&nbsp; :checkered_flag:&nbsp;&nbsp;**Launch**
 
 ``` bash
 python goodnight.py [OPTIONS]
 ```
 
-- :hammer_and_wrench: **Options**
+&nbsp;&nbsp;&nbsp;&nbsp; :hammer_and_wrench:&nbsp;&nbsp;**Options**
 
 ``` bash
 -n, --nb-fragments <int>  Number of fragments to draw (def: 2..5)
@@ -44,14 +48,14 @@ python goodnight.py [OPTIONS]
 -h, --help         Display this help and exit
 ```
 
-- :test_tube: **General**
+&nbsp;&nbsp;&nbsp;&nbsp; :test_tube:&nbsp;&nbsp;**General**
 
 Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: -i)*.  
 A file named [source.log](./source.log) serves as the default source file for fragments and emoji, you may create your own *(see above: -s)*.  
 If nicknames are provided in said source file, they will override the `--for-whom` option.  
 As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
-## :linked_paperclips: Compatability
+## :paperclips: Compatability
 
 This script is written in Python 3.10+ and is not backwards compatible with Python 2.x.  
 It was tested on and designed for Windows 10 and Ubuntu 22.04.
