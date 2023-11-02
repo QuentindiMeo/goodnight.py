@@ -6,20 +6,20 @@ from random import randint as rand
 from Exit import exitCode, gnUsage, gnExit
 
 SAVE_FILE:        str  = "preferences.sav"
-DEF_NB_FRAGMENTS: int  = 0
+DEF_NB_PHRASES: int  = 0
 DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "source.log"
 DEF_FOR_WHOM:     str  = ""
 
 class Parameters:
     def __str__(self) -> str:
-        return f"{self.nbFragments} fragments, " \
+        return f"{self.nbPhrases} phrases, " \
                 f"emoji: {self.toggleEmoji}, " \
                 f"source: '{self.source}', " \
                 f"to '{self.forWhom}'"
 
     def __init__(self, n: int, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, v: bool = False):
-        self.nbFragments = n
+        self.nbPhrases = n
         self.toggleEmoji = e
         self.source      = s
         self.forWhom     = w
@@ -29,7 +29,7 @@ def saveParameters(p: Parameters):
     print(f"Saving preferences in file '{SAVE_FILE}'...")
     try:
         with open(SAVE_FILE, "w") as f:
-            f.write(f"nbFragments={p.nbFragments}\n")
+            f.write(f"nbPhrases={p.nbPhrases}\n")
             f.write(f"emoji={p.toggleEmoji}\n")
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
@@ -39,23 +39,23 @@ def saveParameters(p: Parameters):
     print("") # newline for separation from the final prompt
 
 def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
-    nbFragments: int  = p.nbFragments
+    nbPhrases: int  = p.nbPhrases
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
     forWhom:     str  = p.forWhom
     verboseMode: bool = p.verboseMode
 
-    while (nbFragments == 0):
+    while (nbPhrases == 0):
         try:
-            buf: str = input("Number of fragments to draw: ")
-            nbFragments = (rand(2, 5) if buf == "" else int(buf))
+            buf: str = input("Number of phrases to draw: ")
+            nbPhrases = (rand(2, 5) if buf == "" else int(buf))
             if (buf == ""):
-                print(f"\t... using default value: {nbFragments}, picked randomly between 2 and 4.")
+                print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 4.")
         except Exception as e:
             print(f"Invalid input: {e}")
-    if (verboseMode): print(f"\tNumber of fragments set to {nbFragments}.")
+    if (verboseMode): print(f"\tNumber of phrases set to {nbPhrases}.")
     if (toggleEmoji == DEF_TOGGLE_EMOJI):
-        buf: str = input("Add emoji between fragments (y/n): ")
+        buf: str = input("Add emoji between phrases (y/n): ")
         if (buf.lower() == "y" or buf.lower().startswith("yes")):
             toggleEmoji = True
             if (verboseMode): print("\tEmoji toggle set to True.")
@@ -72,14 +72,14 @@ def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
         if (forWhom == ""):
             print("\t... using default value: \"\" (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode)
+    newP: Parameters = Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode)
     if (saving): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     return newP
 
-# TODO make random nbFragments boundable ("2,5", "1,7"...)
+# TODO make random nbPhrases boundable ("2,5", "1,7"...)
 def fromParameters(ac: int, av: list[str]) -> Parameters:
-    nbFragments: int  = 0
+    nbPhrases: int  = 0
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
     source:      str  = DEF_SOURCE
     forWhom:     str  = DEF_FOR_WHOM
@@ -113,14 +113,14 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             gnExit(exitCode.HELP)
         elif (av[i] == "--verbose"):
             verboseMode = True
-        elif (av[i] == "-n" or av[i] == "--nb-fragments"):
+        elif (av[i] == "-n" or av[i] == "--nb-phrases"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'.")
                 gnExit(exitCode.ERR_INV_ARG)
             try:
-                nbFragments = int(av[i + 1]); i += 1
-                if (nbFragments <= 0):
-                    raise ValueError("Number of fragments must be positive.")
+                nbPhrases = int(av[i + 1]); i += 1
+                if (nbPhrases <= 0):
+                    raise ValueError("Number of phrases must be positive.")
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}")
                 gnExit(exitCode.ERR_INV_ARG)
@@ -147,13 +147,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Invalid argument for '{av[i]}': {e}")
                 gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode), False)
+            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode), False)
         else:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
     if (verboseMode): print(f"av: {av}")
-    p: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode)
+    p: Parameters = Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode)
     return fromCommandLine(p)
 
 def fromFile(file: str = SAVE_FILE) -> Parameters:
@@ -165,7 +165,7 @@ def fromFile(file: str = SAVE_FILE) -> Parameters:
         with open(file, "r") as f:
             lines = f.readlines()
             for line in lines:
-                if   (line.startswith("nbFragments=")): p.nbFragments = int( line[len("nbFragments="):-1])
+                if   (line.startswith("nbPhrases=")): p.nbPhrases = int( line[len("nbPhrases="):-1])
                 elif (line.startswith("emoji=")):       p.toggleEmoji = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):         p.source      = str( line[len("src="):-1])
                 elif (line.startswith("who=")):         p.forWhom     = str( line[len("who="):-1])
@@ -177,6 +177,6 @@ def fromFile(file: str = SAVE_FILE) -> Parameters:
 
 def defaultParameters() -> Parameters:
     return Parameters(rand(2, 5))
-# TODO set random nbFragments as a possible preference
+# TODO set random nbPhrases as a possible preference
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()

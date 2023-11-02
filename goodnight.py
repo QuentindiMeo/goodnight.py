@@ -18,7 +18,7 @@ def goodnight(p: Parameters) -> Goodnight:
     contents: Contents = extractor(p.source, p)
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
 
-    for _ in range(p.nbFragments):
+    for _ in range(p.nbPhrases):
         # TODO pick a phrase and blend it in
         if (p.toggleEmoji): gn = addEmoji(gn, emoji)
     # TODO ignore --for-whom if nicks are given

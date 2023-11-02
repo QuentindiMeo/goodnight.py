@@ -32,11 +32,11 @@ def gnUsage():
     print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
-        "\n-n, --nb-fragments <int>  Number of fragments to draw (def: 2..5)" \
-        "\n-e, --emoji               Add emoji between fragments (def: False)" \
-        "\n-s, --source       <str>  Source file to read fragments and emoji from (def: source.log)" \
-        "\n-w, --for-whom     <str>  For whom the goodnight is (def: \"\" (no name used))" \
-        "\n--verbose          Toggle verbose mode (def: False)" \
+        "\n-n, --nb-phrases <int>  Number of phrases to draw (def: 2..5)" \
+        "\n-e, --emoji             Add emoji between phrases (def: False)" \
+        "\n-s, --source     <str>  Source file to read contents from (def: source.log)" \
+        "\n-w, --for-whom   <str>  For whom the goodnight is (def: \"\" (no name used))" \
+        "\n--verbose               Toggle verbose mode (def: False)" \
         "\n" \
-        "\n-i, --ignore       Ignore preferences (preferences.sav)" \
-        "\n-h, --help         Display this help and exit")
+        "\n-i, --ignore            Ignore preferences (preferences.sav)" \
+        "\n-h, --help              Display this help and exit")

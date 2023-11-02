@@ -31,28 +31,30 @@ The author of this script declines all responsibility for any conflict caused by
 
 ## :city_sunset: Usage
 
-&nbsp;&nbsp; :checkered_flag:&nbsp;&nbsp;**Launch**
+&nbsp;&nbsp; :checkered_flag:&nbsp; **Launch**
 
 ``` bash
 python goodnight.py [OPTIONS]
 ```
 
-<br />
-&nbsp;&nbsp; :hammer_and_wrench:&nbsp;&nbsp;**Options**
+&#xa0;
+
+&nbsp;&nbsp; :hammer_and_wrench:&nbsp; **Options**
 
 ``` bash
--n, --nb-fragments <int>  Number of fragments to draw (def: 2..5)
--e, --emoji               Add emoji between fragments (def: False)
--s, --source       <str>  Source file to read fragments and emoji from (def: source.log)
--w, --for-whom     <str>  For whom the goodnight is (def: "" (no name used))
---verbose                 Toggle verbose mode (def: False)
+-n, --nb-phrases <int>  Number of phrases to draw (def: 2..5)
+-e, --emoji             Add emoji between phrases (def: False)
+-s, --source     <str>  Source file to read phrases and emoji from (def: source.log)
+-w, --for-whom   <str>  For whom the goodnight is (def: "" (no name used))
+--verbose               Toggle verbose mode (def: False)
 
--i, --ignore              Ignore preferences (preferences.sav file) (def: False)
--h, --help         Display this help and exit
+-i, --ignore            Ignore preferences (preferences.sav file) (def: False)
+-h, --help              Display this help and exit
 ```
 
-<br />
-&nbsp;&nbsp; :test_tube:&nbsp;&nbsp;**General**
+&#xa0;
+
+&nbsp;&nbsp; :test_tube:&nbsp; **General**
 
 Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: -i)*.  
 A file named [source.log](./source.log) serves as the default source file for phrases, emoji and nicknames. You may create your own source file *(see above: -s)*. Open the default source file to see how to format it.  
