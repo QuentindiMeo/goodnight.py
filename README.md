@@ -1,25 +1,27 @@
 #
 
-<div id="top">
-    <h1 markdown="1"> :crescent_moon: <center>goodnight.py</center> :crescent_moon:</h1>
+<div align="center" id="top">
+    <h1 markdown="1">:crescent_moon: goodnight.py :crescent_moon:</h1>
 </div>
 
 <div align="center">
     <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
     <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
-    <a href="#linked_paperclips-compatability">Compatability</a> &#xa0; | &#xa0;
+    <a href="#paperclips-compatability">Compatability</a> &#xa0; | &#xa0;
     <a href="#card_file_box-project-log">Project log</a>
 </div>
+
 <div align="center">
-    <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue" />
-    <img alt="Development status" src="https://img.shields.io/badge/development-WIP-blue" />
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow" />
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet" />
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=green" />
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=red" />
-    <img alt="Repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue" />
-    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green" />
+    <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
+    <img alt="Development status" src="https://img.shields.io/badge/development-WIP-blue?logo=task" />
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=ray" />
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=gnome-terminal" />
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" />" />
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" />
+    <img alt="Repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
+    <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" />
 </div>
+&#xa0;
 
 ## :full_moon_with_face: Description
 
@@ -29,13 +31,13 @@ The author of this script declines all responsibility for any conflict caused by
 
 ## :city_sunset: Usage
 
-&nbsp;&nbsp;&nbsp;&nbsp; :checkered_flag:&nbsp;&nbsp;**Launch**
+&nbsp;&nbsp; :checkered_flag:&nbsp;&nbsp;**Launch**
 
 ``` bash
 python goodnight.py [OPTIONS]
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp; :hammer_and_wrench:&nbsp;&nbsp;**Options**
+&nbsp;&nbsp; :hammer_and_wrench:&nbsp;&nbsp;**Options**
 
 ``` bash
 -n, --nb-fragments <int>  Number of fragments to draw (def: 2..5)
@@ -48,7 +50,7 @@ python goodnight.py [OPTIONS]
 -h, --help         Display this help and exit
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp; :test_tube:&nbsp;&nbsp;**General**
+&nbsp;&nbsp; :test_tube:&nbsp;&nbsp;**General**
 
 Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: -i)*.  
 A file named [source.log](./source.log) serves as the default source file for fragments and emoji, you may create your own *(see above: -s)*.  
