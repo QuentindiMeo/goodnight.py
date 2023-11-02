@@ -18,12 +18,12 @@ class Parameters:
                 f"source: '{self.source}', " \
                 f"to '{self.forWhom}'"
 
-    def __init__(self, n: int, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, debug: bool = False):
+    def __init__(self, n: int, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, v: bool = False):
         self.nbFragments = n
         self.toggleEmoji = e
         self.source      = s
         self.forWhom     = w
-        self.debugMode   = debug
+        self.verboseMode = v
 
 def saveParameters(p: Parameters):
     print(f"Saving preferences in file '{SAVE_FILE}'...")
@@ -43,7 +43,7 @@ def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
     forWhom:     str  = p.forWhom
-    debugMode:   bool = p.debugMode
+    verboseMode: bool = p.verboseMode
 
     while (nbFragments == 0):
         try:
@@ -53,12 +53,12 @@ def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
                 print(f"\t... using default value: {nbFragments}, picked randomly between 2 and 4.")
         except Exception as e:
             print(f"Invalid input: {e}")
-        if (debugMode): print(f"\tNumber of fragments set to {nbFragments}.")
+    if (verboseMode): print(f"\tNumber of fragments set to {nbFragments}.")
     if (toggleEmoji == DEF_TOGGLE_EMOJI):
         buf: str = input("Add emoji between fragments (y/n): ")
         if (buf.lower() == "y" or buf.lower().startswith("yes")):
             toggleEmoji = True
-            if (debugMode): print("\tEmoji toggle set to True.")
+            if (verboseMode): print("\tEmoji toggle set to True.")
         elif (not (buf.lower() == "n" or buf.lower().startswith("no"))):
             print("\t... using default value: no (False).")
     if (source == DEF_SOURCE):
@@ -66,13 +66,13 @@ def fromCommandLine(p: Parameters, saving: bool = True) -> Parameters:
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE}.")
-        elif (debugMode): print(f"\tSource file set to '{source}'.")
+        elif (verboseMode): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM):
         forWhom = input("For whom the goodnight is: ")
         if (forWhom == ""):
             print("\t... using default value: \"\" (no name used)).")
-        elif (debugMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode)
+        elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+    newP: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode)
     if (saving): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     return newP
@@ -83,7 +83,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
     source:      str  = DEF_SOURCE
     forWhom:     str  = DEF_FOR_WHOM
-    debugMode:   bool = False
+    verboseMode: bool = False
 
     def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAc: int = 1
@@ -111,8 +111,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
-        elif (av[i] == "--debug"):
-            debugMode = True
+        elif (av[i] == "--verbose"):
+            verboseMode = True
         elif (av[i] == "-n" or av[i] == "--nb-fragments"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'.")
@@ -147,13 +147,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Invalid argument for '{av[i]}': {e}")
                 gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode), False)
+            return fromCommandLine(Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode), False)
         else:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    if (debugMode): print(f"av: {av}")
-    p: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, debugMode)
+    if (verboseMode): print(f"av: {av}")
+    p: Parameters = Parameters(nbFragments, toggleEmoji, source, forWhom, verboseMode)
     return fromCommandLine(p)
 
 def fromFile(file: str = SAVE_FILE) -> Parameters:

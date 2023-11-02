@@ -5,17 +5,20 @@ $
 $ please use double quotes and commas as separators as per below, or you might break the lexer.
 $ if several entries are on the same line, ONE of them will be picked at random.
 $ weights can be used: place "3:" infront of a phrase line to make it three times as likely to appear.
+$   the default weight is 1, a weight of 0 will naturally remove the entry from possibilities
+$   weights are expected to be integers, that is positive numbers without a point (e.g. use 3 and not 2.5)
+$ # TODO if there are several PHRASES.log, concatenate their contents
 
 ## PHRASES.log
 "good night","have a good night","have a great night","wishing you a lovely night"
 "have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep"
-"sweet dreams"
-"I love you","I love you immensely"
-"I'll be guarding your sleep"
-"kisses all over","I kiss you goodnight","biggest kiss to you"
+"sweet dreams","have sweet dreams","have the loveliest dreams","I'll meet you in my dreams"
+"I love you","I love you immensely","love you lots"
+"I'll be guarding your sleep","I'm be guarding your sleep"
+"kisses all over","I kiss you goodnight","biggest kiss to you","smooches","smooch smooch","pus pus"
 "take good care"
 "enjoy the night"
-"I'll tuck you in gently"
+"I'll tuck you in gently","I'll tuck you in nicely"
 
 ## EMOJI.log
 "🌙"

@@ -7,21 +7,17 @@ from random import randint as rand
 
 from SourceExtractor import sourceExtractor as extractor
 from Parameters import Parameters, getParameters
-from Types import Goodnight, WeightedList as Wlist
+from Types import Goodnight, Contents, WeightedList as Wlist
 from CtrlC import handler as CtrlCHandler
 
-def addEmoji(gn: Goodnight, emoji: list[Wlist]) -> Goodnight:
+def addEmoji(gn: Goodnight, emoji: Wlist) -> Goodnight:
     return gn + " "
 
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
-    (phrases, emoji, nicks) = extractor(p.source, p.toggleEmoji)
+    contents: Contents = extractor(p.source, p)
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
 
-    if (p.debugMode):
-        print(f"phrases: {phrases}\n" \
-              f"emoji: {emoji}\n" \
-              f"nicks: {nicks}\n")
     for _ in range(p.nbFragments):
         # TODO pick a phrase and blend it in
         if (p.toggleEmoji): gn = addEmoji(gn, emoji)

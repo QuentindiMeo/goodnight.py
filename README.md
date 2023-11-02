@@ -1,5 +1,3 @@
-#
-
 <div align="center" id="top">
     <h1 markdown="1">:crescent_moon: goodnight.py :crescent_moon:</h1>
 </div>
@@ -13,14 +11,14 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <img alt="Development status" src="https://img.shields.io/badge/development-WIP-blue?logo=task" />
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=ray" />
+    <img alt="Development status" src="https://img.shields.io/badge/development-v0.1.0-blue?logo=windows-terminal" />
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" />
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
 <div align="center">
     <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" />
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" />
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=gnome-terminal" />
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
 </div>
 &#xa0;
@@ -29,7 +27,7 @@
 
 No need to think about not being repetitive in the way you say "Good night" any more!  
 Just run this script and it will generate a random goodnight message for your loved one.  
-The author of this script declines all responsibility for any conflict caused by the (over)use of this script.
+The author of this script declines all responsibility for any conflict caused by the (over)use of this script. :wink:
 
 ## :city_sunset: Usage
 
@@ -39,7 +37,7 @@ The author of this script declines all responsibility for any conflict caused by
 python goodnight.py [OPTIONS]
 ```
 
-&#xa0;
+<br />
 &nbsp;&nbsp; :hammer_and_wrench:&nbsp;&nbsp;**Options**
 
 ``` bash
@@ -47,17 +45,17 @@ python goodnight.py [OPTIONS]
 -e, --emoji               Add emoji between fragments (def: False)
 -s, --source       <str>  Source file to read fragments and emoji from (def: source.log)
 -w, --for-whom     <str>  For whom the goodnight is (def: "" (no name used))
+--verbose                 Toggle verbose mode (def: False)
 
 -i, --ignore              Ignore preferences (preferences.sav file) (def: False)
---debug                   Debug mode (def: False)
 -h, --help         Display this help and exit
 ```
 
-&#xa0;
+<br />
 &nbsp;&nbsp; :test_tube:&nbsp;&nbsp;**General**
 
 Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: -i)*.  
-A file named [source.log](./source.log) serves as the default source file for fragments and emoji, you may create your own *(see above: -s)*.  
+A file named [source.log](./source.log) serves as the default source file for phrases, emoji and nicknames. You may create your own source file *(see above: -s)*. Open the default source file to see how to format it.  
 If nicknames are provided in said source file, they will override the `--for-whom` option.  
 As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
@@ -68,13 +66,14 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 
 ## :card_file_box: Project log
 
-- ***[D 0.0.0]** Oct 30 2023* - Project creation
-- ***[D 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
-- ***[D 0.0.2]** Oct 31 2023* - Added parameter handling (- and --), Exit and Help setup
-- ***[D 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav with -D and -i, Ctrl+C handler
-- ***[D 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), handles multioptional parameters
-- ***[D 0.0.5]** Nov 01 2023* - Added nicknames to source extractor, removed -D, added --debug, added Types for clarity
+- ***[DEV 0.0.0]** Oct 30 2023* - Project creation
+- ***[DEV 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
+- ***[DEV 0.0.2]** Oct 31 2023* - Added parameter handling (- and --), Exit and Help setup
+- ***[DEV 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav with -D and -i, Ctrl+C handler
+- ***[DEV 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), handles multioptional parameters
+- ***[DEV 0.0.5]** Nov 01 2023* - Added nicknames to source extractor, removed -D, added --debug, added Types for clarity
+- ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class), renamed --debug as --verbose
 
-&#xa0;
+<br/>
 
 [Back to top](#top)

@@ -10,6 +10,7 @@ class exitCode(Enum):
     ERR_INV_FIL = 0x12
     ERR_INV_PHR = 0x13
     ERR_INV_EMO = 0x14
+    ERR_INV_WEI = 0x15
 
 def gnExit(code: exitCode):
     switch: dict = {
@@ -19,6 +20,7 @@ def gnExit(code: exitCode):
         0x12: "Invalid file",
         0x13: "Invalid phrases",
         0x14: "Invalid emoji",
+        0x15: "Invalid weighting",
     }
     if (code.value == 0x01):
         gnUsage(); code = exitCode.SUCCESS
@@ -34,6 +36,7 @@ def gnUsage():
         "\n-e, --emoji               Add emoji between fragments (def: False)" \
         "\n-s, --source       <str>  Source file to read fragments and emoji from (def: source.log)" \
         "\n-w, --for-whom     <str>  For whom the goodnight is (def: \"\" (no name used))" \
+        "\n--verbose          Toggle verbose mode (def: False)" \
+        "\n" \
         "\n-i, --ignore       Ignore preferences (preferences.sav)" \
-        "\n--debug            Debug mode (def: False)" \
         "\n-h, --help         Display this help and exit")
