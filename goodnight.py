@@ -11,23 +11,31 @@ from Types import Goodnight, Contents, WeightedList as Wlist
 from CtrlC import handler as CtrlCHandler
 
 def addEmoji(gn: Goodnight, emoji: Wlist) -> Goodnight:
-    return gn + " "
+    # TODO pick a random emoji (sequence) and add it to the end of the string
+    return gn
 
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
     contents: Contents = extractor(p.source, p)
+    nbPhrases = int(p.nbPhrases)
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
+    nickIdx: int = rand(0, nbPhrases - 1)
 
-    for _ in range(p.nbPhrases):
-        # TODO pick a phrase and blend it in
+    if (p.verboseMode): print(f"Starting with parameters: \n{p}\n")
+    # TODO --for-whom = nickname ?? for-whom
+    for x in range(nbPhrases):
+        # TODO pick a (weighted) phrase and blend it in
+        if (x ==  nickIdx): gn += p.forWhom
         if (p.toggleEmoji): gn = addEmoji(gn, emoji)
-    # TODO ignore --for-whom if nicks are given
+        else:               gn += ","
+        if (len(usedPhrases) == len(contents.phrases)): usedPhrases = [] # TODO depend upon --allow-repetition, if false then exit with error before execution
     return gn.strip().replace("  ", " ")
 
 def main(ac: int, av: list[str]):
-    CtrlCHandler()
+    CtrlCHandler() # binding Ctrl+C to a graceful program exit
 
     p: Parameters = getParameters(ac, av)
+
     result: Goodnight = goodnight(p)
     print(f"Result: \"{result}\"")
     print(f"for parameters: {p}")

@@ -32,7 +32,8 @@ def gnUsage():
     print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
-        "\n-n, --nb-phrases <int>  Number of phrases to draw (def: 2..5)" \
+        "\n-b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)" \
+        "\n-n, --nb-phrases <int>  Number of phrases to draw" \
         "\n-e, --emoji             Add emoji between phrases (def: False)" \
         "\n-s, --source     <str>  Source file to read contents from (def: source.log)" \
         "\n-w, --for-whom   <str>  For whom the goodnight is (def: \"\" (no name used))" \
