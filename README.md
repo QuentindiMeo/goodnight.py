@@ -16,9 +16,9 @@
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
 <div align="center">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" />
+    <a href="https://github.com/QuentindiMeo/goodnight.py/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" />
+    <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
 </div>
@@ -55,8 +55,10 @@ python goodnight.py [OPTIONS]
 -w, --for-whom   <str>  For whom the goodnight is (def: "" (no name used))
 --verbose               Toggle verbose mode (def: False)
 
+--default               Launch once with default values (ignores other parameters) (def: False)
 -i, --ignore            Ignore preferences (preferences.sav file) (def: False)
 --isave                 ... but save preferences regardless (def: False)
+
 -h, --help              Display this help and exit
 ```
 
@@ -94,7 +96,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.0.5]** Nov 01 2023* - Added nicknames to source extractor; removed -D, added --debug; added Types for clarity
 - ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class); renamed --debug as --verbose
 - ***[DEV 0.1.1]** Nov 03 2023* - Added possibility to set a random range as nbPhrases, added --isave
-- ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, links on README badges
+- ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, --default, links on README badges
 
 <br/>
 

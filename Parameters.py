@@ -119,6 +119,9 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     saving:      bool = False
     # FIXME should be FILE + PARAM + CLI, not just PARAM + CLI
 
+    if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
+        print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
+    if ("--isave" in av and "-i" not in av and "--ignore" not in av): av.append("-i")
     def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAc: int = 1
         newAv: list[str] = [av[0]]
@@ -132,8 +135,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
                 for c in s:
                     newAv.append("-" + c); newAc += 1
-
         newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
+
+        if ("--default" in newAv): # --default ignores all other parameters
+            newAv.remove("--default"); newAv.insert(1, "--default")
         # if newAv has -i or --ignore, move them to the end (because they instantly jump to CLI)
         if ("-i" in newAv):
             newAv.remove("-i"); newAv.append("-i")
@@ -141,14 +146,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             newAv.remove("--ignore"); newAv.append("--ignore")
         return (newAc, newAv)
     (ac, av) = getPurifiedAv(ac, av)
-    if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
-        print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
-    # TODO --no-capitalization
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
+        elif (av[i] == "--default"):
+            return defaultParameters()
         elif (av[i] == "--verbose"):
             verboseMode = True
         elif (av[i] == "-b" or av[i] == "--bounds"):
@@ -228,8 +232,7 @@ def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     return pickNbPhrases(p)
 
-# TODO superparameter --default
 def defaultParameters() -> Parameters:
-    return Parameters("2,5")
+    return pickNbPhrases(Parameters("2,5", False, "source.log", "", False))
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()
