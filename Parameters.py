@@ -63,10 +63,18 @@ def fromCommandLine(p: Parameters) -> Parameters:
             while (bounds == ""):
                 bounds = input("Bounds of the random range: ").strip()
                 if (not matches("^[0-9]+,[0-9]+$", bounds)):
-                    print("Bounds must be of the form \"x,y\".")
+                    print("\tBounds must be of the form \"x,y\".")
                     bounds = ""
                     continue
+                buf: str = ""
+                while (int(bounds.split(",")[1]) > 6 and buf != "y"):
+                    (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
+                    buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
+                    if (buf == "y"): break
+                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    bounds = str(lowerBound) + "," + buf
                 nbPhrases = bounds
+                print(f"\t... bounds set to {nbPhrases}.")
         else: # randomOrNumber == "n"
             while (nbPhrases == DEF_NB_PHRASES):
                 try:
@@ -137,7 +145,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
     # TODO --no-capitalization
-    # TODO ask for confirmation if upper bound or nbPhrases is higher than 6
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
@@ -155,7 +162,14 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     raise ValueError("The upper bound cannot be lower than the lower bound.")
                 if (lowerBound == 0):
                     raise ValueError("Bounds must be positive.")
+                buf: str = ""
+                while (upperBound > 6 and buf != "y"):
+                    buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
+                    if (buf == "y"): break
+                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    upperBound = int(buf)
                 nbPhrases = av[i + 1]; i += 1
+                print(f"\t... bounds set to {nbPhrases}.")
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-n" or av[i] == "--nb-phrases"):

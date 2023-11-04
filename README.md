@@ -11,21 +11,20 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <img alt="Development status" src="https://img.shields.io/badge/development-v0.1.1-blue?logo=windows-terminal" />
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" />
+    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.1.2-blue?logo=windows-terminal" /></a>
+    <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
 <div align="center">
     <img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" />
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" />
+    <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
     <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" />
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
 </div>
-&#xa0;
 <div align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
-        <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="25%" />
+        <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="20%" />
     </a>
 </div>
 &#xa0;
@@ -38,8 +37,6 @@ The author of this script declines all responsibility for any conflict caused by
 
 ## :city_sunset: Usage
 
-&#xa0;
-
 &nbsp;&nbsp; :checkered_flag:&nbsp; **Launch**
 
 ``` bash
@@ -50,7 +47,7 @@ python goodnight.py [OPTIONS]
 
 &nbsp;&nbsp; :hammer_and_wrench:&nbsp; **Options**
 
-``` bash
+``` txt
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
 -e, --emoji             Add emoji between phrases (def: False)
@@ -68,17 +65,17 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior**
 
 ``` bash
-python goodnight.py --bounds 2,5 --source source.log --for-whom ""
+python goodnight.py --bounds "2,5" --source source.log --for-whom ""
 ```
 
 &#xa0;
 
 &nbsp;&nbsp; :test_tube:&nbsp; **General**
 
-- Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: -i)*.
+- Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: `-i`)*.
 - `-b` and `-n` are mutually exclusive. If both are provided, the program will exit with an error.
 - A file named [source.log](./source.log) serves as the default source file for phrases, emoji and nicknames.
-  - You may create your own source file *(see above: -s)*. Open the default source file to see how to format it.
+  - You may create your own source file *(see above: `-s`)*. Open the default source file to see how to format it.
 - If nicknames are provided in said source file, they will override the `--for-whom` option.
 - As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
@@ -93,10 +90,11 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
 - ***[DEV 0.0.2]** Oct 31 2023* - Added parameter handling (- and --), Exit and Help setup
 - ***[DEV 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav with -D and -i, Ctrl+C handler
-- ***[DEV 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), handles multioptional parameters
-- ***[DEV 0.0.5]** Nov 01 2023* - Added nicknames to source extractor, removed -D, added --debug, added Types for clarity
-- ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class), renamed --debug as --verbose
+- ***[DEV 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), multioptional parameters handling
+- ***[DEV 0.0.5]** Nov 01 2023* - Added nicknames to source extractor; removed -D, added --debug; added Types for clarity
+- ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class); renamed --debug as --verbose
 - ***[DEV 0.1.1]** Nov 03 2023* - Added possibility to set a random range as nbPhrases, added --isave
+- ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, links on README badges
 
 <br/>
 
