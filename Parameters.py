@@ -10,8 +10,8 @@ from Exit import exitCode, gnUsage, gnExit
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
 DEF_TOGGLE_EMOJI: bool = False
-DEF_SOURCE:       str  = "source.log"
-DEF_FOR_WHOM:     str  = ""
+DEF_SOURCE:       str  = "source.log " # same as below
+DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 
 class Parameters:
     def __str__(self) -> str:
@@ -93,16 +93,15 @@ def fromCommandLine(p: Parameters) -> Parameters:
             print(f"\t... using default value: {DEF_SOURCE}.")
         elif (verboseMode): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM):
-        forWhom = input("For whom the goodnight is: ")
+        forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print("\t... using default value: \"\" (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    newP = Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode, p.savePref)
+    newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), verboseMode, p.savePref)
     if (p.savePref): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     return pickNbPhrases(newP)
 
-# TODO make random nbPhrases boundable ("2,5", "1,7"...)
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     nbPhrases:   str  = DEF_NB_PHRASES
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
@@ -110,13 +109,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     forWhom:     str  = DEF_FOR_WHOM
     verboseMode: bool = False
     saving:      bool = False
-    # TODO should be FILE + PARAM + CLI, not just PARAM + CLI
+    # FIXME should be FILE + PARAM + CLI, not just PARAM + CLI
 
     def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAc: int = 1
         newAv: list[str] = [av[0]]
 
-        def isMultiOptional(s: str) -> bool: return (s[0] == '-' and s[1] != '-' and len(s) > 2)
+        def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
         for i in range(1, ac):
             if (not isMultiOptional(av[i])):
@@ -183,7 +182,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
             try:
                 forWhom = str(av[i + 1]); i += 1
-                if (not forWhom.isalnum()):
+                if (forWhom != "" and not forWhom.isalnum()):
                     raise ValueError("For whom the goodnight is must be alphanumeric.")
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -215,7 +214,7 @@ def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     return pickNbPhrases(p)
 
-# TODO --default
+# TODO superparameter --default
 def defaultParameters() -> Parameters:
     return Parameters("2,5")
 def getParameters(ac: int, av: list[str]) -> Parameters:

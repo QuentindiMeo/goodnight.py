@@ -25,8 +25,8 @@ def goodnight(p: Parameters) -> Goodnight:
     # TODO --for-whom = nickname ?? for-whom
     for x in range(nbPhrases):
         # TODO pick a (weighted) phrase and blend it in
-        if (x ==  nickIdx): gn += p.forWhom
-        if (p.toggleEmoji): gn = addEmoji(gn, emoji)
+        if (x == nickIdx) : gn += p.forWhom
+        if (p.toggleEmoji): gn = addEmoji(gn, contents.emoji)
         else:               gn += ","
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = [] # TODO depend upon --allow-repetition, if false then exit with error before execution
     return gn.strip().replace("  ", " ")
