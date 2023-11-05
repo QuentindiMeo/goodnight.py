@@ -50,9 +50,10 @@ python goodnight.py [OPTIONS]
 ``` txt
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
--e, --emoji             Add emoji between phrases (def: False)
--s, --source     <str>  Source file to read phrases and emoji from (def: source.log)
+-e, --emoji             Add emoji after each phrase (def: False)
+-s, --source     <str>  Source file to pull contents (phrases...) from (def: source.log)
 -w, --for-whom   <str>  For whom the goodnight is (def: "" (no name used))
+--allow-repetition      Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)
 --verbose               Toggle verbose mode (def: False)
 
 --default               Launch once with default values (ignores other parameters) (def: False)
@@ -64,10 +65,12 @@ python goodnight.py [OPTIONS]
 
 &#xa0;
 
-&nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior**
+&nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior** / its equivalents
 
 ``` bash
 python goodnight.py --bounds "2,5" --source source.log --for-whom ""
+python goodnight.py -b "2,5" -s source.log -w ""
+python goodnight.py --default
 ```
 
 &#xa0;
@@ -97,6 +100,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class); renamed --debug as --verbose
 - ***[DEV 0.1.1]** Nov 03 2023* - Added possibility to set a random range as nbPhrases, added --isave
 - ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, --default, links on README badges
+- ***[DEV 0.1.3]** Nov 05 2023* - Fixed -n/-b oddities; added and implemented --allow-repetition
 
 <br/>
 

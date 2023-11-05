@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.10
 
-from os import path, remove as rm
+from os import path, remove as rm, chmod
 from random import randint as rand
 from re import search as matches
 from enum import Enum
@@ -12,19 +12,22 @@ DEF_NB_PHRASES:   str  = "?"
 DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_REPETITION:   bool = False
 
 class Parameters:
     def __str__(self) -> str:
         return f"{self.nbPhrases} phrases, " \
                 f"emoji: {self.toggleEmoji}, " \
                 f"source: '{self.source}', " \
-                f"to '{self.forWhom}'"
+                f"to '{self.forWhom}', " \
+                f"repetition: {self.allowRep}"
 
-    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, v: bool = False, sav: bool = True):
+    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = False, sav: bool = True):
         self.nbPhrases   = n
         self.toggleEmoji = e
         self.source      = s
         self.forWhom     = w
+        self.allowRep    = r
         self.verboseMode = v
         self.savePref    = sav
 
@@ -36,6 +39,8 @@ def saveParameters(p: Parameters):
             f.write(f"emoji={p.toggleEmoji}\n")
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
+            f.write(f"allowRep={p.allowRep}\n")
+        chmod(SAVE_FILEPATH, 0o444)
     except Exception as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}")
         gnExit(exitCode.ERR_INV_FIL)
@@ -52,6 +57,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
     forWhom:     str  = p.forWhom
+    allowRep:    bool = p.allowRep
     verboseMode: bool = p.verboseMode
     randomOrNumber: str = DEF_NB_PHRASES
 
@@ -74,7 +80,6 @@ def fromCommandLine(p: Parameters) -> Parameters:
                     if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
                     bounds = str(lowerBound) + "," + buf
                 nbPhrases = bounds
-                print(f"\t... bounds set to {nbPhrases}.")
         else: # randomOrNumber == "n"
             while (nbPhrases == DEF_NB_PHRASES):
                 try:
@@ -84,6 +89,11 @@ def fromCommandLine(p: Parameters) -> Parameters:
                         print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
                     elif (int(nbPhrases) < 1):
                         print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
+                    while (int(nbPhrases) > 6):
+                        buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
+                        if (buf == "y"): break
+                        if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                        nbPhrases = buf
                 except Exception as e:
                     print(f"Invalid input: {e}")
         if (verboseMode): print(f"\tNumber of phrases set to {nbPhrases}.")
@@ -95,7 +105,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
         elif (not (buf.lower() == "n" or buf.lower().startswith("no"))):
             print("\t... using default value: no (False).")
     if (source == DEF_SOURCE):
-        source = input("Source file: ")
+        source = input("What source file to use: ")
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE}.")
@@ -105,7 +115,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
         if (forWhom == ""):
             print("\t... using default value: \"\" (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), verboseMode, p.savePref)
+    newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), allowRep, verboseMode, p.savePref)
     if (p.savePref): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     return pickNbPhrases(newP)
@@ -115,6 +125,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     toggleEmoji: bool = DEF_TOGGLE_EMOJI
     source:      str  = DEF_SOURCE
     forWhom:     str  = DEF_FOR_WHOM
+    allowRep:    bool = False
     verboseMode: bool = False
     saving:      bool = False
     # FIXME should be FILE + PARAM + CLI, not just PARAM + CLI
@@ -151,10 +162,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
-        elif (av[i] == "--default"):
-            return defaultParameters()
-        elif (av[i] == "--verbose"):
-            verboseMode = True
+        elif (av[i] == "--default"): return defaultParameters()
+        elif (av[i] == "--verbose"): verboseMode = True
         elif (av[i] == "-b" or av[i] == "--bounds"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -181,8 +190,14 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
             try:
                 nbPhrases = str(int(av[i + 1])); i += 1
-                if (nbPhrases < 1):
+                if (int(nbPhrases) < 1):
                     raise ValueError("The number of phrases must be higher than 0.")
+                while (int(nbPhrases) > 6):
+                    buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
+                    if (buf == "y"): break
+                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    nbPhrases = buf
+                    print(f"\t... number of phrases set to {nbPhrases}.")
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-e" or av[i] == "--emoji"):
@@ -204,15 +219,16 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     raise ValueError("For whom the goodnight is must be alphanumeric.")
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+        elif (av[i] == "--allow-repetition"): allowRep = True
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode, saving))
+            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, saving))
         elif (av[i] == "--isave"): saving = True
         else:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
     if (verboseMode): print(f"av: {av}")
-    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, verboseMode))
+    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode))
 
 def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
     p: Parameters = defaultParameters()
@@ -227,12 +243,13 @@ def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
                 elif (line.startswith("emoji=")):     p.toggleEmoji = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
+                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     return pickNbPhrases(p)
 
 def defaultParameters() -> Parameters:
-    return pickNbPhrases(Parameters("2,5", False, "source.log", "", False))
+    return pickNbPhrases(Parameters("2,5", False, "source.log", "", False, False))
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()
