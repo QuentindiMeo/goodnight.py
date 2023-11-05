@@ -15,11 +15,16 @@ DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the defaul
 DEF_REPETITION:   bool = False
 
 class Parameters:
+    def pickNbPhrases(self):
+        if (',' in self.nbPhrases):
+            (lowerBound, upperBound) = (int(self.nbPhrases.split(",")[0]), int(self.nbPhrases.split(",")[1]))
+            self.nbPhrases = str(rand(lowerBound, upperBound))
+
     def __str__(self) -> str:
         return f"{self.nbPhrases} phrases, " \
                 f"emoji: {self.toggleEmoji}, " \
-                f"source: '{self.source}', " \
-                f"to '{self.forWhom}', " \
+                f"source: {self.source}, " \
+                f"to {self.forWhom}, " \
                 f"repetition: {self.allowRep}"
 
     def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = False, sav: bool = True):
@@ -40,17 +45,13 @@ def saveParameters(p: Parameters):
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
             f.write(f"allowRep={p.allowRep}\n")
-        chmod(SAVE_FILEPATH, 0o444)
+        chmod(SAVE_FILEPATH, 0o644)
     except Exception as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}")
         gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
 
-def pickNbPhrases(p: Parameters) -> Parameters:
-    if (',' in p.nbPhrases):
-        (lowerBound, upperBound) = (int(p.nbPhrases.split(",")[0]), int(p.nbPhrases.split(",")[1]))
-        p.nbPhrases = str(rand(lowerBound, upperBound))
-    return p
+
 
 def fromCommandLine(p: Parameters) -> Parameters:
     nbPhrases:   str  = p.nbPhrases
@@ -108,17 +109,18 @@ def fromCommandLine(p: Parameters) -> Parameters:
         source = input("What source file to use: ")
         if (source == ""):
             source = DEF_SOURCE
-            print(f"\t... using default value: {DEF_SOURCE}.")
+            print(f"\t... using default value: {DEF_SOURCE.strip()}.")
         elif (verboseMode): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
-            print("\t... using default value: \"\" (no name used)).")
+            print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
     newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), allowRep, verboseMode, p.savePref)
     if (p.savePref): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
-    return pickNbPhrases(newP)
+    newP.pickNbPhrases()
+    return newP
 
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     nbPhrases:   str  = DEF_NB_PHRASES
@@ -247,9 +249,12 @@ def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
-    return pickNbPhrases(p)
+    p.pickNbPhrases()
+    return p
 
 def defaultParameters() -> Parameters:
-    return pickNbPhrases(Parameters("2,5", False, "source.log", "", False, False))
+    p = Parameters("2,5", False, "source.log", "", False, False)
+    p.pickNbPhrases()
+    return p
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()

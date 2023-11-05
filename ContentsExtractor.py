@@ -4,7 +4,8 @@ from random import randint as rand
 from re import search as matches
 
 from Utils import rreplace
-from Types import Parameters, Contents, WeightedList as Wlist, WeightedElement as Welem
+from Contents import Contents
+from Types import Parameters, WeightedList as Wlist, WeightedElement as Welem
 from Exit import exitCode, gnExit
 
 HEAD_PHRASES: str = "## PHRASES.log"
@@ -28,10 +29,6 @@ def applyWeighting(input: list[list[str]], verboseMode: bool) -> list[Wlist]:
             if (weight == 0): continue # no weighting means element is never picked
             elems: list[str] = line[1:].split(":")[1].split(",")
             output.append((pickRandElement(elems), weight))
-    if (verboseMode):
-        print("Weighted elements:")
-        for (i, (elem, weight)) in enumerate(output): print(f"{i + 1}: {elem} ({weight})")
-        print("")
     return output
 
 def extractor(lines: list[str], i: int) -> (list[list[str]], int):

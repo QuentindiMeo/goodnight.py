@@ -6,9 +6,10 @@ from sys import argv as av
 from random import randint as rand
 
 from Exit import exitCode, gnExit
-from SourceExtractor import contentsExtractor
+from ContentsExtractor import contentsExtractor
+from Contents import Contents
 from Parameters import Parameters, getParameters
-from Types import Goodnight, Contents, WeightedList as Wlist
+from Types import Goodnight, WeightedList as Wlist
 from CtrlC import handler as CtrlCHandler
 
 def addEmoji(gn: Goodnight, emoji: Wlist) -> Goodnight:
@@ -23,8 +24,8 @@ def goodnight(p: Parameters) -> Goodnight:
     nickIdx: int = rand(0, nbPhrases - 1)
 
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
-    if (p.verboseMode): print(f"Starting with parameters: \n{p}\n")
-    # TODO --for-whom = nickname ?? for-whom
+    p.forWhom = contents.pickNick(p)
+    if (p.verboseMode): print(f"Starting with parameters: \n\t{p}\n")
     for x in range(nbPhrases):
         # TODO pick a (weighted) phrase and blend it in
         if (x == nickIdx) : gn += p.forWhom
