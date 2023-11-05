@@ -13,6 +13,7 @@ DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
+DEF_VERBOSE_MODE: bool = False
 
 class Parameters:
     def pickNbPhrases(self):
@@ -20,14 +21,22 @@ class Parameters:
             (lowerBound, upperBound) = (int(self.nbPhrases.split(",")[0]), int(self.nbPhrases.split(",")[1]))
             self.nbPhrases = str(rand(lowerBound, upperBound))
 
-    def __str__(self) -> str:
-        return f"{self.nbPhrases} phrases, " \
+    def toString(self) -> str:
+        return \
+                f"{self.nbPhrases} phrases, " \
                 f"emoji: {self.toggleEmoji}, " \
                 f"source: {self.source}, " \
-                f"to {self.forWhom}, " \
+                f"for {self.forWhom}, " \
                 f"repetition: {self.allowRep}"
+    def __str__(self) -> str:
+        return \
+                f"\t{self.nbPhrases} phrases\n" \
+                f"\temoji: {self.toggleEmoji}\n" \
+                f"\tsource file: {self.source}\n" \
+                f"\tfor {self.forWhom}\n" \
+                f"\trepetition: {self.allowRep}"
 
-    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = False, sav: bool = True):
+    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = DEF_VERBOSE_MODE, sav: bool = True):
         self.nbPhrases   = n
         self.toggleEmoji = e
         self.source      = s
@@ -50,8 +59,6 @@ def saveParameters(p: Parameters):
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}")
         gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
-
-
 
 def fromCommandLine(p: Parameters) -> Parameters:
     nbPhrases:   str  = p.nbPhrases
@@ -116,22 +123,22 @@ def fromCommandLine(p: Parameters) -> Parameters:
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+    if (allowRep == DEF_REPETITION):
+        buf: str = input("Allow repetition of phrases if you request more phrases then you have possibilities (y/n): ")
+        if (buf.lower() == "y" or buf.lower().startswith("yes")):
+            allowRep = True
+            if (verboseMode): print("\tRepetition toggle set to True.")
+        elif (buf.lower() == "n" or buf.lower().startswith("no")):
+            print("\tRepetition toggle set to False.")
+        else: print("\t... using default value: no (False).")
     newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), allowRep, verboseMode, p.savePref)
     if (p.savePref): saveParameters(newP)
     else: print("") # newline for separation from the final prompt
     newP.pickNbPhrases()
     return newP
 
+# TODO disallow parameter that needs an argument to be in a multi-optional parameter
 def fromParameters(ac: int, av: list[str]) -> Parameters:
-    nbPhrases:   str  = DEF_NB_PHRASES
-    toggleEmoji: bool = DEF_TOGGLE_EMOJI
-    source:      str  = DEF_SOURCE
-    forWhom:     str  = DEF_FOR_WHOM
-    allowRep:    bool = False
-    verboseMode: bool = False
-    saving:      bool = False
-    # FIXME should be FILE + PARAM + CLI, not just PARAM + CLI
-
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
     if ("--isave" in av and "-i" not in av and "--ignore" not in av): av.append("-i")
@@ -141,7 +148,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
         def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
-        for i in range(1, ac):
+        for i in range(1, ac + 1):
             if (not isMultiOptional(av[i])):
                 newAv.append(av[i]); newAc += 1
             else:
@@ -159,13 +166,23 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             newAv.remove("--ignore"); newAv.append("--ignore")
         return (newAc, newAv)
     (ac, av) = getPurifiedAv(ac, av)
+    verboseMode: bool = DEF_VERBOSE_MODE if ("--verbose" not in av) else (not DEF_VERBOSE_MODE)
+    if (verboseMode): print(f"\tProgram arguments interpreted as: {av}\n")
+
+    extractP: Parameters = defaultParameters(False) if "-i" in av else fromFile(extraction = True)
+    nbPhrases:   str  = extractP.nbPhrases
+    toggleEmoji: bool = extractP.toggleEmoji
+    source:      str  = extractP.source
+    forWhom:     str  = extractP.forWhom
+    allowRep:    bool = extractP.allowRep
+    isaving:     bool = False
 
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
         if   (av[i] == "-h" or av[i] == "--help"):
             gnExit(exitCode.HELP)
         elif (av[i] == "--default"): return defaultParameters()
-        elif (av[i] == "--verbose"): verboseMode = True
+        elif (av[i] == "--verbose"): pass # still needs to be here to avoid an invalid parameter error
         elif (av[i] == "-b" or av[i] == "--bounds"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -223,20 +240,20 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "--allow-repetition"): allowRep = True
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, saving))
-        elif (av[i] == "--isave"): saving = True
+            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, isaving))
+        elif (av[i] == "--isave"): isaving = True
         else:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    if (verboseMode): print(f"av: {av}")
     return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode))
 
-def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
+def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
     if (not path.isfile(file)):
         print(f"File '{file}' does not exist. Creating preferences file...")
-        return fromCommandLine(p)
+        if (extraction): p.nbPhrases = DEF_NB_PHRASES
+        return p if (extraction) else fromCommandLine(p)
     try:
         with open(file, "r") as f:
             lines = f.readlines()
@@ -250,10 +267,11 @@ def fromFile(file: str = SAVE_FILEPATH) -> Parameters:
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     p.pickNbPhrases()
+    p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p
 
-def defaultParameters() -> Parameters:
-    p = Parameters("2,5", False, "source.log", "", False, False)
+def defaultParameters(fromParameter: bool = True) -> Parameters:
+    p = Parameters("2,5" if fromParameter else DEF_NB_PHRASES, DEF_TOGGLE_EMOJI, DEF_SOURCE, DEF_FOR_WHOM, DEF_REPETITION, DEF_VERBOSE_MODE)
     p.pickNbPhrases()
     return p
 def getParameters(ac: int, av: list[str]) -> Parameters:

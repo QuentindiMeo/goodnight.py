@@ -42,6 +42,7 @@ def extractor(lines: list[str], i: int) -> (list[list[str]], int):
     return (output, diff)
 
 # TODO error if duplicate line
+# TODO remove dquotes
 def contentsExtractor(p: Parameters) -> Contents:
     phrases: list[list[str]] = []
     emoji:   list[list[str]] = []
