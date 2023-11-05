@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.10
 
+from copy import deepcopy as duplicate
 from random import randint as rand
 
 from Parameters import Parameters
@@ -17,14 +18,27 @@ class Contents:
             if (randWeight <= 0): return n[0]
         return ""
 
-    def pickEmoji(self, usedEmoji: list[int]) -> str:
+    def pickEmoji(self, gn: str, usedEmoji: list[int]) -> (str, list[int]):
+        unpickedEmoji: Wlist = duplicate(self.emoji)
         for i in usedEmoji:
-            if (i >= len(self.emoji)): usedEmoji.remove(i)
-        randWeight: int = rand(0, sum([e[1] for e in self.emoji]))
-        for e in self.emoji:
+            unpickedEmoji.pop(i)
+        randWeight: int = rand(0, sum([e[1] for e in unpickedEmoji]))
+        for e in unpickedEmoji:
             randWeight -= e[1]
-            if (randWeight <= 0): return " " + e[0]
-        return " "
+            newUsedEmoji: list[int] = sorted(usedEmoji + [self.emoji.index(e)], reverse=True)
+            if (randWeight <= 0): return (gn + " " + e[0], newUsedEmoji)
+        return (gn, 999)
+
+    def pickPhrase(self, gn: str, usedPhrases: list[int]) -> (str, list[int]):
+        unpickedPhrases: Wlist = duplicate(self.phrases)
+        for i in usedPhrases:
+            unpickedPhrases.pop(i)
+        randWeight: int = rand(0, sum([p[1] for p in unpickedPhrases]))
+        for p in unpickedPhrases:
+            randWeight -= p[1]
+            newUsedPhrases: list[int] = sorted(usedPhrases + [self.phrases.index(p)], reverse=True)
+            if (randWeight <= 0): return (" " + gn + p[0], newUsedPhrases)
+        return (" " + gn, 999)
 
     def __str__(self) -> str:
         s = "Source file–extracted contents:\n"
