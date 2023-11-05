@@ -11,6 +11,7 @@ class exitCode(Enum):
     ERR_INV_PHR = 0x13
     ERR_INV_EMO = 0x14
     ERR_INV_WEI = 0x15
+    ERR_DUP_ENT = 0x16
     ERR_PAR_REP = 0x21
 
 def gnExit(code: exitCode):
@@ -22,6 +23,7 @@ def gnExit(code: exitCode):
         0x13: "Invalid phrases",
         0x14: "Invalid emoji",
         0x15: "Invalid weighting",
+        0x16: "Duplicate entries",
         0x21: "Insufficient number of phrases"
     }
     if (code.value == 0x01):

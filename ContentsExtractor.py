@@ -14,7 +14,7 @@ HEAD_NICKS:   str = "## NICKNAMES.log"
 
 def pickRandElement(elems: list[str]) -> str: return elems[rand(0, len(elems) - 1)]
 
-def applyWeighting(input: list[list[str]], verboseMode: bool) -> list[Wlist]:
+def applyWeighting(input: list[list[str]]) -> list[Wlist]:
     output: list[Wlist] = []
     for line in input:
         line = str(line).replace("\"'", "\"").replace("'\"", "\"").replace("\\'", "'") \
@@ -41,8 +41,6 @@ def extractor(lines: list[str], i: int) -> (list[list[str]], int):
         i += 1; diff += 1
     return (output, diff)
 
-# TODO error if duplicate line
-# TODO remove dquotes
 def contentsExtractor(p: Parameters) -> Contents:
     phrases: list[list[str]] = []
     emoji:   list[list[str]] = []
@@ -71,11 +69,19 @@ def contentsExtractor(p: Parameters) -> Contents:
         if (p.toggleEmoji and len(emoji) == 0):
             print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
 
+        # TODO warning if duplicate line; list is unhashable...
+        # if (phrases != list(dict.fromkeys(phrases)) or emoji != list(dict.fromkeys(emoji)) or nicks != list(dict.fromkeys(nicks))):
+        #     print(f"Duplicate entry was found in '{p.source}'.")
+        #     while (confirm != "y" and confirm != "n"):
+        #         confirm: str = input("Do you want to continue regardless? (y/n) ")
+        #         if (confirm == "n"): gnExit(exitCode.ERR_DUP_ENT)
+
         c = Contents(
-            applyWeighting(phrases, p.verboseMode),
-            applyWeighting(emoji,   p.verboseMode),
-            applyWeighting(nicks,   p.verboseMode)
+            applyWeighting(phrases), applyWeighting(emoji), applyWeighting(nicks)
         )
+        c.phrases = [(p[0][1:-1], p[1]) for p in c.phrases]
+        c.emoji   = [(e[0][1:-1], e[1]) for e in c.emoji]
+        c.nicks   = [(n[0][1:-1], n[1]) for n in c.nicks]
     except FileNotFoundError as e:
         print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     except ValueError as e:
