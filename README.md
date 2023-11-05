@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.1.5-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.2.0-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
@@ -24,7 +24,7 @@
 </div>
 <div align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
-        <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="20%" />
+        <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
     </a>
 </div>
 &#xa0;
@@ -103,6 +103,8 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.1.3]** Nov 05 2023* - Fixed -n/-b oddities; added and implemented --allow-repetition and nickname picking
 - ***[DEV 0.1.4]** Nov 05 2023* - Added emoji picking, improved --verbose, fixed missing file extraction case
 - ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file extraction
+- ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction, removed "s surrounding every element
+- ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking
 
 <br />
 

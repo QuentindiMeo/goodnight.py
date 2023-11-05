@@ -23,13 +23,13 @@ def goodnight(p: Parameters) -> Goodnight:
 
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)
-    if (p.verboseMode): print(f"Starting with parameters: \n\t{p}\n")
+    if (p.verboseMode): print(f"Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
-        gn += " "
-        # TODO pick a (weighted) phrase and blend it in
-        if (x == nickIdx) : gn += p.forWhom
-        if (p.toggleEmoji): gn += contents.pickEmoji(usedEmoji)
+        (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
+        if (x == nickIdx) : gn += " " + p.forWhom
+        if (p.toggleEmoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
         else:               gn += "," if (x < nbPhrases - 1) else ""
+        gn += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
     return rreplace(gn.strip(), "  ", " ")
@@ -40,8 +40,9 @@ def main(ac: int, av: list[str]):
     p: Parameters = getParameters(ac, av)
 
     result: Goodnight = goodnight(p)
+
     print(f"Result: \"{result}\"")
-    print(f"for parameters: {p}")
+    print(f"for parameters: {p.toString()}")
     copy(result); print("Copied the result to your clipboard!")
     return 0
 
