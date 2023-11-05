@@ -5,6 +5,7 @@ from random import randint as rand
 from re import search as matches
 from enum import Enum
 
+from Utils import isIn
 from Exit import exitCode, gnUsage, gnExit
 
 SAVE_FILEPATH:    str  = "preferences.sav"
@@ -137,24 +138,29 @@ def fromCommandLine(p: Parameters) -> Parameters:
     newP.pickNbPhrases()
     return newP
 
-# TODO disallow parameter that needs an argument to be in a multi-optional parameter
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
     if ("--isave" in av and "-i" not in av and "--ignore" not in av): av.append("-i")
+
     def getPurifiedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAc: int = 1
         newAv: list[str] = [av[0]]
 
         def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
-        for i in range(1, ac + 1):
-            if (not isMultiOptional(av[i])):
-                newAv.append(av[i]); newAc += 1
-            else:
-                s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
-                for c in s:
-                    newAv.append("-" + c); newAc += 1
+        try:
+            for i in range(1, ac + 1):
+                if (not isMultiOptional(av[i])):
+                    newAv.append(av[i]); newAc += 1
+                else:
+                    s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
+                    if (isIn(["n", "b", "s", "w"], s)): # multi-optional parameters that need an argument
+                        raise ValueError(f"One of the parameters in '{s}' needs an argument.")
+                    for c in s:
+                        newAv.append("-" + c); newAc += 1
+        except ValueError as e:
+            print(f"Invalid argument: {e}"); gnExit(exitCode.ERR_INV_ARG)
         newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
 
         if ("--default" in newAv): # --default ignores all other parameters
@@ -166,6 +172,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             newAv.remove("--ignore"); newAv.append("--ignore")
         return (newAc, newAv)
     (ac, av) = getPurifiedAv(ac, av)
+
     verboseMode: bool = DEF_VERBOSE_MODE if ("--verbose" not in av) else (not DEF_VERBOSE_MODE)
     if (verboseMode): print(f"\tProgram arguments interpreted as: {av}\n")
 
