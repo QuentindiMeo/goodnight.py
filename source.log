@@ -1,6 +1,6 @@
 $ PHRASES.log holds your phrases.
-$ EMOJI.log holds your emoji list.
-$ NICKNAMES.log (optional) holds nicknames you tuck alongside phrases.
+$ EMOJI.log holds your emoji list. (needed if parameter is set)
+$ NICKNAMES.log holds nicknames you tuck alongside phrases. (optional)
 $
 $ please use double quotes and commas as separators as per below, or you might break the lexer.
 $ if several entries are on the same line, ONE of them will be picked at random.
@@ -10,26 +10,25 @@ $   weights are expected to be integers, that is positive numbers without a poin
 $ # TODO if there are several PHRASES.log, concatenate their contents
 
 ## PHRASES.log
-"good night","have a good night","have a great night","wishing you a lovely night"
-"have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep"
-"sweet dreams","have sweet dreams","have the loveliest dreams","I'll meet you in my dreams"
+7:"good night","have a good night","have a great night","wishing you a lovely night"
+7:"have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep"
+7:"sweet dreams","have sweet dreams","have the loveliest dreams","I'll meet you in my dreams"
 "I love you","I love you immensely","love you lots"
 "I'll be guarding your sleep","I'm be guarding your sleep"
 "kisses all over","I kiss you goodnight","biggest kiss to you","smooches","smooch smooch","pus pus"
 "take good care"
-"enjoy the night"
+0:"enjoy the night"
 "I'll tuck you in gently","I'll tuck you in nicely"
 
 ## EMOJI.log
-"🌙"
+0:"🌙"
 "🥰","😍"
 "😘","😚"
 "☺️"
-"🤗"
-"😌"
+"🤗","😌"
 "🫶"
 "🐤","🐥"
-"❤️‍🔥","💖","💗","💓","💞","❤️","💜","🤍"
+7:"❤️‍🔥","💖","💗","💓","💞","❤️","💜","🤍"
 "💎"
 
 ## NICKNAMES.log
