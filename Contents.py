@@ -17,13 +17,22 @@ class Contents:
             if (randWeight <= 0): return n[0]
         return ""
 
+    def pickEmoji(self, usedEmoji: list[int]) -> str:
+        for i in usedEmoji:
+            if (i >= len(self.emoji)): usedEmoji.remove(i)
+        randWeight: int = rand(0, sum([e[1] for e in self.emoji]))
+        for e in self.emoji:
+            randWeight -= e[1]
+            if (randWeight <= 0): return " " + e[0]
+        return " "
+
     def __str__(self) -> str:
         s = "Source file–extracted contents:\n"
-        s += "\tPhrases:\n"
+        s += f"\tPhrases:\t(sum of weights {sum([n[1] for n in self.phrases])})\n"
         for p in self.phrases: s += f"\t\t{p[0]} (weighted {p[1]})\n"
-        s += "\tEmoji:\n"
+        s += f"\tEmoji:\t(sum of weights {sum([n[1] for n in self.emoji])})\n"
         for e in self.emoji:   s += f"\t\t{e[0]} (weighted {e[1]})\n"
-        s += "\tNicknames:\n"
+        s += f"\tNicknames:\t(sum of weights {sum([n[1] for n in self.nicks])})\n"
         for n in self.nicks:   s += f"\t\t{n[0]} (weighted {n[1]})\n"
         return s
 
