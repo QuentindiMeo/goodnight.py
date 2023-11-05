@@ -8,6 +8,7 @@ from enum import Enum
 from Utils import isIn
 from Exit import exitCode, gnUsage, gnExit
 
+FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition"]
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
 DEF_TOGGLE_EMOJI: bool = False
@@ -61,7 +62,7 @@ def saveParameters(p: Parameters):
         gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
 
-def fromCommandLine(p: Parameters) -> Parameters:
+def fromCommandLine(p: Parameters, av = []) -> Parameters:
     nbPhrases:   str  = p.nbPhrases
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
@@ -70,7 +71,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     verboseMode: bool = p.verboseMode
     randomOrNumber: str = DEF_NB_PHRASES
 
-    if (nbPhrases == DEF_NB_PHRASES):
+    if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
         if (randomOrNumber == "r"):
@@ -106,25 +107,25 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 except Exception as e:
                     print(f"Invalid input: {e}")
         if (verboseMode): print(f"\tNumber of phrases set to {nbPhrases}.")
-    if (toggleEmoji == DEF_TOGGLE_EMOJI):
+    if (toggleEmoji == DEF_TOGGLE_EMOJI and "-e" not in av and "--emoji" not in av):
         buf: str = input("Add emoji between phrases (y/n): ")
         if (buf.lower() == "y" or buf.lower().startswith("yes")):
             toggleEmoji = True
             if (verboseMode): print("\tEmoji toggle set to True.")
         elif (not (buf.lower() == "n" or buf.lower().startswith("no"))):
             print("\t... using default value: no (False).")
-    if (source == DEF_SOURCE):
+    if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
         source = input("What source file to use: ")
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE.strip()}.")
         elif (verboseMode): print(f"\tSource file set to '{source}'.")
-    if (forWhom == DEF_FOR_WHOM):
+    if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    if (allowRep == DEF_REPETITION):
+    if (allowRep == DEF_REPETITION and "--allow-repetition" not in av):
         buf: str = input("Allow repetition of phrases if you request more phrases then you have possibilities (y/n): ")
         if (buf.lower() == "y" or buf.lower().startswith("yes")):
             allowRep = True
@@ -150,7 +151,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
         try:
-            for i in range(1, ac + 1):
+            for i in range(1, ac):
                 if (not isMultiOptional(av[i])):
                     newAv.append(av[i]); newAc += 1
                 else:
@@ -253,7 +254,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             print(f"Invalid argument '{av[i]}'.")
             gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode))
+    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode), av + FILE_AV)
 
 def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
