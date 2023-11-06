@@ -12,7 +12,7 @@ FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition"]
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
 DEF_TOGGLE_EMOJI: bool = False
-DEF_SOURCE:       str  = "source.log " # same as below
+DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
 DEF_VERBOSE_MODE: bool = False
@@ -246,7 +246,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     raise ValueError("For whom the goodnight is must be alphanumeric.")
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-        elif (av[i] == "--allow-repetition"): allowRep = True
+        elif (av[i] == "-r" or av[i] == "--allow-repetition"): allowRep = True
         elif (av[i] == "-i" or av[i] == "--ignore"):
             return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, isaving))
         elif (av[i] == "--isave"): isaving = True
@@ -281,6 +281,7 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
 def defaultParameters(fromParameter: bool = True) -> Parameters:
     p = Parameters("2,5" if fromParameter else DEF_NB_PHRASES, DEF_TOGGLE_EMOJI, DEF_SOURCE, DEF_FOR_WHOM, DEF_REPETITION, DEF_VERBOSE_MODE)
     p.pickNbPhrases()
+    p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p
 def getParameters(ac: int, av: list[str]) -> Parameters:
     return fromParameters(ac, av) if (ac > 1) else fromFile()

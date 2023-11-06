@@ -39,9 +39,9 @@ def gnUsage():
         "\n-b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)" \
         "\n-n, --nb-phrases <int>  Number of phrases to draw" \
         "\n-e, --emoji             Add emoji between phrases (def: False)" \
-        "\n-s, --source     <str>  Source file to pull contents (phrases...) from (def: source.log)" \
+        "\n-s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)" \
         "\n-w, --for-whom   <str>  For whom the goodnight is (def: \"\" (no name used))" \
-        "\n--allow-repetition      Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)" \
+        "\n-r, --allow-repetition  Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)" \
         "\n--verbose               Toggle verbose mode (def: False)" \
         "\n" \
         "\n--default               Launch once with default values (ignores other parameters) (def: False)" \

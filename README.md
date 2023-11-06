@@ -13,16 +13,17 @@
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
     <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.2.0-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
-    <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
+    <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
+    <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
 </div>
 <div align="center">
     <a href="https://github.com/QuentindiMeo/goodnight.py/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
-    <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
-    <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
+    <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
 <div align="center">
+    <img src="./assets/demo_head.gif" width="64%" style="border:groove" />
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
         <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
     </a>
@@ -51,9 +52,9 @@ python goodnight.py [OPTIONS]
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
 -e, --emoji             Add emoji after each phrase (def: False)
--s, --source     <str>  Source file to pull contents (phrases...) from (def: source.log)
+-s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)
 -w, --for-whom   <str>  For whom the goodnight is (def: "" (no name used))
---allow-repetition      Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)
+-r, --allow-repetition  Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)
 --verbose               Toggle verbose mode (def: False)
 
 --default               Launch once with default values (ignores other parameters) (def: False)
@@ -68,18 +69,18 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior** / its equivalents
 
 ``` bash
-python goodnight.py --bounds "2,5" --source source.log --for-whom ""
-python goodnight.py -b "2,5" -s source.log -w ""
+python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
+python goodnight.py -b "2,5" -s "./assets/source.log" -w ""
 python goodnight.py --default
 ```
 
 &#xa0;
 
-&nbsp;&nbsp; :test_tube:&nbsp; **General**
+&nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
 - Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: `-i`)*.
 - `-b` and `-n` are mutually exclusive. If both are provided, the program will exit with an error.
-- A file named [source.log](./source.log) serves as the default source file for phrases, emoji and nicknames.
+- A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
   - You may create your own source file *(see above: `-s`)*. Open the default source file to see how to format it.
 - If nicknames are provided in said source file, they will override the `--for-whom` option.
 - As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
@@ -104,7 +105,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.1.4]** Nov 05 2023* - Added emoji picking, improved --verbose, fixed missing file extraction case
 - ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file extraction
 - ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction, removed "s surrounding every element
-- ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking
+- ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 
 <br />
 
