@@ -3,7 +3,7 @@
 from random import randint as rand
 from re import search as matches
 
-from Utils import rreplace
+from Utils import rreplace, askConfirmation
 from Contents import Contents
 from Types import Parameters, WeightedList as Wlist, WeightedElement as Welem
 from Exit import exitCode, gnExit
@@ -27,7 +27,7 @@ def applyWeighting(input: list[list[str]]) -> list[Wlist]:
         else:
             weight = int(line[1:].split(":")[0])
             if (weight == 0): continue # no weighting means element is never picked
-            elems: list[str] = line[1:].split(":")[1].split(",")
+            elems: list[str] = line[1:].split(":")[1].strip().split(",")
             output.append((pickRandElement(elems), weight))
     return output
 
@@ -59,9 +59,27 @@ def contentsExtractor(p: Parameters) -> Contents:
 
         i: int = 0; skipLines: int = 0
         while (i < len(lines)):
-            if   (lines[i] == HEAD_PHRASES): (phrases, skipLines) = extractor(lines, i + 1)
-            elif (lines[i] == HEAD_EMOJI)  : (emoji,   skipLines) = extractor(lines, i + 1)
-            elif (lines[i] == HEAD_NICKS)  : (nicks,   skipLines) = extractor(lines, i + 1)
+            if   (lines[i] == HEAD_PHRASES):
+                concat: bool = True
+                (newPhrases, skipLines) = extractor(lines, i + 1)
+                if (len(phrases) != 0):
+                    concat = askConfirmation(f"Several PHRASES.log headers were found in {p.source}" + \
+                                             "\nDo you want to concatenate the contents?")
+                phrases += newPhrases if concat else []
+            elif (lines[i] == HEAD_EMOJI):
+                concat: bool = True
+                (newEmoji,   skipLines) = extractor(lines, i + 1)
+                if (len(emoji) != 0):
+                    concat = askConfirmation(f"Several EMOJI.log headers were found in {p.source}" + \
+                                            "\nDo you want to concatenate the contents?")
+                emoji += newEmoji if concat else []
+            elif (lines[i] == HEAD_NICKS):
+                concat: bool = True
+                (newNicks,   skipLines) = extractor(lines, i + 1)
+                if (len(nicks) != 0):
+                    concat = askConfirmation(f"Several NICKNAMES.log headers were found in {p.source}" + \
+                                            "\nDo you want to concatenate the contents?")
+                nicks += newNicks if concat else []
             i += skipLines; skipLines = 0
 
         if (len(phrases) == 0):
@@ -69,12 +87,10 @@ def contentsExtractor(p: Parameters) -> Contents:
         if (p.toggleEmoji and len(emoji) == 0):
             print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
 
-        # TODO warning if duplicate line; list is unhashable...
+        # TODO warning if duplicate line; PROBLEM list is unhashable...
         # if (phrases != list(dict.fromkeys(phrases)) or emoji != list(dict.fromkeys(emoji)) or nicks != list(dict.fromkeys(nicks))):
         #     print(f"Duplicate entry was found in '{p.source}'.")
-        #     while (confirm != "y" and confirm != "n"):
-        #         confirm: str = input("Do you want to continue regardless? (y/n) ")
-        #         if (confirm == "n"): gnExit(exitCode.ERR_DUP_ENT)
+        #     askConfirmation("Do you want to continue regardless?", exitCode.ERR_DUP_ENT)
 
         c = Contents(
             applyWeighting(phrases), applyWeighting(emoji), applyWeighting(nicks)
