@@ -13,6 +13,10 @@ from Parameters import Parameters, getParameters
 from Types import Goodnight, WeightedList as Wlist
 from CtrlC import handler as CtrlCHandler
 
+def pickJunction(nth: int, nbPhrases: int) -> str:
+    if (nth >= nbPhrases - 1): return ""
+    return " and" if ((nth + 1) % 2 == 0) else ","
+
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
     contents: Contents = contentsExtractor(p); nbPhrases = int(p.nbPhrases)
@@ -28,7 +32,7 @@ def goodnight(p: Parameters) -> Goodnight:
         (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
         if (x == nickIdx) : gn += " " + p.forWhom
         if (p.toggleEmoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
-        else:               gn += "," if (x < nbPhrases - 1) else ""
+        else:               gn += pickJunction(x, nbPhrases)
         gn += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []

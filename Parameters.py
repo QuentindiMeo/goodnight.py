@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.10
 
-from os import path, remove as rm, chmod
+from os import path, chmod, name as osName
 from random import randint as rand
 from re import search as matches
 from enum import Enum
@@ -24,10 +24,11 @@ class Parameters:
             self.nbPhrases = str(rand(lowerBound, upperBound))
 
     def toString(self) -> str:
+        source = self.source.split("\\" if osName == 'nt' else "/")[-1]
         return \
                 f"{self.nbPhrases} phrases, " \
                 f"emoji: {self.toggleEmoji}, " \
-                f"source: {self.source}, " \
+                f"source: {source}, " \
                 f"for {self.forWhom}, " \
                 f"repetition: {self.allowRep}"
     def __str__(self) -> str:

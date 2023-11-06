@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.2.0-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.2.1-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -22,10 +22,13 @@
     <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
+&#xa0;
+<div align="center" style="border:groove" width="75%">
+    <img alt="Demo v0.2.0" src="./assets/demo_head.gif" />
+</div>
 <div align="center">
-    <img src="./assets/demo_head.gif" width="64%" style="border:groove" />
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
-        <img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
+        <img alt="PayPal donate button" src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
     </a>
 </div>
 &#xa0;
@@ -87,7 +90,7 @@ python goodnight.py --default
 
 ## :paperclips: Compatability
 
-This script is written in Python 3.10+ and is not backwards compatible with Python 2.x.  
+This script is written in Python 3.10 and is not backwards compatible with Python 2.x.  
 It was tested on and designed for Windows 10 and Ubuntu 22.04.
 
 ## :card_file_box: Project log
@@ -106,6 +109,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file extraction
 - ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction, removed "s surrounding every element
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
+- ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and"
 
 <br />
 
