@@ -6,12 +6,12 @@
     <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
     <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
     <a href="#paperclips-compatability">Compatability</a> &#xa0; | &#xa0;
-    <a href="#card_file_box-project-log">Project log</a>
+    <a href="#card_file_box-project-log">Change log</a>
 </div>
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/development-v0.2.1-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.2-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -23,8 +23,8 @@
     <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
 </div>
 &#xa0;
-<div align="center" style="border:groove" width="75%">
-    <img alt="Demo v0.2.0" src="./assets/demo_head.gif" />
+<div align="center" width="75%">
+    <abbr title="Demonstration v0.2.0"><img alt="Demo v0.2.0" src="./assets/demo_head.gif" /></abbr>
 </div>
 <div align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
@@ -93,7 +93,7 @@ python goodnight.py --default
 This script is written in Python 3.10 and is not backwards compatible with Python 2.x.  
 It was tested on and designed for Windows 10 and Ubuntu 22.04.
 
-## :card_file_box: Project log
+## :card_file_box: Change log
 
 - ***[DEV 0.0.0]** Oct 30 2023* - Project creation
 - ***[DEV 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
