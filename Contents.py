@@ -50,7 +50,7 @@ class Contents:
         for n in self.nicks:   s += f"\t\t{n[0]} (weighted {n[1]})\n"
         return s
 
-    def __init__(self, p: Wlist, e: Wlist, n: Wlist):
+    def __init__(self, p: Wlist, e: Wlist, n: Wlist) -> None:
         # I have a peeeeeeen
         self.phrases = p
         self.emoji   = e

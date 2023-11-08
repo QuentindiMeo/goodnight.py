@@ -9,6 +9,7 @@ def askConfirmation(s: str, e: exitCode = exitCode.SUCCESS) -> bool:
         if (ans == "n"):
             if (e != exitCode.SUCCESS): gnExit(e)
             return False
+    return False
 
 def isIn(chars: list[str], s: str) -> bool:
     for c in chars:

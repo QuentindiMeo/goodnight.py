@@ -3,10 +3,9 @@
 from os import path, chmod, name as osName
 from random import randint as rand
 from re import search as matches
-from enum import Enum
 
 from Utils import isIn
-from Exit import exitCode, gnUsage, gnExit
+from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition"]
 SAVE_FILEPATH:    str  = "preferences.sav"
@@ -16,9 +15,11 @@ DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
 DEF_VERBOSE_MODE: bool = False
+MAT_NUMBERS_INPUT: str = "^[0-9]+$"
+MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
 
 class Parameters:
-    def pickNbPhrases(self):
+    def pickNbPhrases(self) -> int:
         if (',' in self.nbPhrases):
             (lowerBound, upperBound) = (int(self.nbPhrases.split(",")[0]), int(self.nbPhrases.split(",")[1]))
             self.nbPhrases = str(rand(lowerBound, upperBound))
@@ -39,7 +40,7 @@ class Parameters:
                 f"\tfor {self.forWhom}\n" \
                 f"\trepetition: {self.allowRep}"
 
-    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = DEF_VERBOSE_MODE, sav: bool = True):
+    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = DEF_VERBOSE_MODE, sav: bool = True) -> None:
         self.nbPhrases   = n
         self.toggleEmoji = e
         self.source      = s
@@ -48,7 +49,7 @@ class Parameters:
         self.verboseMode = v
         self.savePref    = sav
 
-def saveParameters(p: Parameters):
+def saveParameters(p: Parameters) -> None:
     print(f"Saving preferences in file '{SAVE_FILEPATH}'...")
     try:
         with open(SAVE_FILEPATH, "w") as f:
@@ -59,11 +60,10 @@ def saveParameters(p: Parameters):
             f.write(f"allowRep={p.allowRep}\n")
         chmod(SAVE_FILEPATH, 0o644)
     except Exception as e:
-        print(f"Error writing to file '{SAVE_FILEPATH}': {e}")
-        gnExit(exitCode.ERR_INV_FIL)
+        print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
 
-def fromCommandLine(p: Parameters, av = []) -> Parameters:
+def fromCommandLine(p: Parameters, av: list(str) = []) -> Parameters:
     nbPhrases:   str  = p.nbPhrases
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
@@ -88,7 +88,7 @@ def fromCommandLine(p: Parameters, av = []) -> Parameters:
                     (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
                     buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
-                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                     bounds = str(lowerBound) + "," + buf
                 nbPhrases = bounds
         else: # randomOrNumber == "n"
@@ -103,7 +103,7 @@ def fromCommandLine(p: Parameters, av = []) -> Parameters:
                     while (int(nbPhrases) > 6):
                         buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
                         if (buf == "y"): break
-                        if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                        if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                         nbPhrases = buf
                 except Exception as e:
                     print(f"Invalid input: {e}")
@@ -188,8 +188,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
     i: int = 1 # iterator needs tracking for jumping over argument values
     while (i < ac): # hence can't use a for in range loop
-        if   (av[i] == "-h" or av[i] == "--help"):
-            gnExit(exitCode.HELP)
+        if   (av[i] == "-h" or av[i] == "--help"): gnExit(exitCode.HELP)
         elif (av[i] == "--default"): return defaultParameters()
         elif (av[i] == "--verbose"): pass # still needs to be here to avoid an invalid parameter error
         elif (av[i] == "-b" or av[i] == "--bounds"):
@@ -207,7 +206,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 while (upperBound > 6 and buf != "y"):
                     buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
-                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                     upperBound = int(buf)
                 nbPhrases = av[i + 1]; i += 1
                 print(f"\t... bounds set to {nbPhrases}.")
@@ -223,13 +222,12 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 while (int(nbPhrases) > 6):
                     buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
-                    if (not matches("^[0-9]+$", buf)): print("Invalid input: must be a positive number or 'y'."); continue
+                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                     nbPhrases = buf
                     print(f"\t... number of phrases set to {nbPhrases}.")
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-        elif (av[i] == "-e" or av[i] == "--emoji"):
-            toggleEmoji = True
+        elif (av[i] == "-e" or av[i] == "--emoji"): toggleEmoji = True
         elif (av[i] == "-s" or av[i] == "--source"):
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -252,8 +250,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, isaving))
         elif (av[i] == "--isave"): isaving = True
         else:
-            print(f"Invalid argument '{av[i]}'.")
-            gnExit(exitCode.ERR_INV_ARG)
+            print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
     return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode), av + FILE_AV)
 

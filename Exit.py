@@ -18,8 +18,8 @@ class exitCode(Enum):
 
     ERR_PAR_REP = 0x21
 
-def gnExit(code: exitCode):
-    switch: dict = {
+def gnExit(code: exitCode) -> None:
+    switch: dict() = {
         0x00: "Success",
         0x01: "Help",
 
@@ -41,7 +41,7 @@ def gnExit(code: exitCode):
         print(f"Exit: {switch.get(code.value, 'Unknown error')}")
     exit(code.value)
 
-def gnUsage():
+def gnUsage() -> None:
     print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \

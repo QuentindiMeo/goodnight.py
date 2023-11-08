@@ -6,12 +6,12 @@
     <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
     <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
     <a href="#paperclips-compatability">Compatability</a> &#xa0; | &#xa0;
-    <a href="#card_file_box-project-log">Change log</a>
+    <a href="#card_file_box-change-log">Change log</a>
 </div>
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-project-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.2-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.2-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -111,6 +111,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 - ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and" between phrases
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
+- ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
 
 <br />
 
