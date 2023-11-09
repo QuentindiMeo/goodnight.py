@@ -63,7 +63,7 @@ def saveParameters(p: Parameters) -> None:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     print("") # newline for separation from the final prompt
 
-def fromCommandLine(p: Parameters, av: list(str) = []) -> Parameters:
+def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     nbPhrases:   str  = p.nbPhrases
     toggleEmoji: bool = p.toggleEmoji
     source:      str  = p.source
@@ -232,8 +232,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
             try:
-                # TODO force source to be a .log file
                 source: str = av[i + 1]; i += 1
+                if (not matches(".*\.log$", source)): source += ".log"
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-w" or av[i] == "--for-whom"):

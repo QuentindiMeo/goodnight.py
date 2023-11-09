@@ -5,7 +5,8 @@ from re import search as matches
 
 from Utils import rreplace, askConfirmation
 from Contents import Contents
-from Types import Parameters, WeightedList as Wlist, WeightedElement as Welem
+from Parameters import Parameters
+from Types import WeightedList as Wlist
 from Exit import exitCode, gnExit
 
 HEAD_PHRASES: str = "## PHRASES.log"

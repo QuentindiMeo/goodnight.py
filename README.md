@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.2-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.3-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
