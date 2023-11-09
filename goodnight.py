@@ -10,7 +10,7 @@ from Exit import exitCode, gnExit
 from ContentsExtractor import contentsExtractor
 from Contents import Contents
 from Parameters import Parameters, getParameters
-from Types import Goodnight, WeightedList as Wlist
+from Types import Goodnight
 from CtrlC import handler as CtrlCHandler
 
 def pickJunction(nth: int, nbPhrases: int) -> str:
@@ -38,7 +38,7 @@ def goodnight(p: Parameters) -> Goodnight:
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
     return rreplace(gn.strip(), "  ", " ")
 
-def main(ac: int, av: list[str]):
+def main(ac: int, av: list[str]) -> int:
     CtrlCHandler() # binding Ctrl+C to a graceful program exit
 
     p: Parameters = getParameters(ac, av)
@@ -51,3 +51,5 @@ def main(ac: int, av: list[str]):
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))
+# TODO todo badge on readme
+# TODO new demo gif

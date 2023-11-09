@@ -12,6 +12,7 @@ from Exit import exitCode, gnExit
 HEAD_PHRASES: str = "## PHRASES.log"
 HEAD_EMOJI:   str = "## EMOJI.log"
 HEAD_NICKS:   str = "## NICKNAMES.log"
+ASK_CONCAT:   str = "\nDo you want to concatenate the contents?"
 
 def pickRandElement(elems: list[str]) -> str: return elems[rand(0, len(elems) - 1)]
 
@@ -64,22 +65,19 @@ def contentsExtractor(p: Parameters) -> Contents:
                 concat: bool = True
                 (newPhrases, skipLines) = extractor(lines, i + 1)
                 if (len(phrases) != 0):
-                    concat = askConfirmation(f"Several PHRASES.log headers were found in {p.source}" + \
-                                             "\nDo you want to concatenate the contents?")
+                    concat = askConfirmation(f"Several PHRASES.log headers were found in {p.source}" + ASK_CONCAT)
                 phrases += newPhrases if concat else []
             elif (lines[i] == HEAD_EMOJI):
                 concat: bool = True
                 (newEmoji,   skipLines) = extractor(lines, i + 1)
                 if (len(emoji) != 0):
-                    concat = askConfirmation(f"Several EMOJI.log headers were found in {p.source}" + \
-                                            "\nDo you want to concatenate the contents?")
+                    concat = askConfirmation(f"Several EMOJI.log headers were found in {p.source}" + ASK_CONCAT)
                 emoji += newEmoji if concat else []
             elif (lines[i] == HEAD_NICKS):
                 concat: bool = True
                 (newNicks,   skipLines) = extractor(lines, i + 1)
                 if (len(nicks) != 0):
-                    concat = askConfirmation(f"Several NICKNAMES.log headers were found in {p.source}" + \
-                                            "\nDo you want to concatenate the contents?")
+                    concat = askConfirmation(f"Several NICKNAMES.log headers were found in {p.source}" + ASK_CONCAT)
                 nicks += newNicks if concat else []
             i += skipLines; skipLines = 0
 

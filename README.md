@@ -39,6 +39,8 @@ No need to think about not being repetitive in the way you say "Good night" any 
 Just run this script and it will generate a random goodnight message for your loved one.  
 The author of this script declines all responsibility for any conflict caused by the (over)use of this script. :wink:
 
+Don't hesitate and report any kind of malfunction or request a feature by [**opening an issue**](https://github.com/QuentindiMeo/goodnight.py/issues)!
+
 ## :city_sunset: Usage
 
 &nbsp;&nbsp; :checkered_flag:&nbsp; **Launch**
@@ -82,9 +84,11 @@ python goodnight.py --default
 &nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
 - Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: `-i`)*.
+  - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, CLI will be ask you to set them.
 - `-b` and `-n` are mutually exclusive. If both are provided, the program will exit with an error.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
-  - You may create your own source file *(see above: `-s`)*. Open the default source file to see how to format it.
+  - You may create your own `.log` source file *(see above: `-s`)*. Open the default source file to see how to format it.
+  - You don't need to specify the `.log` in the source file path, the program can add it for you.
 - If nicknames are provided in said source file, they will override the `--for-whom` option.
 - As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
@@ -111,7 +115,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 - ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and" between phrases
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
-- ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
+- ***[DEV 0.2.3]** Nov 09 2023* - Minor coding style improvements (ty SonarLint), README adjustments, documentation
 
 <br />
 

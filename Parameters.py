@@ -178,7 +178,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     verboseMode: bool = DEF_VERBOSE_MODE if ("--verbose" not in av) else (not DEF_VERBOSE_MODE)
     if (verboseMode): print(f"\tProgram arguments interpreted as: {av}\n")
 
-    extractP: Parameters = defaultParameters(False) if "-i" in av else fromFile(extraction = True)
+    extractP: Parameters = defaultParameters(False) if ("-i" in av) else fromFile(extraction = True)
     nbPhrases:   str  = extractP.nbPhrases
     toggleEmoji: bool = extractP.toggleEmoji
     source:      str  = extractP.source
@@ -255,11 +255,12 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode), av + FILE_AV)
 
 def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
-    p: Parameters = defaultParameters()
+    p: Parameters = defaultParameters(False)
+
     if (not path.isfile(file)):
         print(f"File '{file}' does not exist. Creating preferences file...")
         if (extraction): p.nbPhrases = DEF_NB_PHRASES
-        return p if (extraction) else fromCommandLine(p)
+        return p if extraction else fromCommandLine(p)
     try:
         with open(file, "r") as f:
             lines = f.readlines()
@@ -273,7 +274,7 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
     p.pickNbPhrases()
-    p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
+    p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI
     return p
 
 def defaultParameters(fromParameter: bool = True) -> Parameters:
