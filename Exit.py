@@ -50,12 +50,13 @@ def gnUsage() -> None:
         "\n  -e, --emoji             Add emoji between phrases (def: False)" \
         "\n  -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)" \
         "\n  -w, --for-whom   <str>  For whom the goodnight is (def: \"\" [no name used])" \
-        "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)" \
-        "\n  --verbose               Toggle verbose mode (def: False)" \
         "\n" \
-        "\n  --default               Launch once with default values (ignores other parameters) (def: False)" \
+        "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)" \
         "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: False [odd-])" \
         "\n  -i, --ignore            Ignore preferences (preferences.sav)" \
         "\n  --isave                 ... but save preferences regardless (def: False)" \
+        "\n  -S, --save              Save preferences to file (preferences.sav)" \
+        "\n  --default               Launch once with default values (ignores other parameters) (def: False)" \
         "\n" \
+        "\n  --verbose               Toggle verbose mode (def: False)" \
         "\n  -h, --help              Display this help and exit")

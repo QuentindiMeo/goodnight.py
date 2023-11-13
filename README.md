@@ -10,17 +10,17 @@
 </div>
 &#xa0;
 <div align="center">
-    <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
+    <a href="#top"><img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" /></a>
     <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.5-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
-    <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
+    <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
 </div>
 <div align="center">
     <a href="https://github.com/QuentindiMeo/goodnight.py/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
-    <img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" />
+    <a href="#top"><img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" /></a>
 </div>
 &#xa0;
 <div align="center" width="75%">
@@ -30,7 +30,7 @@
 </div>
 <div align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
-        <img alt="PayPal donate button" src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
+    <img alt="PayPal donate button" src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" width="22%" />
     </a>
 </div>
 &#xa0;
@@ -61,14 +61,15 @@ python goodnight.py [OPTIONS]
 -e, --emoji             Add emoji after each phrase (def: False)
 -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)
 -w, --for-whom   <str>  For whom the goodnight is (def: "" [no name used])
--r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)
---verbose               Toggle verbose mode (def: False)
 
---default               Launch once with default values (ignores other parameters) (def: False)
+-r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False [odd-])
 -i, --ignore            Ignore preferences (preferences.sav file) (def: False)
 --isave                 ... but save preferences regardless (def: False)
+-S, --save              Save preferences to file (preferences.sav)"
+--default               Launch once with default values (ignores other parameters) (def: False)
 
+--verbose               Toggle verbose mode (def: False)
 -h, --help              Display this help and exit
 ```
 

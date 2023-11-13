@@ -16,6 +16,10 @@ def isIn(chars: list[str], s: str) -> bool:
         if (c in s): return True
     return False
 
+def rremove(a: list[str], s: str) -> list[str]:
+    while (s in a): a.remove(s)
+    return a
+
 def rreplace(s: str, old: str, new: str) -> str:
     while (old in s): s = s.replace(old, new)
     return s
