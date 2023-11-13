@@ -10,6 +10,7 @@ from Exit import exitCode, gnExit
 FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition"]
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
+DEF_MAX_UBOUND:   str  = "999"
 DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
@@ -76,16 +77,16 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
         if (randomOrNumber == "r"):
-            bounds = ""
-            while (bounds == ""):
+            bounds = "?"
+            while (bounds == "?"):
                 bounds = input("Bounds of the random range: ").strip()
                 if (not matches("^[0-9]+,[0-9]+$", bounds)):
-                    print("\tBounds must be of the form \"x,y\".")
-                    bounds = ""
+                    print("\tBounds must be of the form \"x,y\"."); bounds = "?"
                     continue
-                buf: str = ""
+                buf: str = "?"
                 while (int(bounds.split(",")[1]) > 6 and buf != "y"):
                     (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
+                    if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
                     buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
                     if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
@@ -100,6 +101,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                         print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
                     elif (int(nbPhrases) < 1):
                         print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
+                    if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
                     while (int(nbPhrases) > 6):
                         buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
                         if (buf == "y"): break
@@ -203,6 +205,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 if (lowerBound == 0):
                     raise ValueError("Bounds must be positive.")
                 buf: str = ""
+                if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
                 while (upperBound > 6 and buf != "y"):
                     buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
@@ -219,6 +222,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 nbPhrases = str(int(av[i + 1])); i += 1
                 if (int(nbPhrases) < 1):
                     raise ValueError("The number of phrases must be higher than 0.")
+                if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
                 while (int(nbPhrases) > 6):
                     buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
                     if (buf == "y"): break
@@ -246,6 +250,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-r" or av[i] == "--allow-repetition"): allowRep = True
+        elif (av[i] == "-o" or av[i] == "--other-step"):
+            pass # TODO
         elif (av[i] == "-i" or av[i] == "--ignore"):
             return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, isaving))
         elif (av[i] == "--isave"): isaving = True
