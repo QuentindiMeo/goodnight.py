@@ -15,6 +15,7 @@ DEF_TOGGLE_EMOJI: bool = False
 DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
+DEF_STEP:         bool = False
 DEF_VERBOSE_MODE: bool = False
 MAT_NUMBERS_INPUT: str = "^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
@@ -41,12 +42,14 @@ class Parameters:
                 f"\tfor {self.forWhom}\n" \
                 f"\trepetition: {self.allowRep}"
 
-    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, r: bool = DEF_REPETITION, v: bool = DEF_VERBOSE_MODE, sav: bool = True) -> None:
+    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
+                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, v: bool = DEF_VERBOSE_MODE, sav: bool = False) -> None:
         self.nbPhrases   = n
         self.toggleEmoji = e
         self.source      = s
         self.forWhom     = w
         self.allowRep    = r
+        self.step        = o
         self.verboseMode = v
         self.savePref    = sav
 
@@ -59,6 +62,7 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
             f.write(f"allowRep={p.allowRep}\n")
+            f.write(f"step={p.step}\n")
         chmod(SAVE_FILEPATH, 0o644)
     except Exception as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_FIL)
@@ -70,6 +74,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     source:      str  = p.source
     forWhom:     str  = p.forWhom
     allowRep:    bool = p.allowRep
+    step:        bool = p.step
     verboseMode: bool = p.verboseMode
     randomOrNumber: str = DEF_NB_PHRASES
 
@@ -136,9 +141,9 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         elif (buf.lower() == "n" or buf.lower().startswith("no")):
             print("\tRepetition toggle set to False.")
         else: print("\t... using default value: no (False).")
-    newP = Parameters(nbPhrases, toggleEmoji, source.strip(), forWhom.strip(), allowRep, verboseMode, p.savePref)
+    newP = Parameters(nbPhrases if nbPhrases != DEF_NB_PHRASES else "2,5", toggleEmoji, source.strip(), forWhom.strip(), \
+                      allowRep, step, verboseMode, p.savePref)
     if (p.savePref): saveParameters(newP)
-    else: print("") # newline for separation from the final prompt
     newP.pickNbPhrases()
     return newP
 
@@ -186,6 +191,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     source:      str  = extractP.source
     forWhom:     str  = extractP.forWhom
     allowRep:    bool = extractP.allowRep
+    step:        bool = extractP.step
     isaving:     bool = False
 
     i: int = 1 # iterator needs tracking for jumping over argument values
@@ -250,22 +256,21 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-r" or av[i] == "--allow-repetition"): allowRep = True
-        elif (av[i] == "-o" or av[i] == "--other-step"):
-            pass # TODO
+        elif (av[i] == "-o" or av[i] == "--other-step"): step = True
         elif (av[i] == "-i" or av[i] == "--ignore"):
-            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode, isaving))
+            return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, step, verboseMode, isaving))
         elif (av[i] == "--isave"): isaving = True
         else:
             print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, verboseMode), av + FILE_AV)
+    return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, step, verboseMode), av + FILE_AV)
 
 def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
     p: Parameters = defaultParameters(False)
 
     if (not path.isfile(file)):
         print(f"File '{file}' does not exist. Creating preferences file...")
-        if (extraction): p.nbPhrases = DEF_NB_PHRASES
+        if (extraction): p.nbPhrases = "2,5"; saveParameters(p)
         return p if extraction else fromCommandLine(p)
     try:
         with open(file, "r") as f:
@@ -276,6 +281,7 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
+                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
@@ -284,7 +290,7 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False) -> Parameters:
     return p
 
 def defaultParameters(fromParameter: bool = True) -> Parameters:
-    p = Parameters("2,5" if fromParameter else DEF_NB_PHRASES, DEF_TOGGLE_EMOJI, DEF_SOURCE, DEF_FOR_WHOM, DEF_REPETITION, DEF_VERBOSE_MODE)
+    p = Parameters("2,5" if fromParameter else DEF_NB_PHRASES, DEF_TOGGLE_EMOJI, DEF_SOURCE, DEF_FOR_WHOM, DEF_REPETITION, DEF_STEP, DEF_VERBOSE_MODE)
     p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p

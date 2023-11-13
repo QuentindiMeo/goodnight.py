@@ -13,9 +13,9 @@ from Parameters import Parameters, getParameters
 from Types import Goodnight
 from CtrlC import handler as CtrlCHandler
 
-def pickJunction(nth: int, nbPhrases: int) -> str:
+def pickJunction(nth: int, nbPhrases: int, step: bool) -> str:
     if (nth >= nbPhrases - 1): return ""
-    return " and" if ((nth + 1) % 2 == 0) else ","
+    return " and" if ((nth + 1) % 2 == step) else ","
 
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
@@ -32,7 +32,7 @@ def goodnight(p: Parameters) -> Goodnight:
         (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
         if (x == nickIdx) : gn += " " + p.forWhom
         if (p.toggleEmoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
-        else:               gn += pickJunction(x, nbPhrases)
+        else:               gn += pickJunction(x, nbPhrases, p.step)
         gn += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []

@@ -49,11 +49,12 @@ def gnUsage() -> None:
         "\n  -n, --nb-phrases <int>  Number of phrases to draw" \
         "\n  -e, --emoji             Add emoji between phrases (def: False)" \
         "\n  -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)" \
-        "\n  -w, --for-whom   <str>  For whom the goodnight is (def: \"\" (no name used))" \
-        "\n  -r, --allow-repetition  Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)" \
+        "\n  -w, --for-whom   <str>  For whom the goodnight is (def: \"\" [no name used])" \
+        "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)" \
         "\n  --verbose               Toggle verbose mode (def: False)" \
         "\n" \
         "\n  --default               Launch once with default values (ignores other parameters) (def: False)" \
+        "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: False)" \
         "\n  -i, --ignore            Ignore preferences (preferences.sav)" \
         "\n  --isave                 ... but save preferences regardless (def: False)" \
         "\n" \

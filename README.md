@@ -120,7 +120,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
 - ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
-- ***[DEV 0.2.5]** Nov ?? 2023* - Adding -o, updating usage/help function, setting 999 as max r/n bound
+- ***[DEV 0.2.5]** Nov 13 2023* - Adding -o, updating usage/help function, setting 999 as max r/n bound
 - ***[REL 1.0.0]** Nov ?? 2023* - First release; major README update
 
 <br />
