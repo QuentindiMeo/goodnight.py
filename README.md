@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" />
-    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.3-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.5-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" />
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -65,7 +65,7 @@ python goodnight.py [OPTIONS]
 --verbose               Toggle verbose mode (def: False)
 
 --default               Launch once with default values (ignores other parameters) (def: False)
--o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False)
+-o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False [odd-])
 -i, --ignore            Ignore preferences (preferences.sav file) (def: False)
 --isave                 ... but save preferences regardless (def: False)
 
@@ -77,22 +77,24 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior** / its equivalents
 
 ``` bash
-python goodnight.py --default
-python goodnight.py -b "2,5" -s "assets/source" -w ""
 python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
+python goodnight.py -b "2,5" -s "assets/source" -w ""
+python goodnight.py --default
 ```
 
 &#xa0;
 
 &nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
-- Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: `-i`)*.
+- Fear not having to copy the result of the program, it will be automatically copied to your clipboard! :wink:
+- Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: [`-i`](#city_sunset-usage))*.
   - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
-- `-b` and `-n` are mutually exclusive. If both are provided, the program will exit with an error.
+- [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage) are mutually exclusive. If both are provided, the program will exit with an error.
+- [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase or [`-e`](#city_sunset-usage) is present.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
-  - You may create your own `.log` source file *(see above: `-s`)*. Open the default source file to see how to format it.
+  - You may create your own `.log` source file *(see above: [`-s`](#city_sunset-usage))*. Open the default source file to see how to format it.
   - You don't need to specify the `.log` in the source file path, the program can add it for you.
-- If nicknames are provided in said source file, they will override the `--for-whom` option.
+- If nicknames are provided in said source file, they will override the [`--for-whom`](#city_sunset-usage) option.
 - As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
 ## :paperclips: Compatability
@@ -120,7 +122,8 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
 - ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
-- ***[DEV 0.2.5]** Nov 13 2023* - Adding -o, updating usage/help function, setting 999 as max r/n bound
+- ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
+- ***[DEV 0.2.6]** Nov ?? 2023* - Adding --save, --alternate, --no-copy...
 - ***[REL 1.0.0]** Nov ?? 2023* - First release; major README update
 
 <br />

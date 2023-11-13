@@ -4,7 +4,7 @@ from os import path, chmod, name as osName
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn
+from Utils import isIn, rremove
 from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition"]
@@ -28,19 +28,24 @@ class Parameters:
 
     def toString(self) -> str:
         source = self.source.split("\\" if osName == 'nt' else "/")[-1]
+        wEmoji = "with" if self.toggleEmoji else "without"
+        repetition = "allowed" if self.allowRep else "not allowed"
+        step = ("even" if self.step else "odd") + "-numbered gaps"
         return \
                 f"{self.nbPhrases} phrases, " \
-                f"emoji: {self.toggleEmoji}, " \
+                f"{wEmoji} emoji, " \
                 f"source: {source}, " \
                 f"for {self.forWhom}, " \
-                f"repetition: {self.allowRep}"
+                f"repetition {repetition}, " \
+                f"step: {step}"
     def __str__(self) -> str:
         return \
                 f"\t{self.nbPhrases} phrases\n" \
                 f"\temoji: {self.toggleEmoji}\n" \
                 f"\tsource file: {self.source}\n" \
-                f"\tfor {self.forWhom}\n" \
-                f"\trepetition: {self.allowRep}"
+                f"\tfor: {self.forWhom}\n" \
+                f"\trepetition: {self.allowRep}\n" \
+                f"\tstep: {self.step}"
 
     def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
                  r: bool = DEF_REPETITION, o: bool = DEF_STEP, v: bool = DEF_VERBOSE_MODE, sav: bool = False) -> None:
@@ -175,15 +180,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         if ("--default" in newAv): # --default ignores all other parameters
             newAv.remove("--default"); newAv.insert(1, "--default")
         # if newAv has -i or --ignore, move them to the end (because they instantly jump to CLI)
-        if ("-i" in newAv):
-            newAv.remove("-i"); newAv.append("-i")
-        if ("--ignore" in newAv):
-            newAv.remove("--ignore"); newAv.append("--ignore")
+        if ("--ignore" in newAv): rremove(newAv, "--ignore"); newAv.append("-i")
+        if ("-i" in newAv):       rremove(newAv, "-i");       newAv.append("-i")
         return (newAc, newAv)
     (ac, av) = getPurifiedAv(ac, av)
 
     verboseMode: bool = DEF_VERBOSE_MODE if ("--verbose" not in av) else (not DEF_VERBOSE_MODE)
-    if (verboseMode): print(f"\tProgram arguments interpreted as: {av}\n")
+    if (verboseMode): print(f"\tProgram arguments interpreted as: {av}")
 
     extractP: Parameters = defaultParameters(False) if ("-i" in av) else fromFile(extraction = True)
     nbPhrases:   str  = extractP.nbPhrases

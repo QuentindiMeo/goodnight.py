@@ -54,7 +54,7 @@ def gnUsage() -> None:
         "\n  --verbose               Toggle verbose mode (def: False)" \
         "\n" \
         "\n  --default               Launch once with default values (ignores other parameters) (def: False)" \
-        "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: False)" \
+        "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: False [odd-])" \
         "\n  -i, --ignore            Ignore preferences (preferences.sav)" \
         "\n  --isave                 ... but save preferences regardless (def: False)" \
         "\n" \
