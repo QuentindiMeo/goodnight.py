@@ -24,7 +24,9 @@
 </div>
 &#xa0;
 <div align="center" width="75%">
-    <abbr title="Demonstration v0.2.0"><img alt="Demo v0.2.0" src="./assets/demo_head.gif" /></abbr>
+    <a href="#top"><abbr title="Demonstration v0.2.0">
+    <img alt="Demo v0.2.0" src="./assets/demo_head.gif" />
+    </abbr></a>
 </div>
 <div align="center">
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Z9V98YGZMK8CU">
@@ -58,11 +60,12 @@ python goodnight.py [OPTIONS]
 -n, --nb-phrases <int>  Number of phrases to draw
 -e, --emoji             Add emoji after each phrase (def: False)
 -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)
--w, --for-whom   <str>  For whom the goodnight is (def: "" (no name used))
--r, --allow-repetition  Allow repetition of phrases if nbPhrases is higher than the phrases in the source file (def: False)
+-w, --for-whom   <str>  For whom the goodnight is (def: "" [no name used])
+-r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)
 --verbose               Toggle verbose mode (def: False)
 
 --default               Launch once with default values (ignores other parameters) (def: False)
+-o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False)
 -i, --ignore            Ignore preferences (preferences.sav file) (def: False)
 --isave                 ... but save preferences regardless (def: False)
 
@@ -74,9 +77,9 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior** / its equivalents
 
 ``` bash
-python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
-python goodnight.py -b "2,5" -s "./assets/source.log" -w ""
 python goodnight.py --default
+python goodnight.py -b "2,5" -s "assets/source" -w ""
+python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
 ```
 
 &#xa0;
@@ -84,7 +87,7 @@ python goodnight.py --default
 &nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
 - Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: `-i`)*.
-  - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, CLI will be ask you to set them.
+  - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
 - `-b` and `-n` are mutually exclusive. If both are provided, the program will exit with an error.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
   - You may create your own `.log` source file *(see above: `-s`)*. Open the default source file to see how to format it.
@@ -115,7 +118,10 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 - ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and" between phrases
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
-- ***[DEV 0.2.3]** Nov 09 2023* - Minor coding style improvements (ty SonarLint), README adjustments, documentation
+- ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
+- ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
+- ***[DEV 0.2.5]** Nov ?? 2023* - Adding -o, updating usage/help function, setting 999 as max r/n bound
+- ***[REL 1.0.0]** Nov ?? 2023* - First release; major README update
 
 <br />
 

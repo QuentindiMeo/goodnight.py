@@ -2,6 +2,7 @@
 
 *.sav
 *.log
+*.txt
 assets/
 
 ## Trash
