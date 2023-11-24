@@ -4,10 +4,10 @@ from copy import deepcopy as duplicate
 from random import randint as rand
 
 from Parameters import Parameters
-from Types import WeightedList as Wlist
+from Types import WeightedList as Wlist, PickResponse
 
 class Contents:
-    def pickNick(self, p: Parameters) -> str :
+    def pickNick(self, p: Parameters) -> str:
         if (self.nicks == []):
             if (p.verboseMode): print(f"No nicknames found, using default: {p.forWhom}")
             return p.forWhom
@@ -18,7 +18,7 @@ class Contents:
             if (randWeight <= 0): return n[0]
         return ""
 
-    def pickEmoji(self, gn: str, usedEmoji: list[int]) -> (str, list[int]):
+    def pickEmoji(self, gn: str, usedEmoji: list[int]) -> PickResponse:
         unpickedEmoji: Wlist = duplicate(self.emoji)
         for i in usedEmoji:
             unpickedEmoji.pop(i)
@@ -29,7 +29,7 @@ class Contents:
             if (randWeight <= 0): return (gn + " " + e[0], newUsedEmoji)
         return (gn, 999)
 
-    def pickPhrase(self, gn: str, usedPhrases: list[int]) -> (str, list[int]):
+    def pickPhrase(self, gn: str, usedPhrases: list[int]) -> PickResponse:
         unpickedPhrases: Wlist = duplicate(self.phrases)
         for i in usedPhrases:
             unpickedPhrases.pop(i)
