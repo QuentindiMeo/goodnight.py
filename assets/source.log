@@ -11,12 +11,12 @@ $   weights are expected to be integers, that is positive numbers without a poin
 
 ## PHRASES.log
 7:"good night","have a good night","have a great night","wishing you a lovely night"
-7:"have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep"
+7:"have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep","enjoy a good sleep"
 7:"sweet dreams","have sweet dreams","have the loveliest dreams","I'll meet you in my dreams"
 "I love you","I love you immensely","love you lots","don't forget I love you"
 "I'll be guarding your sleep","I'm be guarding your sleep"
 "kisses all over","I kiss you goodnight","biggest kiss to you","smooches","smooch smooch","pus pus"
-"take good care"
+"take good care","you take good care"
 0:"enjoy the night"
 "I'll tuck you in gently","I'll tuck you in nicely"
 
@@ -27,11 +27,11 @@ $   weights are expected to be integers, that is positive numbers without a poin
 "☺️"
 "🤗","😌"
 "🫶"
-"🐤","🐥"
+3:"🐤","🐥"
 7:"❤️‍🔥","💖","💗","💓","💞","❤️","💜","🤍"
 "💎"
 
 ## NICKNAMES.log
 "baby","baby lover","sweet baby","my sweet baby"
-"my love","love","lover"
+"my love","love","lover","lovergirl"
 "my precious little diamond"

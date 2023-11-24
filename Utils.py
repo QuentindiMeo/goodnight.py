@@ -2,11 +2,12 @@
 
 from Exit import exitCode, gnExit
 
+# FIXME use this in CLI
 def askConfirmation(s: str, e: exitCode = exitCode.SUCCESS) -> bool:
     while (True):
         ans: str = input(f"{s} (y/n) ")
-        if (ans == "y"): return True
-        if (ans == "n"):
+        if (ans.lower() == "y" or ans.lower().startwith("yes")): return True
+        if (ans.lower() == "n" or ans.lower().startwith("no")):
             if (e != exitCode.SUCCESS): gnExit(e)
             return False
     return False

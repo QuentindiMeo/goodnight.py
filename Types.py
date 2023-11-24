@@ -1,6 +1,8 @@
 #!/usr/bin/env python3.10
 
-WeightedElement = (str, int) # type alias for a phrase/emoji/nickname and its weight
-WeightedList = (list[str], int) # type alias for a list of phrases/emoji/nicknames and its weight
+from types import TypeAlias
 
-Goodnight = str # type alias for the result
+WeightedElement: TypeAlias = (str, int) # a phrase/emoji/nickname and its weight
+WeightedList: TypeAlias = (list[str], int) # a list of phrases/emoji/nicknames and its weight
+
+Goodnight: TypeAlias = str # the result
