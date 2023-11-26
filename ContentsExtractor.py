@@ -49,8 +49,7 @@ def contentsExtractor(p: Parameters) -> Contents:
     nicks:   list[list[str]] = []
 
     try:
-        with open(p.source, "r") as f:
-            lines = f.readlines()
+        with open(p.source, "r") as f: lines = f.readlines()
 
         # vvv remove empty lines and comments, and \n at the end of each line
         lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith("$"))]
@@ -86,7 +85,7 @@ def contentsExtractor(p: Parameters) -> Contents:
         if (p.toggleEmoji and len(emoji) == 0):
             print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
 
-        # TODO warning if duplicate line; PROBLEM list is unhashable...
+        # TODO warning if duplicate line; PROBLEM: list is unhashable...
         # if (phrases != list(dict.fromkeys(phrases)) or emoji != list(dict.fromkeys(emoji)) or nicks != list(dict.fromkeys(nicks))):
         #     print(f"Duplicate entry was found in '{p.source}'.")
         #     askConfirmation("Do you want to continue regardless?", exitCode.ERR_DUP_ENT)
