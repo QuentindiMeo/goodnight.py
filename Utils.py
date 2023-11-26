@@ -1,13 +1,25 @@
 #!/usr/bin/env python3.10
 
 from Exit import exitCode, gnExit
+from re import search as matches
 
-# FIXME use this in CLI
-def askConfirmation(s: str, e: exitCode = exitCode.SUCCESS) -> bool:
+MAT_NUMBERS_INPUT: str = "^[0-9]+$"
+MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
+
+def askConfirmationNumber(context: str) -> str:
     while (True):
-        ans: str = input(f"{s} (y/n) ")
-        if (ans.lower() == "y" or ans.lower().startwith("yes")): return True
-        if (ans.lower() == "n" or ans.lower().startwith("no")):
+        ans: str = input(f"{context}. Continue or change (y/?): ").strip().lower()
+        if (ans == "y" or ans.startswith("yes")): break
+        if (not matches(MAT_NUMBERS_INPUT, ans)):
+            print(MAT_INVALID_INPUT); continue
+        return ans
+    return "y"
+
+def askConfirmation(context: str, e: exitCode = exitCode.SUCCESS) -> bool:
+    while (True):
+        ans: str = input(f"{context} (y/n): ").strip().lower()
+        if (ans == "y" or ans.startswith("yes")): return True
+        if (ans == "n" or ans.startswith("no")):
             if (e != exitCode.SUCCESS): gnExit(e)
             return False
     return False

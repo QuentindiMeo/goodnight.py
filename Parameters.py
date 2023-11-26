@@ -4,7 +4,7 @@ from os import path, chmod, name as osName
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn, rremove
+from Utils import isIn, rremove, askConfirmation, askConfirmationNumber
 from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition", "--other-step"]
@@ -19,11 +19,12 @@ DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_VERBOSE_MODE: bool = False
 DEF_SAVE_PREF:    bool = False
-MAT_NUMBERS_INPUT: str = "^[0-9]+$"
+MAT_NUMBERS_INPUT: str = r"^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
+MAT_DEFAULTING:    str = "\t... using default value: no (False)."
 
 class Parameters:
-    def pickNbPhrases(self) -> int:
+    def pickNbPhrases(self) -> None:
         if (',' in self.nbPhrases):
             (lowerBound, upperBound) = (int(self.nbPhrases.split(",")[0]), int(self.nbPhrases.split(",")[1]))
             self.nbPhrases = str(rand(lowerBound, upperBound))
@@ -92,43 +93,36 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             bounds = "?"
             while (bounds == "?"):
                 bounds = input("Bounds of the random range: ").strip()
-                if (not matches("^[0-9]+,[0-9]+$", bounds)):
+                if (not matches(r"^[0-9]+,[0-9]+$", bounds)):
                     print("\tBounds must be of the form \"x,y\"."); bounds = "?"
                     continue
-                buf: str = "?"
-                while (int(bounds.split(",")[1]) > 6 and buf != "y"):
-                    (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
-                    if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
-                    buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
+                (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
+                if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
+                while (int(bounds.split(",")[1]) > 6):
+                    buf = askConfirmationNumber(f"Warning: you set the upper bound to a large number ({upperBound})")
                     if (buf == "y"): break
-                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                     bounds = str(lowerBound) + "," + buf
                 nbPhrases = bounds
         else: # randomOrNumber == "n"
             while (nbPhrases == DEF_NB_PHRASES):
-                try:
-                    buf: str = input("Number of phrases to draw: ")
-                    nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
-                    if (buf == ""):
-                        print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
-                    elif (int(nbPhrases) < 1):
-                        print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
-                    if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
-                    while (int(nbPhrases) > 6):
-                        buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
-                        if (buf == "y"): break
-                        if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
-                        nbPhrases = buf
-                except Exception as e:
-                    print(f"Invalid input: {e}")
+                buf: str = input("Number of phrases to draw: ")
+                nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
+                if (buf == ""):
+                    print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
+                elif (int(nbPhrases) < 1):
+                    print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
+                if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
+                while (int(nbPhrases) > 6):
+                    buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
+                    if (buf == "y"): break
+                    nbPhrases = buf
         if (verboseMode): print(f"\tNumber of phrases set to {nbPhrases}.")
     if (toggleEmoji == DEF_TOGGLE_EMOJI and "-e" not in av and "--emoji" not in av):
-        buf: str = input("Add emoji between phrases (y/n): ")
-        if (buf.lower() == "y" or buf.lower().startswith("yes")):
+        confirmed: bool = askConfirmation("Add emoji between phrases")
+        if (confirmed):
             toggleEmoji = True
             if (verboseMode): print("\tEmoji toggle set to True.")
-        elif (not (buf.lower() == "n" or buf.lower().startswith("no"))):
-            print("\t... using default value: no (False).")
+        else: print(MAT_DEFAULTING)
     if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
         source = input("What source file to use: ")
         if (source == ""):
@@ -141,21 +135,18 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
         elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
     if (allowRep == DEF_REPETITION and "--allow-repetition" not in av):
-        buf: str = input("Allow repetition of phrases if you request more phrases then you have possibilities (y/n): ")
-        if (buf.lower() == "y" or buf.lower().startswith("yes")):
+        confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more phrases there are in the source file")
+        if (confirmed):
             allowRep = True
             if (verboseMode): print("\tRepetition toggle set to True.")
-        elif (buf.lower() == "n" or buf.lower().startswith("no")):
+        else:
             print("\tRepetition toggle set to False.")
-        else: print("\t... using default value: no (False).")
     if (step == DEF_STEP and "-o" not in av and "--other-step" not in av):
-        buf: str = input("Use the even-numbered phrase gaps as \"and\"s instead of commas (y/n): ")
-        if (buf.lower() == "y" or buf.lower().startswith("yes")):
+        confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
+        if (confirmed):
             step = True
             if (verboseMode): print("\tStep toggle set to True.")
-        elif (buf.lower() == "n" or buf.lower().startswith("no")):
-            print("\tStep toggle set to False.")
-        else: print("\t... using default value: no (False).")
+        else: print(MAT_DEFAULTING)
     newP = Parameters(nbPhrases if nbPhrases != DEF_NB_PHRASES else "2,5", toggleEmoji, source.strip(), forWhom.strip(), \
                       allowRep, step, verboseMode, saving)
     if (p.saving): saveParameters(newP)
@@ -256,7 +247,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
             try:
                 source: str = av[i + 1]; i += 1
-                if (not matches(".*\.log$", source)): source += ".log"
+                if (not matches(r".*\.log$", source)): source += ".log"
             except ValueError as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-w" or av[i] == "--for-whom"):
