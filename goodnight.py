@@ -19,14 +19,16 @@ def pickJunction(nth: int, nbPhrases: int, step: bool) -> str:
 
 def goodnight(p: Parameters) -> Goodnight:
     gn: Goodnight = ""
-    contents: Contents = contentsExtractor(p); nbPhrases = int(p.nbPhrases)
+    contents: Contents = contentsExtractor(p)
+    nbPhrases = int(p.nbPhrases)
 
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
-    usedEmoji:   list[int] = [] # stores indices of emoji already used to avoid repetition
+    usedEmoji:   list[int] = [] # stores indices of  emoji  already used to avoid repetition
     nickIdx: int = rand(0, nbPhrases - 1)
 
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)
+
     if (p.verboseMode): print(f"Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
         (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
@@ -46,10 +48,13 @@ def main(ac: int, av: list[str]) -> int:
     result: Goodnight = goodnight(p)
 
     print(f"Result: \"{result}\"")
-    print(f"for parameters: {p.toString()}")
-    copy(result); print("Copied the result to your clipboard!")
+    if (p.verboseMode): print(f"for parameters: {p.toString()}")
+    copy(result); print("\nCopied the result to your clipboard!")
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))
 # TODO todo badge on readme
 # TODO new demo gif
+# TODO -a/--alternate :  ,/and and emoji
+# TODO --no-copy : don't copy to clipboard
+# TODO --infinite : infinite loop, continue with key press,

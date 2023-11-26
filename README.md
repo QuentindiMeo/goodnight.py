@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <a href="#top"><img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" /></a>
-    <a href="#card_file_box-change-log"><img alt="Development status" src="https://img.shields.io/badge/release-v0.2.5-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.6-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -41,7 +41,10 @@ No need to think about not being repetitive in the way you say "Good night" any 
 Just run this script and it will generate a random goodnight message for your loved one.  
 The author of this script declines all responsibility for any conflict caused by the (over)use of this script. :wink:
 
-Don't hesitate and report any kind of malfunction or request a feature by [**opening an issue**](https://github.com/QuentindiMeo/goodnight.py/issues)!
+> [!NOTE]
+> Don't hesitate and report any kind of malfunction or request a feature by [**opening an issue**](https://github.com/QuentindiMeo/goodnight.py/issues)!
+
+&#xa0;
 
 ## :city_sunset: Usage
 
@@ -98,10 +101,16 @@ python goodnight.py --default
 - If nicknames are provided in said source file, they will override the [`--for-whom`](#city_sunset-usage) option.
 - As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
+&#xa0;
+
 ## :paperclips: Compatability
 
-This script is written in Python 3.10 and is not backwards compatible with Python 2.x.  
-It was tested on and designed for Windows 10 and Ubuntu 22.04.
+This program was tested on and designed for Windows 10 and Ubuntu 22.04.
+
+> [!CAUTION]
+> The code is written in Python 3.10 and is not backwards compatible with anterior versions.
+
+&#xa0;
 
 ## :card_file_box: Change log
 
@@ -116,7 +125,7 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, --default, links on README badges
 - ***[DEV 0.1.3]** Nov 05 2023* - Fixed -n/-b oddities; added and implemented --allow-repetition and nickname picking
 - ***[DEV 0.1.4]** Nov 05 2023* - Added emoji picking, improved --verbose, fixed missing file extraction case
-- ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file extraction
+- ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file
 - ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction, removed "s surrounding every element
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 - ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and" between phrases
@@ -124,8 +133,9 @@ It was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
 - ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
-- ***[DEV 0.2.6]** Nov ?? 2023* - Adding --save, --alternate, --no-copy...
-- ***[REL 1.0.0]** Nov ?? 2023* - First release; major README update
+- ***[DEV 0.2.6]** Nov 26 2023* - Adding --save; improving largely code efficiency and structure for maintainability
+- ***[DEV 0.2.7]** Nov ?? 2023* - Adding --alternate, --no-copy, --infinite
+- ***[REL 1.0.0]** Dec ?? 2023* - First release; major README update
 
 <br />
 

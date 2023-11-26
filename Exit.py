@@ -38,7 +38,7 @@ def gnExit(code: exitCode) -> None:
     if (code == exitCode.HELP):
         gnUsage(); code = exitCode.SUCCESS
     if (code.value > 0x10):
-        print(f"Exit: {switch.get(code.value, 'Unknown error')}")
+        print(f"Exit: {switch.get(code.value, 'Unknown error')}.")
     exit(code.value)
 
 def gnUsage() -> None:
@@ -59,4 +59,7 @@ def gnUsage() -> None:
         "\n  --default               Launch once with default values (ignores other parameters) (def: False)" \
         "\n" \
         "\n  --verbose               Toggle verbose mode (def: False)" \
-        "\n  -h, --help              Display this help and exit")
+        "\n  -h, --help              Display this help and exit" \
+        "\n" \
+        "\nExit the program at any time using Ctrl+C."
+        )
