@@ -207,22 +207,22 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             if (i + 1 >= ac):
                 print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
             try:
-                if (matches("^[0-9]+,[0-9]+$", av[i + 1]) == None):
+                if (matches(r"^[0-9]+,[0-9]+$", av[i + 1]) == None):
                     raise ValueError("Bounds must be of the form \"x,y\".")
                 (lowerBound, upperBound) = (int(av[i + 1].split(",")[0]), int(av[i + 1].split(",")[1]))
                 if (lowerBound > upperBound):
                     raise ValueError("The upper bound cannot be lower than the lower bound.")
                 if (lowerBound == 0):
                     raise ValueError("Bounds must be positive.")
-                buf: str = ""
                 if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
-                while (upperBound > 6 and buf != "y"):
-                    buf = input(f"Warning: you set the upper bound to a large number ({upperBound}). Continue or change (y/?): ").strip().lower()
+                nbPhrases = str(lowerBound) + "," + str(upperBound)
+                buf = str(upperBound)
+                while (upperBound > 6):
+                    buf = askConfirmationNumber(f"Warning: you set the upper bound to a large number ({buf})")
                     if (buf == "y"): break
-                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
-                    upperBound = int(buf)
-                nbPhrases = av[i + 1]; i += 1
+                    nbPhrases = nbPhrases[0:nbPhrases.find(",")] + ',' + buf
                 print(f"\t... bounds set to {nbPhrases}.")
+                i += 1
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-n" or av[i] == "--nb-phrases"):
@@ -234,11 +234,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     raise ValueError("The number of phrases must be higher than 0.")
                 if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
                 while (int(nbPhrases) > 6):
-                    buf = input(f"Warning: you set the number of phrases to a large number ({nbPhrases}). Continue or change (y/?): ").strip().lower()
+                    buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
-                    if (not matches(MAT_NUMBERS_INPUT, buf)): print(MAT_INVALID_INPUT); continue
                     nbPhrases = buf
-                    print(f"\t... number of phrases set to {nbPhrases}.")
+                print(f"\t... number of phrases set to {nbPhrases}.")
             except Exception as e:
                 print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
         elif (av[i] == "-e" or av[i] == "--emoji"): toggleEmoji = True

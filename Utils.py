@@ -3,6 +3,7 @@
 from Exit import exitCode, gnExit
 from re import search as matches
 
+DEF_MAX_UBOUND:   str  = "999"
 MAT_NUMBERS_INPUT: str = "^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
 
@@ -12,6 +13,7 @@ def askConfirmationNumber(context: str) -> str:
         if (ans == "y" or ans.startswith("yes")): break
         if (not matches(MAT_NUMBERS_INPUT, ans)):
             print(MAT_INVALID_INPUT); continue
+        if (int(ans) > int(DEF_MAX_UBOUND)): ans = DEF_MAX_UBOUND
         return ans
     return "y"
 
