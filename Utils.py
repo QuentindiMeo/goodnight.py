@@ -5,7 +5,7 @@ from re import search as matches
 from Exit import exitCode, gnExit
 from Types import UnweightedList as Ulist
 
-DEF_MAX_UBOUND:   str  = "999"
+DEF_MAX_UBOUND:    str = "999"
 MAT_NUMBERS_INPUT: str = "^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
 

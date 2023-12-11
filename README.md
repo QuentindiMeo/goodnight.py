@@ -1,5 +1,5 @@
 <div align="center" id="top">
-    <h1 markdown="1">:crescent_moon: goodnight.py :crescent_moon:</h1>
+    <h1>🌙 goodnight.py 🌙</h1>
 </div>
 
 <div align="center">
@@ -15,12 +15,13 @@
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
+    <!-- <img alt="TODO" src="https://img.shields.io/endpoint?url=https://todos.tickgit.com/badge?repo=github.com/quentindimeo/goodnight.py" /> -->
 </div>
 <div align="center">
     <a href="https://github.com/QuentindiMeo/goodnight.py/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
-    <a href="#top"><img alt="GitHub repository size" src="https://img.shields.io/github/repo-size/QuentindiMeo/goodnight.py?color=blue&logo=frontify" /></a>
+    <a href="#top"><img alt="GitHub repository size" src="https://img.shields.io/github/languages/code-size/quentindimeo/goodnight.py?color=blue&logo=frontify" /></a>
 </div>
 &#xa0;
 <div align="center" width="75%">
@@ -68,7 +69,6 @@ python goodnight.py [OPTIONS]
 -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False [odd-])
 -i, --ignore            Ignore preferences (preferences.sav file) (def: False)
---isave                 ... but save preferences regardless (def: False)
 -S, --save              Save preferences to file (preferences.sav)"
 --default               Launch once with default values (ignores other parameters) (def: False)
 
@@ -90,25 +90,25 @@ python goodnight.py --default
 
 &nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
-- Fear not having to copy the result of the program, it will be automatically copied to your clipboard! :wink:
-- Your preferences are automatically saved upon the first launch unless specified otherwise *(see above: [`-i`](#city_sunset-usage))*.
+- Fear not having to copy the result of the program, it will be automatically **copied to your clipboard**! :wink:
+- Your preferences are **automatically saved** upon the first launch unless specified otherwise *(see above: [`-i`](#city_sunset-usage))*.
   - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
+- Though Ctrl+D cannot be caught in this script, you can **use Ctrl+C** to exit at any time.
 - [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage) are mutually exclusive. If both are provided, the program will exit with an error.
 - [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase or [`-e`](#city_sunset-usage) is present.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
   - You may create your own `.log` source file *(see above: [`-s`](#city_sunset-usage))*. Open the default source file to see how to format it.
   - You don't need to specify the `.log` in the source file path, the program can add it for you.
 - If nicknames are provided in said source file, they will override the [`--for-whom`](#city_sunset-usage) option.
-- As Ctrl+D cannot be caught in this script, you can use Ctrl+C to exit at any time.
 
 &#xa0;
 
 ## :paperclips: Compatability
 
-This program was tested on and designed for Windows 10 and Ubuntu 22.04.
+This program was tested on and designed for WSL2 and Ubuntu 22.04.
 
 > [!CAUTION]
-> The code is written in Python 3.10 and is not backwards compatible with anterior versions.
+> **goodnight.py**'s code is written in Python **3.10** and is **not** compatible with anterior versions.
 
 &#xa0;
 
@@ -134,7 +134,7 @@ This program was tested on and designed for Windows 10 and Ubuntu 22.04.
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
 - ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
 - ***[DEV 0.2.6]** Nov 26 2023* - Adding --save; improving largely code efficiency and structure for maintainability
-- ***[DEV 0.2.7]** Nov ?? 2023* - Adding --alternate, --no-copy, --infinite
+- ***[DEV 0.2.7]** Dec ?? 2023* - Adding --alternate, --no-copy, --infinite; removing --isave
 - ***[REL 1.0.0]** Dec ?? 2023* - First release; major README update
 
 <br />

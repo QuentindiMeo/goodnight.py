@@ -81,8 +81,11 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     forWhom:     str  = p.forWhom
     allowRep:    bool = p.allowRep
     step:        bool = p.step
-    verboseMode: bool = p.verboseMode
+    alternate:   bool = p.alternate # TODO -a/--alternate :  ,/and and emoji
+    nocopy:      bool = p.nocopy # TODO --no-copy : don't copy to clipboard
     saving:      bool = p.saving
+    verboseMode: bool = p.verboseMode
+    infinite:    bool = p.infinite # TODO --infinite : infinite loop, continue with key press,
     randomOrNumber: str = DEF_NB_PHRASES
 
     if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
@@ -178,7 +181,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         if ("--default" in newAv): # --default ignores all other parameters
             newAv.remove("--default"); newAv.insert(1, "--default")
         # if newAv has -i or --ignore, move them to the end (because they instantly jump to CLI)
-        if ("--isave" in av):     newAv.remove("--isave");  newAv.append("-i"); newAv.append("-S")
         if ("--ignore" in newAv): newAv.remove("--ignore"); newAv.append("-i")
         if ("-i" in newAv):   newAv = rremove(newAv, "-i"); newAv.append("-i")
         return (len(newAv), newAv)
@@ -196,7 +198,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     step:        bool = extractP.step
     saving:      bool = extractP.saving
 
-    i: int = 1 # iterator needs tracking for jumping over argument values
+    i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
     while (i < ac): # hence can't use a for in range loop
         match av[i]:
             case "-h" | "--help": gnExit(exitCode.HELP)
@@ -260,7 +262,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             case "-i" | "--ignore":
                 return fromCommandLine(Parameters(nbPhrases, toggleEmoji, source, forWhom, allowRep, step, verboseMode, saving))
             case "-S" | "--save": saving = True
-            case "--isave" | "--verbose": pass # still needs to be here to avoid an invalid parameter error
+            case "--verbose": pass # still needs to be here to avoid an invalid parameter error
             case "--default": return defaultParameters(fromParameter = True)
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1

@@ -53,8 +53,4 @@ def main(ac: int, av: list[str]) -> int:
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))
-# TODO todo badge on readme
 # TODO new demo gif
-# TODO -a/--alternate :  ,/and and emoji
-# TODO --no-copy : don't copy to clipboard
-# TODO --infinite : infinite loop, continue with key press,
