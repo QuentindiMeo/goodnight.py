@@ -51,7 +51,7 @@ def contentsExtractor(p: Parameters) -> Contents:
     try:
         with open(p.source, "r") as f: lines = f.readlines()
         # vvv remove empty lines and comments, and \n at the end of each line
-        lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith("$"))]
+        lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith("--"))]
         for line in lines:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
         if (HEAD_PHRASES not in lines or (p.toggleEmoji and HEAD_EMOJI not in lines)):

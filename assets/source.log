@@ -1,13 +1,15 @@
-$ PHRASES.log holds your phrases.
-$ EMOJI.log holds your emoji list. (needed if parameter is set)
-$ NICKNAMES.log holds nicknames you tuck alongside phrases. (optional)
-$
-$ please use double quotes and commas as separators as per below, or you might break the lexer.
-$ if several entries are on the same line, ONE of them will be picked at random.
-$ if there are several PHRASES.log (or other), you will be asked if you want to concatenate their contents or keep the first one only.
-$ weights can be used: place "3:" infront of a phrase line to make it three times as likely to appear.
-$   the default weight is 1, a weight of 0 will naturally remove the entry from possibilities
-$   weights are expected to be integers, that is positive numbers without a point (e.g. use 3 and not 2.5)
+-- PHRASES.log holds your phrases.
+-- EMOJI.log holds your emoji list. (needed if parameter is set)
+-- NICKNAMES.log holds nicknames you tuck alongside phrases. (optional)
+--
+-- use double quotes and commas as separators as per below, or you might break the lexer.
+-- use "--" at the beginning of a line as a comment trigger; empty lines are also ignored.
+-- if several entries are on the same line, ONE of them will be picked at random.
+-- if there are several PHRASES.log (or any other section header), you will be asked if you want to
+--   concatenate their contents or keep the first occurrence of the section only.
+-- weights can be used: place "3:" infront of a phrase line to make it three times as likely to appear.
+--   the default weight is 1, a weight of 0 will remove the entry from possibilities.
+--   weights are expected to be integers, that is positive numbers without a point (e.g. use 3 and not 2.5).
 
 ## PHRASES.log
 7:"good night","have a good night","have a great night","wishing you a lovely night"
