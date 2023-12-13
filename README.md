@@ -19,7 +19,7 @@
 </div>
 <div align="center">
     <a href="https://github.com/QuentindiMeo/goodnight.py/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/QuentindiMeo/goodnight.py?color=yellow&logo=github" /></a>
-    <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=green&logo=target" /></a>
+    <a href="https://github.com/QuentindiMeo/goodnight.py/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/QuentindiMeo/goodnight.py?color=forestgreen&logo=target" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/graphs/contributors"><img alt="GitHub contributors" src="https://img.shields.io/github/contributors/QuentindiMeo/goodnight.py?color=red&logo=stackedit" /></a>
     <a href="#top"><img alt="GitHub repository size" src="https://img.shields.io/github/languages/code-size/quentindimeo/goodnight.py?color=blue&logo=frontify" /></a>
 </div>
@@ -62,17 +62,18 @@ python goodnight.py [OPTIONS]
 ``` txt
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
--e, --emoji             Add emoji after each phrase (def: False)
+-e, --emoji             Add emoji after each phrase (from source file)
 -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)
 -w, --for-whom   <str>  For whom the goodnight is (def: "" [no name used])
 
--r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file (def: False)
--o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: False [odd-])
--i, --ignore            Ignore preferences (preferences.sav file) (def: False)
--S, --save              Save preferences to file (preferences.sav)"
---default               Launch once with default values (ignores other parameters) (def: False)
+-r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file
+-o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: odd-)
+-i, --ignore            Ignore preferences (preferences.sav file)
+-S, --save              Save preferences to file (preferences.sav)
+--no-copy               Do not copy the result to clipboard
+--default               Launch once with default values (ignores other parameters)
 
---verbose               Toggle verbose mode (def: False)
+--verbose               Toggle verbose mode
 -h, --help              Display this help and exit
 ```
 
@@ -90,14 +91,14 @@ python goodnight.py --default
 
 &nbsp;&nbsp; :bookmark_tabs:&nbsp; **General Information**
 
-- Fear not having to copy the result of the program, it will be automatically **copied to your clipboard**! :wink:
-- Your preferences are **automatically saved** upon the first launch unless specified otherwise *(see above: [`-i`](#city_sunset-usage))*.
+- Fear not having to copy the result of the program, it will be automatically **copied to your clipboard**! :wink: (unless [`--no-copy`](#city_sunset-usage) is present)
+- Your preferences are **automatically saved** upon the first launch unless specified otherwise (see above: [`-i`](#city_sunset-usage)).
   - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
 - Though Ctrl+D cannot be caught in this script, you can **use Ctrl+C** to exit at any time.
 - [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage) are mutually exclusive. If both are provided, the program will exit with an error.
 - [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase or [`-e`](#city_sunset-usage) is present.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
-  - You may create your own `.log` source file *(see above: [`-s`](#city_sunset-usage))*. Open the default source file to see how to format it.
+  - You may create your own `.log` source file (see above: [`-s`](#city_sunset-usage)). Open the default source file to see how to format it.
   - You don't need to specify the `.log` in the source file path, the program can add it for you.
 - If nicknames are provided in said source file, they will override the [`--for-whom`](#city_sunset-usage) option.
 

@@ -49,7 +49,9 @@ def main(ac: int, av: list[str]) -> int:
 
     print(f"Result: \"{result}\"")
     if (p.verboseMode): print(f"for parameters: {p.toString()}")
-    copy(result); print("\nCopied the result to your clipboard!")
+    if (p.copy):
+        copy(result)
+        print("\nCopied the result to your clipboard!")
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))
