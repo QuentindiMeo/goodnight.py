@@ -9,7 +9,7 @@ from Types import WeightedList as Wlist, PickResponse
 class Contents:
     def pickNick(self, p: Parameters) -> str:
         if (self.nicks == []):
-            if (p.verboseMode): print(f"No nicknames found, using default: {p.forWhom}")
+            if (p.verbose): print(f"No nicknames found, using default: {p.forWhom}")
             return p.forWhom
 
         randWeight: int = rand(0, sum([n[1] for n in self.nicks]))

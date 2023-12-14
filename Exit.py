@@ -45,6 +45,9 @@ def gnUsage() -> None:
     print("Usage: python Goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
+        "\n  --default               Launch once with default values (ignores other parameters)" \
+        "\n  --no-copy               Do not copy the result to clipboard" \
+        "\n" \
         "\n  -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)" \
         "\n  -n, --nb-phrases <int>  Number of phrases to draw" \
         "\n  -e, --emoji             Add emoji between phrases (from source file)" \
@@ -53,10 +56,9 @@ def gnUsage() -> None:
         "\n" \
         "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file" \
         "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: [odd-])" \
+        "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e, def: False)" \
         "\n  -i, --ignore            Ignore preferences (preferences.sav)" \
         "\n  -S, --save              Save preferences to file (preferences.sav)" \
-        "\n  --no-copy               Do not copy the result to clipboard" \
-        "\n  --default               Launch once with default values (ignores other parameters)" \
         "\n" \
         "\n  --verbose               Toggle verbose mode" \
         "\n  -h, --help              Display this help and exit" \

@@ -60,6 +60,9 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hammer_and_wrench:&nbsp; **Options**
 
 ``` txt
+--default               Launch once with default values (ignores other parameters)
+--no-copy               Do not copy the result to clipboard
+
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
 -e, --emoji             Add emoji after each phrase (from source file)
@@ -68,10 +71,9 @@ python goodnight.py [OPTIONS]
 
 -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: odd-)
+-a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e, def: False)
 -i, --ignore            Ignore preferences (preferences.sav file)
 -S, --save              Save preferences to file (preferences.sav)
---no-copy               Do not copy the result to clipboard
---default               Launch once with default values (ignores other parameters)
 
 --verbose               Toggle verbose mode
 -h, --help              Display this help and exit

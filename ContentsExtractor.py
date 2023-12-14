@@ -54,7 +54,7 @@ def contentsExtractor(p: Parameters) -> Contents:
         lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith("--"))]
         for line in lines:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
-        if (HEAD_PHRASES not in lines or (p.toggleEmoji and HEAD_EMOJI not in lines)):
+        if (HEAD_PHRASES not in lines or (p.emoji and HEAD_EMOJI not in lines)):
             raise FileNotFoundError("Corrupted or invalid file: missing header")
     except FileNotFoundError as e:
         print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_FIL)
@@ -82,13 +82,13 @@ def contentsExtractor(p: Parameters) -> Contents:
         i += skipLines; skipLines = 0
 
     if (len(phrases) == 0):                 print(f"No phrase was found in '{p.source}'."); gnExit(exitCode.ERR_INV_PHR)
-    if (p.toggleEmoji and len(emoji) == 0): print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
+    if (p.emoji and len(emoji) == 0): print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
 
     (dphrases, demoji, dnicks) = (hasDuplicates(phrases), hasDuplicates(emoji), hasDuplicates(nicks))
     if (dphrases or demoji or dnicks): # send warning if there's a duplicate entry in any of the three
         print(f"One or more duplicate entries were found in '{p.source}'.")
         askConfirmation("Do you want to continue regardless?", exitCode.ERR_DUP_ENT)
-    if (p.verboseMode):
+    if (p.verbose):
         if (dphrases): print("Log file contains duplicate phrases.")
         if (demoji):   print("Log file contains duplicate emoji.")
         if (dnicks):   print("Log file contains duplicate nicknames.")
@@ -103,5 +103,5 @@ def contentsExtractor(p: Parameters) -> Contents:
     c.emoji   = [(e[0][1:-1], e[1]) for e in c.emoji] # ^ same
     c.nicks   = [(n[0][1:-1], n[1]) for n in c.nicks] # ^ same
 
-    if (p.verboseMode): print(c)
+    if (p.verbose): print(c)
     return c

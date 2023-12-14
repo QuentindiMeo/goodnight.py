@@ -12,13 +12,14 @@ PAR_HAS_ARG: list[str] = ["b", "n", "s", "w"]
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
 DEF_MAX_UBOUND:   str  = "999"
-DEF_TOGGLE_EMOJI: bool = False
+DEF_EMOJI:        bool = False
 DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
+DEF_ALTERNATE:    bool = False
 DEF_COPY:         bool = True
-DEF_VERBOSE_MODE: bool = False
+DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
@@ -32,69 +33,84 @@ class Parameters:
 
     def toString(self) -> str:
         source = self.source.split("\\" if osName == 'nt' else "/")[-1]
-        wEmoji = "with" if self.toggleEmoji else "without"
+        wEmoji = "with" if self.emoji else "without"
         repetition = "allowed" if self.allowRep else "not allowed"
         step = ("even" if self.step else "odd") + "-numbered gaps"
-        return \
-                f"{self.nbPhrases} phrases, " \
+        alternate = " " if self.alternate else "not "
+        return  f"{self.nbPhrases} phrases, " \
                 f"{wEmoji} emoji, " \
                 f"source: {source}, " \
                 f"for {self.forWhom}, " \
                 f"repetition {repetition}, " \
-                f"step: {step}"
+                f"step: {step}, " \
+                f"{alternate}alternating"
     def __str__(self) -> str:
         return \
                 f"\t{self.nbPhrases} phrases\n" \
-                f"\temoji: {self.toggleEmoji}\n" \
+                f"\temoji: {self.emoji}\n" \
                 f"\tsource file: {self.source}\n" \
                 f"\tfor: {self.forWhom}\n" \
                 f"\trepetition: {self.allowRep}\n" \
-                f"\tstep: {self.step}"
+                f"\tstep: {self.step}\n" \
+                f"\talternate: {self.alternate}\n" \
+                f"\tcopy: {self.copy}\n" \
+                f"\tverbose mode: {self.verbose}\n" \
+                f"\tsaving preferences: {self.saving}"
 
-    def __init__(self, n: str, e: bool = DEF_TOGGLE_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
-                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, c: bool = DEF_COPY, v: bool = DEF_VERBOSE_MODE, sav: bool = DEF_SAVE_PREF) -> None:
-        self.nbPhrases   = n
-        self.toggleEmoji = e
-        self.source      = s
-        self.forWhom     = w
-        self.allowRep    = r
-        self.step        = o
-        self.copy        = c
-        self.verboseMode = v
-        self.saving      = sav
+    def __init__(self, n: str, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
+                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, c: bool = DEF_COPY, \
+                 v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
+        self.nbPhrases = n
+        self.emoji     = e
+        self.source    = s
+        self.forWhom   = w
 
-        self.alternate   = False
-        self.infinite    = False
+        self.allowRep  = r
+        self.step      = o
+        self.alternate = a
+        self.copy      = c
+
+        self.verbose   = v
+        self.saving    = sav
+
+        self.infinite  = False
 
 def saveParameters(p: Parameters) -> None:
     print(f"Saving preferences in file '{SAVE_FILEPATH}'...")
     try:
         with open(SAVE_FILEPATH, "w") as f:
+            f.write(f"copy={p.copy}\n")
             f.write(f"nbPhrases={p.nbPhrases}\n")
-            f.write(f"emoji={p.toggleEmoji}\n")
+            f.write(f"emoji={p.emoji}\n")
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
             f.write(f"allowRep={p.allowRep}\n")
             f.write(f"step={p.step}\n")
-            f.write(f"copy={p.copy}\n")
+            f.write(f"alternate={p.alternate}\n")
         chmod(SAVE_FILEPATH, 0o644)
     except Exception as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_FIL)
 
 def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
-    nbPhrases:   str  = p.nbPhrases
-    toggleEmoji: bool = p.toggleEmoji
-    source:      str  = p.source
-    forWhom:     str  = p.forWhom
-    allowRep:    bool = p.allowRep
-    step:        bool = p.step
-    alternate:   bool = p.alternate # TODO -a/--alternate :  ,/and and emoji
-    copy:        bool = p.copy
-    infinite:    bool = p.infinite # TODO --infinite : infinite loop, continue with key press
-    saving:      bool = p.saving
-    verboseMode: bool = p.verboseMode
+    copy:      bool = p.copy
+    nbPhrases: str  = p.nbPhrases
+    emoji:     bool = p.emoji
+    source:    str  = p.source
+    forWhom:   str  = p.forWhom
+    allowRep:  bool = p.allowRep
+    step:      bool = p.step
+    alternate: bool = p.alternate
+    infinite:  bool = p.infinite # TODO --infinite : infinite loop, continue with key press
+    saving:    bool = p.saving
+    verbose: bool = p.verbose
     randomOrNumber: str = DEF_NB_PHRASES
 
+    if (copy == DEF_COPY and "--no-copy" not in av):
+        confirmed: bool = askConfirmation("Copy the result to your clipboard")
+        if (not confirmed):
+            copy = False
+            if (verbose): print("\tClipboard copy toggle set to {copy}.")
+        else: print(MAT_DEFAULTING_Y)
     if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
@@ -125,44 +141,44 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
                     nbPhrases = buf
-        if (verboseMode): print(f"\tNumber of phrases set to {nbPhrases}.")
-    if (toggleEmoji == DEF_TOGGLE_EMOJI and "-e" not in av and "--emoji" not in av):
+        if (verbose): print(f"\tNumber of phrases set to {nbPhrases}.")
+    if (emoji == DEF_EMOJI and "-e" not in av and "--emoji" not in av):
         confirmed: bool = askConfirmation("Add emoji between phrases")
         if (confirmed):
-            toggleEmoji = True
-            if (verboseMode): print("\tEmoji toggle set to {toggleEmoji}.")
+            emoji = True
+            if (verbose): print("\tEmoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
     if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
         source = input("What source file to use: ")
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE.strip()}.")
-        elif (verboseMode): print(f"\tSource file set to '{source}'.")
+        elif (verbose): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
-        elif (verboseMode): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+        elif (verbose): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
     if (allowRep == DEF_REPETITION and "--allow-repetition" not in av):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
-            if (verboseMode): print("\tRepetition toggle set to {allowRep}.")
+            if (verbose): print("\tRepetition toggle set to {allowRep}.")
         else: print(MAT_DEFAULTING_N)
     if (step == DEF_STEP and "-o" not in av and "--other-step" not in av):
         confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
         if (confirmed):
             step = True
-            if (verboseMode): print("\tStep toggle set to {step}.")
+            if (verbose): print("\tStep toggle set to {step}.")
         else: print(MAT_DEFAULTING_N)
-    if (copy == DEF_COPY and "--no-copy" not in av):
-        confirmed: bool = askConfirmation("Copy the result to your clipboard")
-        if (not confirmed):
-            copy = False
-            if (verboseMode): print("\tClipboard copy toggle set to {copy}.")
-        else: print(MAT_DEFAULTING_Y)
-    newP = Parameters(n = nbPhrases if nbPhrases != DEF_NB_PHRASES else "2,5", e = toggleEmoji, s = source.strip(), w = forWhom.strip(), \
-                      r = allowRep, c = copy, o = step, v = verboseMode, sav = saving)
+    if (emoji and alternate == DEF_ALTERNATE and "-a" not in av and "--alternate" not in av):
+        confirmed: bool = askConfirmation("Alternate between \"and\"s, and emoji instead of commas")
+        if (confirmed):
+            alternate = True
+            if (verbose): print("\tAlternating set to {alternate}.")
+        else: print(MAT_DEFAULTING_N)
+    newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else "2,5", e = emoji, s = source.strip(), w = forWhom.strip(), \
+                      r = allowRep, a = alternate, o = step, v = verbose, sav = saving)
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
     return newP
@@ -198,24 +214,27 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         return (len(newAv), newAv)
     (ac, av) = getSanitizedAv(ac, av)
 
-    verboseMode: bool = DEF_VERBOSE_MODE if ("--verbose" not in av) else (not DEF_VERBOSE_MODE)
-    if (verboseMode): print(f"\tProgram arguments interpreted as: {av}")
+    verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
+    if (verbose): print(f"\tProgram arguments interpreted as: {av}")
 
     extractP: Parameters = defaultParameters() if ("-i" in av) else fromFile(extraction = True)
-    nbPhrases:   str  = extractP.nbPhrases
-    toggleEmoji: bool = extractP.toggleEmoji
-    source:      str  = extractP.source
-    forWhom:     str  = extractP.forWhom
-    allowRep:    bool = extractP.allowRep
-    step:        bool = extractP.step
-    alternate:   bool = extractP.alternate
-    copy:        bool = extractP.copy
-    infinite:    bool = extractP.infinite
-    saving:      bool = extractP.saving
+    copy:      bool = extractP.copy
+    nbPhrases: str  = extractP.nbPhrases
+    emoji:     bool = extractP.emoji
+    source:    str  = extractP.source
+    forWhom:   str  = extractP.forWhom
+    allowRep:  bool = extractP.allowRep
+    step:      bool = extractP.step
+    alternate: bool = extractP.alternate
+    infinite:  bool = extractP.infinite
+    saving:    bool = extractP.saving
 
     i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
     while (i < ac): # hence can't use a for in range loop
         match av[i]:
+            case "--default": return defaultParameters(fromParameter = True)
+            case "--no-copy": copy = False
+
             case "-b" | "--bounds":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -253,7 +272,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"\t... number of phrases set to {nbPhrases}.")
                 except Exception as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-            case "-e" | "--emoji": toggleEmoji = True
+            case "-e" | "--emoji": emoji = True
             case "-s" | "--source":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -273,19 +292,18 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
 
             case "-r" | "--allow-repetition": allowRep = True
+            case "-a" | "--alternate": alternate = True
             case "-o" | "--other-step": step = True
             case "-i" | "--ignore":
-                return fromCommandLine(Parameters(n=nbPhrases, e=toggleEmoji, s=source, w=forWhom, r=allowRep, c=copy, o=step, v=verboseMode, sav=saving))
+                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving))
             case "-S" | "--save": saving = True
-            case "--no-copy": copy = False
-            case "--default": return defaultParameters(fromParameter = True)
 
             case "--verbose": pass # still needs to be here to avoid an invalid parameter error
             case "-h" | "--help": gnExit(exitCode.HELP)
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(n=nbPhrases, e=toggleEmoji, s=source, w=forWhom, r=allowRep, c=copy, o=step, v=verboseMode, sav=saving), av + FILE_AV)
+    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving), av + FILE_AV)
 
 def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
@@ -301,13 +319,14 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool 
         with open(file, "r") as f:
             lines = f.readlines()
             for line in lines:
-                if   (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):-1]
-                elif (line.startswith("emoji=")):     p.toggleEmoji = eval(line[len("emoji="):-1])
+                if   (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):-1])
+                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):-1]
+                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
-                elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):-1])
+                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
@@ -316,8 +335,8 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool 
     return p
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
-    p = Parameters(n = "2,5" if fromParameter else DEF_NB_PHRASES, e = DEF_TOGGLE_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
-                    r = DEF_REPETITION, c = DEF_COPY, o = DEF_STEP, v = DEF_VERBOSE_MODE, sav = DEF_SAVE_PREF)
+    p = Parameters(c = DEF_COPY, n = "2,5" if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
+                    r = DEF_REPETITION, a = DEF_ALTERNATE, o = DEF_STEP, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p

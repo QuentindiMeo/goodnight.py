@@ -29,11 +29,12 @@ def goodnight(p: Parameters) -> Goodnight:
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)
 
-    if (p.verboseMode): print(f"Starting with parameters: \n{p}\n")
+    if (p.verbose): print(f"Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
         (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
         if (x == nickIdx) : gn += " " + p.forWhom
-        if (p.toggleEmoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
+        if (p.emoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
+        # TODO --alternate
         else:               gn += pickJunction(x, nbPhrases, p.step)
         gn += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
@@ -48,7 +49,7 @@ def main(ac: int, av: list[str]) -> int:
     result: Goodnight = goodnight(p)
 
     print(f"Result: \"{result}\"")
-    if (p.verboseMode): print(f"for parameters: {p.toString()}")
+    if (p.verbose): print(f"for parameters: {p.toString()}")
     if (p.copy):
         copy(result)
         print("\nCopied the result to your clipboard!")
