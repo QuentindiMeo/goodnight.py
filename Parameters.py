@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.10
 
-from os import path, chmod, name as osName
+from os import path, chmod
 from random import randint as rand
 from re import search as matches
 
 from Utils import isIn, rremove, askConfirmation, askConfirmationNumber
+from Types import Parameters
 from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition", "--other-step"]
@@ -24,56 +25,6 @@ DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
-
-class Parameters:
-    def pickNbPhrases(self) -> None:
-        if (',' in self.nbPhrases):
-            (lowerBound, upperBound) = (int(self.nbPhrases.split(",")[0]), int(self.nbPhrases.split(",")[1]))
-            self.nbPhrases = str(rand(lowerBound, upperBound))
-
-    def toString(self) -> str:
-        source = self.source.split("\\" if osName == 'nt' else "/")[-1]
-        wEmoji = "with" if self.emoji else "without"
-        repetition = "allowed" if self.allowRep else "not allowed"
-        step = ("even" if self.step else "odd") + "-numbered gaps"
-        alternate = " " if self.alternate else "not "
-        return  f"{self.nbPhrases} phrases, " \
-                f"{wEmoji} emoji, " \
-                f"source: {source}, " \
-                f"for {self.forWhom}, " \
-                f"repetition {repetition}, " \
-                f"step: {step}, " \
-                f"{alternate}alternating"
-    def __str__(self) -> str:
-        return \
-                f"\t{self.nbPhrases} phrases\n" \
-                f"\temoji: {self.emoji}\n" \
-                f"\tsource file: {self.source}\n" \
-                f"\tfor: {self.forWhom}\n" \
-                f"\trepetition: {self.allowRep}\n" \
-                f"\tstep: {self.step}\n" \
-                f"\talternate: {self.alternate}\n" \
-                f"\tcopy: {self.copy}\n" \
-                f"\tverbose mode: {self.verbose}\n" \
-                f"\tsaving preferences: {self.saving}"
-
-    def __init__(self, n: str, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
-                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, c: bool = DEF_COPY, \
-                 v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
-        self.nbPhrases = n
-        self.emoji     = e
-        self.source    = s
-        self.forWhom   = w
-
-        self.allowRep  = r
-        self.step      = o
-        self.alternate = a
-        self.copy      = c
-
-        self.verbose   = v
-        self.saving    = sav
-
-        self.infinite  = False
 
 def saveParameters(p: Parameters) -> None:
     print(f"Saving preferences in file '{SAVE_FILEPATH}'...")
@@ -102,7 +53,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     alternate: bool = p.alternate
     infinite:  bool = p.infinite # TODO --infinite : infinite loop, continue with key press
     saving:    bool = p.saving
-    verbose: bool = p.verbose
+    verbose:   bool = p.verbose
     randomOrNumber: str = DEF_NB_PHRASES
 
     if (copy == DEF_COPY and "--no-copy" not in av):
@@ -292,8 +243,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
 
             case "-r" | "--allow-repetition": allowRep = True
-            case "-a" | "--alternate": alternate = True
             case "-o" | "--other-step": step = True
+            case "-a" | "--alternate": alternate = True
             case "-i" | "--ignore":
                 return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving))
             case "-S" | "--save": saving = True

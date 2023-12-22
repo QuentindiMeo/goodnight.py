@@ -8,17 +8,16 @@ from random import randint as rand
 from Utils import rreplace
 from Exit import exitCode, gnExit
 from ContentsExtractor import contentsExtractor
-from Contents import Contents
-from Parameters import Parameters, getParameters
-from Types import Goodnight
+from Parameters import getParameters
+from Types import Goodnight, Contents, Parameters
 from CtrlC import handler as CtrlCHandler
 
 def pickJunction(nth: int, nbPhrases: int, step: bool) -> str:
     if (nth >= nbPhrases - 1): return ""
-    return " and" if ((nth + 1) % 2 == step) else ","
+    return " and" if ((nth + 1) % 3 == step) else ","
 
 def goodnight(p: Parameters) -> Goodnight:
-    gn: Goodnight = ""
+    gn = Goodnight("")
     contents: Contents = contentsExtractor(p)
     nbPhrases = int(p.nbPhrases)
 
@@ -32,14 +31,18 @@ def goodnight(p: Parameters) -> Goodnight:
     if (p.verbose): print(f"Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
         (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
-        if (x == nickIdx) : gn += " " + p.forWhom
-        if (p.emoji): (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
+        if (x == nickIdx) : gn.txt += " " + p.forWhom
+        if (p.emoji):
+            if (p.alternate and gn.step): gn.txt += pickJunction(x, nbPhrases, p.step)
+            else: (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
+            gn.step = not gn.step
         # TODO --alternate
-        else:               gn += pickJunction(x, nbPhrases, p.step)
-        gn += " "
+        else:               gn.txt += pickJunction(x, nbPhrases, p.step)
+        gn.txt += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
-    return rreplace(gn.strip(), "  ", " ")
+    gn.txt = rreplace(gn.txt.strip(), "  ", " ")
+    return gn
 
 def main(ac: int, av: list[str]) -> int:
     CtrlCHandler() # binding Ctrl+C to a graceful program exit
@@ -48,10 +51,10 @@ def main(ac: int, av: list[str]) -> int:
 
     result: Goodnight = goodnight(p)
 
-    print(f"Result: \"{result}\"")
+    print(f"Result: \"{result.txt}\"")
     if (p.verbose): print(f"for parameters: {p.toString()}")
     if (p.copy):
-        copy(result)
+        copy(result.txt)
         print("\nCopied the result to your clipboard!")
     return 0
 
