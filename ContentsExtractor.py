@@ -35,7 +35,7 @@ def applyWeighting(input: Ulist) -> list[Wlist]:
             output.append((pickRandElement(elems), weight))
     return output
 
-def extractor(lines: list[str], i: int) -> (Ulist, int):
+def extractor(lines: list[str], i: int) -> (Ulist, int): # type: ignore
     output: Ulist = []
 
     diff: int = 1

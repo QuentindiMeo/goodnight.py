@@ -13,6 +13,7 @@ class exitCode(Enum):
     ERR_INV_PHR = 0x14
     ERR_INV_EMO = 0x15
     ERR_INV_WEI = 0x16
+    ERR_INV_PER = 0x1F
 
     ERR_DUP_ENT = 0x20
     ERR_DUP_PHR = 0x21
@@ -22,7 +23,7 @@ class exitCode(Enum):
     ERR_PAR_REP = 0x30
 
 def gnExit(code: exitCode) -> None:
-    switch: dict() = {
+    switch: dict[int, str] = {
         0x00: "Success",
         0x01: "Help",
 
@@ -33,6 +34,7 @@ def gnExit(code: exitCode) -> None:
         0x14: "Invalid phrases",
         0x15: "Invalid emoji",
         0x16: "Invalid weighting",
+        0x1F: "Invalid user permissions",
 
         0x20: "Duplicate entries",
         0x21: "Duplicate phrases header",

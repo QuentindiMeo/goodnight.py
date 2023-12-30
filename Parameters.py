@@ -41,8 +41,8 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"step={p.step}\n")
             f.write(f"alternate={p.alternate}\n")
         chmod(SAVE_FILEPATH, 0o644)
-    except Exception as e:
-        print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_FIL)
+    except PermissionError as e:
+        print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_PER)
 
 def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     copy:      bool = p.copy
@@ -60,7 +60,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
         if (not confirmed):
             copy = False
-            if (verbose): print("\tClipboard copy toggle set to {copy}.")
+            if (p.verbose): print("\tClipboard copy toggle set to {copy}.")
         else: print(MAT_DEFAULTING_Y)
     if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
         while (randomOrNumber != "r" and randomOrNumber != "n"):
@@ -92,41 +92,41 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
                     nbPhrases = buf
-        if (verbose): print(f"\tNumber of phrases set to {nbPhrases}.")
+        if (p.verbose): print(f"\tNumber of phrases set to {nbPhrases}.")
     if (emoji == DEF_EMOJI and "-e" not in av and "--emoji" not in av):
         confirmed: bool = askConfirmation("Add emoji between phrases")
         if (confirmed):
             emoji = True
-            if (verbose): print("\tEmoji toggle set to {emoji}.")
+            if (p.verbose): print("\tEmoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
     if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
         source = input("What source file to use: ")
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE.strip()}.")
-        elif (verbose): print(f"\tSource file set to '{source}'.")
+        elif (p.verbose): print(f"\tSource file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
-        elif (verbose): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+        elif (p.verbose): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
     if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
-            if (verbose): print("\tRepetition toggle set to {allowRep}.")
+            if (p.verbose): print("\tRepetition toggle set to {allowRep}.")
         else: print(MAT_DEFAULTING_N)
     if (step == DEF_STEP and "-o" not in av and "--other-step" not in av):
         confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
         if (confirmed):
             step = True
-            if (verbose): print("\tStep toggle set to {step}.")
+            if (p.verbose): print("\tStep toggle set to {step}.")
         else: print(MAT_DEFAULTING_N)
     if (emoji and alternate == DEF_ALTERNATE and "-a" not in av and "--alternate" not in av):
         confirmed: bool = askConfirmation("Alternate between \"and\"s, and emoji instead of commas")
         if (confirmed):
             alternate = True
-            if (verbose): print("\tAlternating set to {alternate}.")
+            if (p.verbose): print("\tAlternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
                       r = allowRep, a = alternate, o = step, v = p.verbose, sav = p.saving)
@@ -138,7 +138,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
-    def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
+    def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]): # type: ignore
         newAv: list[str] = [av[0]]
 
         def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
@@ -197,7 +197,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("The upper bound cannot be lower than the lower bound.")
                     if (lowerBound == 0):
                         raise ValueError("Bounds must be positive.")
-                    if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = DEF_NB_UBOUND
+                    if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = int(DEF_NB_UBOUND)
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
                     buf = str(upperBound)
                     while (upperBound > 6):
@@ -206,7 +206,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         nbPhrases = nbPhrases[0:nbPhrases.find(",")] + ',' + buf
                         print(f"\t... bounds set to {nbPhrases}.")
                     i += 1
-                except Exception as e:
+                except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-n" | "--nb-phrases":
                 if (i + 1 >= ac):
@@ -221,7 +221,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         if (buf == "y"): break
                         nbPhrases = buf
                     print(f"\t... number of phrases set to {nbPhrases}.")
-                except Exception as e:
+                except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-e" | "--emoji": emoji = True
             case "-s" | "--source":
