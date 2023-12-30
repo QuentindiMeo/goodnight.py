@@ -5,7 +5,7 @@ from re import search as matches
 from Exit import exitCode, gnExit
 from Types import UnweightedList as Ulist
 
-DEF_MAX_UBOUND:    str = "999"
+DEF_NB_UBOUND:     str = "999"
 MAT_NUMBERS_INPUT: str = "^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
 
@@ -19,7 +19,7 @@ def askConfirmationNumber(context: str) -> str:
         if (ans == "y" or ans.startswith("yes")): break
         if (not matches(MAT_NUMBERS_INPUT, ans)):
             print(MAT_INVALID_INPUT); continue
-        if (int(ans) > int(DEF_MAX_UBOUND)): ans = DEF_MAX_UBOUND
+        if (int(ans) > int(DEF_NB_UBOUND)): ans = DEF_NB_UBOUND
         return ans
     return "y"
 

@@ -6,34 +6,40 @@ class exitCode(Enum):
     SUCCESS = 0x00
     HELP    = 0x01
 
+    ERR_INV_SAV = 0x10
     ERR_INV_ARG = 0x11
     ERR_INV_FIL = 0x12
-    ERR_INV_PHR = 0x13
-    ERR_INV_EMO = 0x14
-    ERR_INV_WEI = 0x15
-    ERR_DUP_ENT = 0x16
-    ERR_DUP_PHR = 0x17
-    ERR_DUP_EMO = 0x18
-    ERR_DUP_NIC = 0x19
+    ERR_INV_HEA = 0x13
+    ERR_INV_PHR = 0x14
+    ERR_INV_EMO = 0x15
+    ERR_INV_WEI = 0x16
 
-    ERR_PAR_REP = 0x21
+    ERR_DUP_ENT = 0x20
+    ERR_DUP_PHR = 0x21
+    ERR_DUP_EMO = 0x22
+    ERR_DUP_NIC = 0x23
+
+    ERR_PAR_REP = 0x30
 
 def gnExit(code: exitCode) -> None:
     switch: dict() = {
         0x00: "Success",
         0x01: "Help",
 
+        0x10: "Invalid saved parameters",
         0x11: "Invalid parameters",
         0x12: "Invalid file",
-        0x13: "Invalid phrases",
-        0x14: "Invalid emoji",
-        0x15: "Invalid weighting",
-        0x16: "Duplicate entries",
-        0x17: "Duplicate phrases header",
-        0x18: "Duplicate emoji header",
-        0x19: "Duplicate nicknames header",
+        0x13: "Invalid header",
+        0x14: "Invalid phrases",
+        0x15: "Invalid emoji",
+        0x16: "Invalid weighting",
 
-        0x21: "Insufficient number of phrases to draw without repetition",
+        0x20: "Duplicate entries",
+        0x21: "Duplicate phrases header",
+        0x22: "Duplicate emoji header",
+        0x23: "Duplicate nicknames header",
+
+        0x30: "Insufficient number of phrases to draw without repetition",
     }
     if (code == exitCode.HELP):
         gnUsage(); code = exitCode.SUCCESS

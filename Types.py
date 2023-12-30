@@ -5,22 +5,24 @@ from copy import deepcopy as duplicate
 from random import randint as rand
 from typing import TypeAlias
 
-PickResponse: TypeAlias = (str, list[int]) # the picked P/E and the list of indices of used P/Es
+IdxList:         TypeAlias = list[int] # a list of indices of used P/Es
+ElementList:     TypeAlias = list[str] # a list of P/E/N elements
 WeightedElement: TypeAlias = (str, int) # a P/E/N and its weight
-WeightedList: TypeAlias = (list[str], int) # a list of P/E/Ns and its weight
-UnweightedList: TypeAlias = list[list[str]] # an unweighted list of P/E/Ns
+WeightedList:    TypeAlias = (ElementList, int) # a list of P/E/N elements and its weight
+UnweightedList:  TypeAlias = list[ElementList] # an unweighted list of P/E/N elements
 
-DEF_NB_PHRASES:   str  = "?"
-DEF_MAX_UBOUND:   str  = "999"
-DEF_EMOJI:        bool = False
-DEF_SOURCE:       str  = "./assets/source.log " # same as below
-DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
-DEF_REPETITION:   bool = False
-DEF_STEP:         bool = False
-DEF_ALTERNATE:    bool = False
-DEF_COPY:         bool = True
-DEF_VERBOSITY:    bool = False
-DEF_SAVE_PREF:    bool = False
+DEF_NB_PHRASES: str  = "?"
+DEF_NB_DBOUND:  str  = "2,5"
+DEF_NB_UBOUND:  str  = "999"
+DEF_EMOJI:      bool = False
+DEF_SOURCE:     str  = "./assets/source.log " # same as below
+DEF_FOR_WHOM:   str  = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_REPETITION: bool = False
+DEF_STEP:       bool = False
+DEF_ALTERNATE:  bool = False
+DEF_COPY:       bool = True
+DEF_VERBOSITY:  bool = False
+DEF_SAVE_PREF:  bool = False
 
 class Goodnight:
     def __init__(self, txt: str) -> None:
@@ -38,7 +40,7 @@ class Parameters:
         wEmoji = "with" if self.emoji else "without"
         repetition = "allowed" if self.allowRep else "not allowed"
         step = ("even" if self.step else "odd") + "-numbered gaps"
-        alternate = " " if self.alternate else "not "
+        alternate = "" if self.alternate else "not "
         return  f"{self.nbPhrases} phrases, " \
                 f"{wEmoji} emoji, " \
                 f"source: {source}, " \
@@ -79,6 +81,8 @@ class Parameters:
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:
+        if (p.forWhom != ""): return p.forWhom
+
         if (self.nicks == []):
             if (p.verbose): print(f"No nicknames found, using default: {p.forWhom}")
             return p.forWhom
@@ -89,32 +93,30 @@ class Contents:
             if (randWeight <= 0): return n[0]
         return ""
 
-    def pickEmoji(self, gn: Goodnight, usedEmoji: list[int]) -> PickResponse:
+    def pickEmoji(self, gn: Goodnight, usedEmoji: IdxList) -> IdxList:
         unpickedEmoji: WeightedList = duplicate(self.emoji)
-        for i in usedEmoji:
-            unpickedEmoji.pop(i)
+        for i in usedEmoji: unpickedEmoji.pop(i)
         randWeight: int = rand(0, sum([e[1] for e in unpickedEmoji]))
         for e in unpickedEmoji:
             randWeight -= e[1]
-            newUsedEmoji: list[int] = sorted(usedEmoji + [self.emoji.index(e)], reverse=True)
+            newUsedEmoji: IdxList = sorted(usedEmoji + [self.emoji.index(e)], reverse=True)
             if (randWeight <= 0):
                 gn.txt += " " + e[0]
-                return (gn, newUsedEmoji)
-        return (gn, 999)
+                return newUsedEmoji
+        return [999]
 
-    def pickPhrase(self, gn: Goodnight, usedPhrases: list[int]) -> PickResponse:
+    def pickPhrase(self, gn: Goodnight, usedPhrases: IdxList) -> IdxList:
         unpickedPhrases: WeightedList = duplicate(self.phrases)
-        for i in usedPhrases:
-            unpickedPhrases.pop(i)
+        for i in usedPhrases: unpickedPhrases.pop(i)
         randWeight: int = rand(0, sum([p[1] for p in unpickedPhrases]))
         for p in unpickedPhrases:
             randWeight -= p[1]
-            newUsedPhrase: list[int] = sorted(usedPhrases + [self.phrases.index(p)], reverse=True)
+            newUsedPhrases: IdxList = sorted(usedPhrases + [self.phrases.index(p)], reverse=True)
             if (randWeight <= 0):
                 gn.txt += " " + p[0]
-                return (gn, newUsedPhrase)
+                return newUsedPhrases
         gn.txt = " " + gn.txt
-        return (gn, 999)
+        return [999]
 
     def __str__(self) -> str:
         s = "Source file–extracted contents:\n"

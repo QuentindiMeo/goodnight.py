@@ -8,11 +8,12 @@ from Utils import isIn, rremove, askConfirmation, askConfirmationNumber
 from Types import Parameters
 from Exit import exitCode, gnExit
 
-FILE_AV:     list[str] = ["-n", "-e", "-s", "-w", "--allow-repetition", "--other-step"]
+FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "--allow-repetition", "--other-step"]
 PAR_HAS_ARG: list[str] = ["b", "n", "s", "w"]
 SAVE_FILEPATH:    str  = "preferences.sav"
 DEF_NB_PHRASES:   str  = "?"
-DEF_MAX_UBOUND:   str  = "999"
+DEF_NB_DBOUND:    str  = "2,5"
+DEF_NB_UBOUND:    str  = "999"
 DEF_EMOJI:        bool = False
 DEF_SOURCE:       str  = "./assets/source.log " # same as below
 DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
@@ -23,6 +24,7 @@ DEF_COPY:         bool = True
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
+MAT_NAME_LOGFILE:  str = r".*\.log$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
 
@@ -52,8 +54,6 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     step:      bool = p.step
     alternate: bool = p.alternate
     infinite:  bool = p.infinite # TODO --infinite : infinite loop, continue with key press
-    saving:    bool = p.saving
-    verbose:   bool = p.verbose
     randomOrNumber: str = DEF_NB_PHRASES
 
     if (copy == DEF_COPY and "--no-copy" not in av):
@@ -73,7 +73,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     print("\tBounds must be of the form \"x,y\"."); bounds = "?"
                     continue
                 (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
-                if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
+                if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = DEF_NB_UBOUND
                 while (int(bounds.split(",")[1]) > 6):
                     buf = askConfirmationNumber(f"Warning: you set the upper bound to a large number ({upperBound})")
                     if (buf == "y"): break
@@ -87,7 +87,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
                 elif (int(nbPhrases) < 1):
                     print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
-                if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
+                if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
                 while (int(nbPhrases) > 6):
                     buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
@@ -110,7 +110,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
         elif (verbose): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
-    if (allowRep == DEF_REPETITION and "--allow-repetition" not in av):
+    if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
@@ -128,8 +128,8 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             alternate = True
             if (verbose): print("\tAlternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
-    newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else "2,5", e = emoji, s = source.strip(), w = forWhom.strip(), \
-                      r = allowRep, a = alternate, o = step, v = verbose, sav = saving)
+    newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
+                      r = allowRep, a = alternate, o = step, v = p.verbose, sav = p.saving)
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
     return newP
@@ -190,14 +190,14 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
-                    if (matches(MAT_BOUNDED_INPUT, av[i + 1]) == None):
+                    if (not matches(MAT_BOUNDED_INPUT, av[i + 1])):
                         raise ValueError("Bounds must be of the form \"x,y\".")
                     (lowerBound, upperBound) = (int(av[i + 1].split(",")[0]), int(av[i + 1].split(",")[1]))
                     if (lowerBound > upperBound):
                         raise ValueError("The upper bound cannot be lower than the lower bound.")
                     if (lowerBound == 0):
                         raise ValueError("Bounds must be positive.")
-                    if (int(upperBound) > int(DEF_MAX_UBOUND)): upperBound = DEF_MAX_UBOUND
+                    if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = DEF_NB_UBOUND
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
                     buf = str(upperBound)
                     while (upperBound > 6):
@@ -215,7 +215,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     nbPhrases = str(int(av[i + 1])); i += 1
                     if (int(nbPhrases) < 1):
                         raise ValueError("The number of phrases must be higher than 0.")
-                    if (int(nbPhrases) > int(DEF_MAX_UBOUND)): nbPhrases = DEF_MAX_UBOUND
+                    if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
                     while (int(nbPhrases) > 6):
                         buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
                         if (buf == "y"): break
@@ -229,18 +229,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
                     source: str = av[i + 1]; i += 1
-                    if (not matches(r".*\.log$", source)): source += ".log"
+                    if (not matches(MAT_NAME_LOGFILE, source)): source += ".log"
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-w" | "--for-whom":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
-                try:
-                    forWhom = str(av[i + 1]); i += 1
-                    if (forWhom != "" and not forWhom.isalnum()):
-                        raise ValueError("For whom the goodnight is must be alphanumeric.")
-                except ValueError as e:
-                    print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+                forWhom = str(av[i + 1]); i += 1
 
             case "-r" | "--allow-repetition": allowRep = True
             case "-o" | "--other-step": step = True
@@ -256,18 +251,18 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         i += 1
     return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving), av + FILE_AV)
 
-def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
+def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
 
-    if (not path.isfile(file)):
-        print(f"File '{file}' does not exist...")
-        if (extraction): p.nbPhrases = "2,5"
+    if (not path.isfile(savefile)):
+        print(f"File '{savefile}' does not exist...")
+        if (extraction): p.nbPhrases = DEF_NB_DBOUND
         else: p = fromCommandLine(p)
         if (p.saving or (not extraction and noParam)):
             saveParameters(p)
         return p
     try:
-        with open(file, "r") as f:
+        with open(savefile, "r") as f:
             lines = f.readlines()
             for line in lines:
                 if   (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):-1])
@@ -280,13 +275,13 @@ def fromFile(file: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool 
                 elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
-        print(f"Error reading file '{file}': {e}"); gnExit(exitCode.ERR_INV_FIL)
+        print(f"Error reading file '{savefile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)
     if (noParam): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     return p
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
-    p = Parameters(c = DEF_COPY, n = "2,5" if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
+    p = Parameters(c = DEF_COPY, n = DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
                     r = DEF_REPETITION, a = DEF_ALTERNATE, o = DEF_STEP, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()

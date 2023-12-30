@@ -1,5 +1,5 @@
 <div align="center" id="top">
-    <h1>🌙 goodnight.py 🌙</h1>
+    <h1>:crescent_moon: goodnight.py :crescent_moon:</h1>
 </div>
 
 <div align="center">
@@ -38,9 +38,9 @@
 
 ## :full_moon_with_face: Description
 
-No need to think about not being repetitive in the way you say "Good night" any more!  
+You won't have to worry about the way you say "Good night" any more!  
 Just run this script and it will generate a random goodnight message for your loved one.  
-The author of this script declines all responsibility for any conflict caused by the (over)use of this script. :wink:
+The author declines all responsibility for any conflict caused by the (over)use of this script. :wink:
 
 > [!NOTE]
 > Don't hesitate and report any kind of malfunction or request a feature by [**opening an issue**](https://github.com/QuentindiMeo/goodnight.py/issues)!
@@ -137,7 +137,7 @@ This program was tested on and designed for WSL2 and Ubuntu 22.04.
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
 - ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
 - ***[DEV 0.2.6]** Nov 26 2023* - Adding --save; improving largely code efficiency and structure for maintainability
-- ***[DEV 0.2.7]** Dec 13 2023* - Adding --no-copy, preparing --alternate; removing --isave
+- ***[DEV 0.2.7]** Dec 13 2023* - Adding --no-copy, preparing --alternate; deprecating --isave
 - ***[DEV 0.2.8]** Dec ?? 2023* - Adding --alternate, --infinite; creating Goodnight class
 - ***[REL 1.0.0]** Dec ?? 2023* - First release; major README update
 

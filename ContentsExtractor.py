@@ -8,10 +8,13 @@ from Parameters import Parameters
 from Types import WeightedList as Wlist, UnweightedList as Ulist, Contents
 from Exit import exitCode, gnExit
 
-HEAD_PHRASES: str = "## PHRASES.log"
-HEAD_EMOJI:   str = "## EMOJI.log"
-HEAD_NICKS:   str = "## NICKNAMES.log"
-ASK_CONCAT:   str = "\nDo you want to concatenate the contents?"
+HEADER_MARKER:  str = "## "
+HEAD_PHRASES:   str = "## PHRASES.log"
+HEAD_EMOJI:     str = "## EMOJI.log"
+HEAD_NICKS:     str = "## NICKNAMES.log"
+ASK_CONCAT:     str = "\nDo you want to concatenate the contents?"
+MAT_WEI_MARKER: str = r"^':"
+MAT_WEI_WEIGHT: str = r"^'[0-9]+:"
 
 def pickRandElement(elems: list[str]) -> str: return elems[rand(0, len(elems) - 1)]
 
@@ -21,8 +24,8 @@ def applyWeighting(input: Ulist) -> list[Wlist]:
         line = str(line).replace("\"'", "\"").replace("'\"", "\"").replace("\\'", "'") \
             .replace("[", "").replace("]", "")
         line = rreplace(rreplace(line, ", ", ","), "\\'", "'")
-        if   (matches("^':", line)): raise ValueError("weighting marker with no value")
-        elif (not matches("^'[0-9]+:", line)): # no weighting marker
+        if   (matches(MAT_WEI_MARKER, line)): raise ValueError("weighting marker with no value")
+        elif (not matches(MAT_WEI_WEIGHT, line)): # no weighting marker
             elems: list[str] = line.split(",")
             output.append((pickRandElement(elems), 1))
         else: # has weighting marker
@@ -36,7 +39,7 @@ def extractor(lines: list[str], i: int) -> (Ulist, int):
     output: Ulist = []
 
     diff: int = 1
-    while (i < len(lines) and not lines[i].startswith("## ")):
+    while (i < len(lines) and not lines[i].startswith(HEADER_MARKER)):
         extract = rreplace(lines[i].strip(), ", ", ",").split(",")
         output.append(extract)
         i += 1; diff += 1
@@ -54,9 +57,9 @@ def contentsExtractor(p: Parameters) -> Contents:
         for line in lines:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
         if (HEAD_PHRASES not in lines or (p.emoji and HEAD_EMOJI not in lines)):
-            raise FileNotFoundError("Corrupted or invalid file: missing header")
-    except FileNotFoundError as e:
-        print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_FIL)
+            raise ValueError("Corrupted or invalid file: missing header")
+    except ValueError as e:
+        print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_HEA)
 
     i: int = 0; skipLines: int = 0
     while (i < len(lines)):
@@ -80,7 +83,7 @@ def contentsExtractor(p: Parameters) -> Contents:
             nicks += newNicks if concat else []
         i += skipLines; skipLines = 0
 
-    if (len(phrases) == 0):                 print(f"No phrase was found in '{p.source}'."); gnExit(exitCode.ERR_INV_PHR)
+    if (len(phrases) == 0):           print(f"No phrase was found in '{p.source}'."); gnExit(exitCode.ERR_INV_PHR)
     if (p.emoji and len(emoji) == 0): print(f"No emoji was found in '{p.source}'.");  gnExit(exitCode.ERR_INV_EMO)
 
     (dphrases, demoji, dnicks) = (hasDuplicates(phrases), hasDuplicates(emoji), hasDuplicates(nicks))

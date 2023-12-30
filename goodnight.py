@@ -30,14 +30,14 @@ def goodnight(p: Parameters) -> Goodnight:
 
     if (p.verbose): print(f"Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
-        (gn, usedPhrases) = contents.pickPhrase(gn, usedPhrases)
-        if (x == nickIdx) : gn.txt += " " + p.forWhom
+        usedPhrases = contents.pickPhrase(gn, usedPhrases)
+        if (x == nickIdx) : gn.txt += (" " + p.forWhom)
         if (p.emoji):
             if (p.alternate and gn.step): gn.txt += pickJunction(x, nbPhrases, p.step)
-            else: (gn, usedEmoji) = contents.pickEmoji(gn, usedEmoji)
+            else: usedEmoji = contents.pickEmoji(gn, usedEmoji)
             gn.step = not gn.step
         # TODO --alternate
-        else:               gn.txt += pickJunction(x, nbPhrases, p.step)
+        else: gn.txt += pickJunction(x, nbPhrases, p.step)
         gn.txt += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
