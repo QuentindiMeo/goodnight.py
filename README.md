@@ -11,7 +11,7 @@
 &#xa0;
 <div align="center">
     <a href="#top"><img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" /></a>
-    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.7-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.8-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -72,7 +72,8 @@ python goodnight.py [OPTIONS]
 -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: odd-)
 -a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e, def: False)
--i, --ignore            Ignore preferences (preferences.sav file)
+-i, --infinite          Toggle infinite mode
+--ignore                Ignore preferences (preferences.sav file)
 -S, --save              Save preferences to file (preferences.sav)
 
 --verbose               Toggle verbose mode
@@ -138,8 +139,9 @@ This program was tested on and designed for WSL2 and Ubuntu 22.04.
 - ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
 - ***[DEV 0.2.6]** Nov 26 2023* - Adding --save; improving largely code efficiency and structure for maintainability
 - ***[DEV 0.2.7]** Dec 13 2023* - Adding --no-copy, preparing --alternate; deprecating --isave
-- ***[DEV 0.2.8]** Dec ?? 2023* - Adding --alternate, --infinite; creating Goodnight class
-- ***[REL 1.0.0]** Dec ?? 2023* - First release; major README update
+- ***[DEV 0.2.8]** Dec 31 2023* - Adding --alternate, --infinite; creating Goodnight class
+- ***[DEV 0.2.9]** Jan ?? 2024* - Adding --delay, --times
+- ***[REL 1.0.0]** Jan ?? 2024* - First release; major README update
 
 <br />
 

@@ -11,23 +11,25 @@ WeightedElement: TypeAlias = (str, int) # a P/E/N and its weight
 WeightedList:    TypeAlias = (ElementList, int) # a list of P/E/N elements and its weight
 UnweightedList:  TypeAlias = list[ElementList] # an unweighted list of P/E/N elements
 
-DEF_NB_PHRASES: str  = "?"
-DEF_NB_DBOUND:  str  = "2,5"
-DEF_NB_UBOUND:  str  = "999"
+DEF_COPY:       bool = True
+DEF_NB_PHRASES:  str = "?"
+DEF_NB_DBOUND:   str = "2,5"
+DEF_NB_UBOUND:   str = "999"
 DEF_EMOJI:      bool = False
-DEF_SOURCE:     str  = "./assets/source.log " # same as below
-DEF_FOR_WHOM:   str  = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_SOURCE:      str = "./assets/source.log " # same as below
+DEF_FOR_WHOM:    str = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION: bool = False
 DEF_STEP:       bool = False
 DEF_ALTERNATE:  bool = False
-DEF_COPY:       bool = True
+DEF_INFINITE:   bool = False
 DEF_VERBOSITY:  bool = False
 DEF_SAVE_PREF:  bool = False
 
 class Goodnight:
-    def __init__(self, txt: str) -> None:
+    def __init__(self, txt: str, t: int = 1) -> None:
         self.txt = txt
         self.step = False
+        self.times = t
 
 class Parameters:
     def pickNbPhrases(self) -> None:
@@ -61,9 +63,11 @@ class Parameters:
                 f"\tverbose mode: {self.verbose}\n" \
                 f"\tsaving preferences: {self.saving}"
 
-    def __init__(self, n: str, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
-                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, c: bool = DEF_COPY, \
+    def __init__(self, c: bool = DEF_COPY, n: str = DEF_NB_PHRASES, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
+                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, i: bool = DEF_INFINITE, \
                  v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
+        self.copy      = c
+
         self.nbPhrases = n
         self.emoji     = e
         self.source    = s
@@ -72,12 +76,13 @@ class Parameters:
         self.allowRep  = r
         self.step      = o
         self.alternate = a
-        self.copy      = c
+        self.infinite  = i
 
         self.verbose   = v
         self.saving    = sav
 
-        self.infinite  = False
+        self.times     = 1
+        self.delay     = 0
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:

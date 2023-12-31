@@ -4,23 +4,24 @@ from os import path, chmod
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn, rremove, askConfirmation, askConfirmationNumber
+from Utils import isIn, askConfirmation, askConfirmationNumber
 from Types import Parameters
 from Exit import exitCode, gnExit
 
-FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "--allow-repetition", "--other-step"]
+FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-i"]
 PAR_HAS_ARG: list[str] = ["b", "n", "s", "w"]
-SAVE_FILEPATH:    str  = "preferences.sav"
-DEF_NB_PHRASES:   str  = "?"
-DEF_NB_DBOUND:    str  = "2,5"
-DEF_NB_UBOUND:    str  = "999"
+SAVE_FILEPATH:     str = "preferences.sav"
+DEF_COPY:         bool = True
+DEF_NB_PHRASES:    str = "?"
+DEF_NB_DBOUND:     str = "2,5"
+DEF_NB_UBOUND:     str = "999"
 DEF_EMOJI:        bool = False
-DEF_SOURCE:       str  = "./assets/source.log " # same as below
-DEF_FOR_WHOM:     str  = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_SOURCE:        str = "./assets/source.log " # same as below
+DEF_FOR_WHOM:      str = " " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_ALTERNATE:    bool = False
-DEF_COPY:         bool = True
+DEF_INFINITE:     bool = False
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
@@ -46,14 +47,16 @@ def saveParameters(p: Parameters) -> None:
 
 def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     copy:      bool = p.copy
-    nbPhrases: str  = p.nbPhrases
+    nbPhrases:  str = p.nbPhrases
     emoji:     bool = p.emoji
-    source:    str  = p.source
-    forWhom:   str  = p.forWhom
+    source:     str = p.source
+    forWhom:    str = p.forWhom
     allowRep:  bool = p.allowRep
     step:      bool = p.step
     alternate: bool = p.alternate
-    infinite:  bool = p.infinite # TODO --infinite : infinite loop, continue with key press
+    times:      str = p.times # TODO --times: play the goodnight x times (no infinite mode)
+    infinite:  bool = p.infinite
+    delay:    float = p.delay # TODO --delay: with --infinite, delay between loop iterations (in ms)
     randomOrNumber: str = DEF_NB_PHRASES
 
     if (copy == DEF_COPY and "--no-copy" not in av):
@@ -128,8 +131,14 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             alternate = True
             if (p.verbose): print("\tAlternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
+    if (infinite == DEF_INFINITE and "-i" not in av and "--infinite" not in av):
+        confirmed: bool = askConfirmation("Put infinite mode on")
+        if (confirmed):
+            infinite = True
+            if (p.verbose): print("\tInfinite mode set to {infinite}.")
+        else: print(MAT_DEFAULTING_N)
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
-                      r = allowRep, a = alternate, o = step, v = p.verbose, sav = p.saving)
+                      r = allowRep, a = alternate, i = infinite, o = step, v = p.verbose, sav = p.saving)
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
     return newP
@@ -138,7 +147,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
-    def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]): # type: ignore
+    def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAv: list[str] = [av[0]]
 
         def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
@@ -159,9 +168,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
         if ("--default" in newAv): # --default ignores all other parameters
             newAv.remove("--default"); newAv.insert(1, "--default")
-        # if newAv has -i or --ignore, move them to the end (because they instantly jump to CLI)
-        if ("--ignore" in newAv): newAv.remove("--ignore"); newAv.append("-i")
-        if ("-i" in newAv):   newAv = rremove(newAv, "-i"); newAv.append("-i")
+        # if newAv has --ignore, move it to the end (because it instantly jumps to CLI)
+        if ("--ignore" in newAv): newAv.remove("--ignore"); newAv.append("--ignore")
         return (len(newAv), newAv)
     (ac, av) = getSanitizedAv(ac, av)
 
@@ -170,14 +178,16 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
     extractP: Parameters = defaultParameters() if ("-i" in av) else fromFile(extraction = True)
     copy:      bool = extractP.copy
-    nbPhrases: str  = extractP.nbPhrases
+    nbPhrases:  str = extractP.nbPhrases
     emoji:     bool = extractP.emoji
-    source:    str  = extractP.source
-    forWhom:   str  = extractP.forWhom
+    source:     str = extractP.source
+    forWhom:    str = extractP.forWhom
     allowRep:  bool = extractP.allowRep
     step:      bool = extractP.step
     alternate: bool = extractP.alternate
+    times:      str = extractP.times
     infinite:  bool = extractP.infinite
+    delay:    float = extractP.delay
     saving:    bool = extractP.saving
 
     i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
@@ -240,8 +250,9 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             case "-r" | "--allow-repetition": allowRep = True
             case "-o" | "--other-step": step = True
             case "-a" | "--alternate": alternate = True
-            case "-i" | "--ignore":
-                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving))
+            case "-i" | "--infinite": infinite = True
+            case "--ignore":
+                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, i=infinite, v=verbose, sav=saving))
             case "-S" | "--save": saving = True
 
             case "--verbose": pass # still needs to be here to avoid an invalid parameter error
@@ -249,7 +260,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, a=alternate, o=step, v=verbose, sav=saving), av + FILE_AV)
+    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, i=infinite, v=verbose, sav=saving), av + FILE_AV)
 
 def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
@@ -282,7 +293,7 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
     p = Parameters(c = DEF_COPY, n = DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
-                    r = DEF_REPETITION, a = DEF_ALTERNATE, o = DEF_STEP, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
+                    r = DEF_REPETITION, o = DEF_STEP, a = DEF_ALTERNATE, i = DEF_INFINITE, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p
