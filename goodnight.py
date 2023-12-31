@@ -4,6 +4,8 @@ from pyperclip import copy # for copying the result to the clipboard
 
 from sys import argv as av
 from random import randint as rand
+from time import sleep
+from typing import Optional
 
 from Utils import rreplace
 from Exit import exitCode, gnExit
@@ -36,12 +38,11 @@ def goodnight(p: Parameters) -> Goodnight:
             if (p.alternate and gn.step): gn.txt += pickJunction(x, nbPhrases, p.step)
             else: usedEmoji = contents.pickEmoji(gn, usedEmoji)
             gn.step = not gn.step
-        # TODO --alternate
         else: gn.txt += pickJunction(x, nbPhrases, p.step)
         gn.txt += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
-    gn.txt = rreplace(gn.txt.strip(), "  ", " ")
+    gn.txt = rreplace(gn.txt.strip(), "  ", " ").capitalize()
     return gn
 
 def main(ac: int, av: list[str]) -> int:
@@ -49,13 +50,18 @@ def main(ac: int, av: list[str]) -> int:
 
     p: Parameters = getParameters(ac, av)
 
-    result: Goodnight = goodnight(p)
+    result: Optional[Goodnight] = None
 
-    print(f"Result: \"{result.txt}\"")
-    if (p.verbose): print(f"for parameters: {p.toString()}")
-    if (p.copy):
-        copy(result.txt)
-        print("\nCopied the result to your clipboard!")
+    while (result == None or p.infinite):
+        result = goodnight(p)
+        print(f"Result: \"{result.txt}\"")
+        if (p.verbose): print(f"for parameters: {p.toString()}")
+        if (p.copy):
+            copy(result.txt)
+            print("\nCopied the result to your clipboard!")
+        if (p.infinite):
+            sleep(p.delay)
+            if (p.delay == 0): 1 # TODO ask for keypress
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))
