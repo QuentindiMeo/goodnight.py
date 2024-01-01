@@ -26,10 +26,9 @@ DEF_VERBOSITY:  bool = False
 DEF_SAVE_PREF:  bool = False
 
 class Goodnight:
-    def __init__(self, txt: str, t: int = 1) -> None:
+    def __init__(self, txt: str) -> None:
         self.txt = txt
         self.step = False
-        self.times = t
 
 class Parameters:
     def pickNbPhrases(self) -> None:

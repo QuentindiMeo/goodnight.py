@@ -49,11 +49,10 @@ def main(ac: int, av: list[str]) -> int:
     CtrlCHandler() # binding Ctrl+C to a graceful program exit
 
     p: Parameters = getParameters(ac, av)
+    times = int(p.times)
 
-    result: Optional[Goodnight] = None
-
-    while (result == None or p.infinite):
-        result = goodnight(p)
+    while (times > 0 or p.infinite):
+        result: Goodnight = goodnight(p)
         print(f"Result: \"{result.txt}\"")
         if (p.verbose): print(f"for parameters: {p.toString()}")
         if (p.copy):
@@ -62,6 +61,7 @@ def main(ac: int, av: list[str]) -> int:
         if (p.infinite):
             sleep(p.delay)
             if (p.delay == 0): 1 # TODO ask for keypress
+        times -= 1
     return 0
 
 if (__name__ == "__main__"): exit(main(len(av), av))

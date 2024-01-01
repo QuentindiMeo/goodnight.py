@@ -21,7 +21,9 @@ DEF_FOR_WHOM:      str = " " # space to skip the CLI if the user used the defaul
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_ALTERNATE:    bool = False
+DEF_TIMES:         str = "1 "
 DEF_INFINITE:     bool = False
+DEF_DELAY:         str = "0 "
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
@@ -57,7 +59,8 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     times:      str = p.times # TODO --times: play the goodnight x times (no infinite mode)
     infinite:  bool = p.infinite
     delay:    float = p.delay # TODO --delay: with --infinite, delay between loop iterations (in ms)
-    randomOrNumber: str = DEF_NB_PHRASES
+    randomOrNumber:  str = DEF_NB_PHRASES
+    timesOrInfinite: str = DEF_TIMES
 
     if (copy == DEF_COPY and "--no-copy" not in av):
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
@@ -89,7 +92,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                 if (buf == ""):
                     print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
                 elif (int(nbPhrases) < 1):
-                    print("The number of phrases must be higher than 0."); nbPhrases = DEF_NB_PHRASES
+                    print("The number of phrases must be positive."); nbPhrases = DEF_NB_PHRASES
                 if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
                 while (int(nbPhrases) > 6):
                     buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
@@ -131,12 +134,34 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             alternate = True
             if (p.verbose): print("\tAlternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
-    if (infinite == DEF_INFINITE and "-i" not in av and "--infinite" not in av):
-        confirmed: bool = askConfirmation("Put infinite mode on")
-        if (confirmed):
-            infinite = True
-            if (p.verbose): print("\tInfinite mode set to {infinite}.")
-        else: print(MAT_DEFAULTING_N)
+    if (times == DEF_TIMES and "-t" not in av and "--times" not in av and infinite == DEF_INFINITE and "-i" not in av and "--infinite" not in av):
+        while (timesOrInfinite != "t" and timesOrInfinite != "i"):
+            timesOrInfinite = input("Play the goodnight x times or infinitely (t/i): ").strip().lower()
+        if (timesOrInfinite == "t"): # play x times...
+            while (times == DEF_TIMES):
+                buf: str = input("Number of times to iterate: ")
+                times = str(1 if buf == "" else int(buf))
+                if (buf == ""):
+                    print(f"\t... using default value: {times}.")
+                elif (int(times) < 1):
+                    print("The number of iterations must be positive."); times = DEF_TIMES
+                if (p.verbose): print(f"\tNumber of iterations set to {times}.")
+        else: # play infinitely...
+            confirmed: bool = askConfirmation("Toggle infinite mode on")
+            if (confirmed):
+                infinite = True
+                if (p.verbose): print("\tInfinite mode set to {infinite}.")
+            else: print(MAT_DEFAULTING_N)
+    if (delay == DEF_DELAY and "-d" not in av and "--delay" not in av):
+        while (delay == DEF_DELAY):
+            buf: str = input("Delay between every iteration (in ms): ")
+            delay = str(0 if buf == "" else int(buf))
+            if (buf == ""):
+                print(f"\t... using default value: {delay}.")
+            elif (int(delay) < 0):
+                print("The number of iterations cannot be negative."); delay = DEF_DELAY
+            if (p.verbose): print(f"\tDelay between iterations set to {delay}.")
+    if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
                       r = allowRep, a = alternate, i = infinite, o = step, v = p.verbose, sav = p.saving)
     if (p.saving): saveParameters(newP)
@@ -146,15 +171,17 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
+    if (("-t" in av or "--times" in av) and ("-i" in av or "--infinite" in av)):
+        print("Cannot use both -t/--times and -i/--infinite at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
     def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAv: list[str] = [av[0]]
 
-        def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
+        def isMultioptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
         try:
             for i in range(1, ac):
-                if (isMultiOptional(av[i])):
+                if (isMultioptional(av[i])):
                     s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
                     if (isIn(PAR_HAS_ARG, s)):
                         raise ValueError(f"One of the parameters in '{s}' needs an argument.")
@@ -224,7 +251,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 try:
                     nbPhrases = str(int(av[i + 1])); i += 1
                     if (int(nbPhrases) < 1):
-                        raise ValueError("The number of phrases must be higher than 0.")
+                        raise ValueError("The number of phrases must be positive.")
                     if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
                     while (int(nbPhrases) > 6):
                         buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")

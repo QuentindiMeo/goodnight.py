@@ -99,11 +99,11 @@ python goodnight.py --default
   - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
 - Though Ctrl+D cannot be caught in this script, you can **use Ctrl+C** to exit at any time.
 - [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage) are mutually exclusive. If both are provided, the program will exit with an error.
-- [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase or [`-e`](#city_sunset-usage) is present.
+- [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase, or [`-e`](#city_sunset-usage) is present.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
   - You may create your own `.log` source file (see above: [`-s`](#city_sunset-usage)). Open the default source file to see how to format it.
   - You don't need to specify the `.log` in the source file path, the program can add it for you.
-- If nicknames are provided in said source file, they will override the [`--for-whom`](#city_sunset-usage) option.
+- The [`--for-whom`](#city_sunset-usage) option overrides nicknames provided by a source file.
 
 &#xa0;
 
