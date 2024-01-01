@@ -8,8 +8,8 @@ from Utils import isIn, askConfirmation, askConfirmationNumber
 from Types import Parameters
 from Exit import exitCode, gnExit
 
-FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-i"]
-PAR_HAS_ARG: list[str] = ["b", "n", "s", "w"]
+FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-i", "-d"]
+PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "t", "d"]
 SAVE_FILEPATH:     str = "preferences.sav"
 DEF_COPY:         bool = True
 DEF_NB_PHRASES:    str = "?"
@@ -33,6 +33,7 @@ MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
 
 def saveParameters(p: Parameters) -> None:
     print(f"Saving preferences in file '{SAVE_FILEPATH}'...")
+    if (p.infinite): p.times = "infinite"
     try:
         with open(SAVE_FILEPATH, "w") as f:
             f.write(f"copy={p.copy}\n")
@@ -43,6 +44,8 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"allowRep={p.allowRep}\n")
             f.write(f"step={p.step}\n")
             f.write(f"alternate={p.alternate}\n")
+            f.write(f"times={p.times}\n")
+            f.write(f"delay={p.delay}\n")
         chmod(SAVE_FILEPATH, 0o644)
     except PermissionError as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_PER)
@@ -163,7 +166,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             if (p.verbose): print(f"\tDelay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
-                      r = allowRep, a = alternate, i = infinite, o = step, v = p.verbose, sav = p.saving)
+                      r = allowRep, a = alternate, t = times, i = infinite, d = delay, o = step, v = p.verbose, sav = p.saving)
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
     return newP
@@ -237,11 +240,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = int(DEF_NB_UBOUND)
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
                     buf = str(upperBound)
-                    while (upperBound > 6):
-                        buf = askConfirmationNumber(f"Warning: you set the upper bound to a large number ({buf})")
-                        if (buf == "y"): break
-                        nbPhrases = nbPhrases[0:nbPhrases.find(",")] + ',' + buf
-                        print(f"\t... bounds set to {nbPhrases}.")
                     i += 1
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -252,11 +250,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     nbPhrases = str(int(av[i + 1])); i += 1
                     if (int(nbPhrases) < 1):
                         raise ValueError("The number of phrases must be positive.")
-                    if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
-                    while (int(nbPhrases) > 6):
-                        buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
-                        if (buf == "y"): break
-                        nbPhrases = buf
                     print(f"\t... number of phrases set to {nbPhrases}.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -277,9 +270,30 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             case "-r" | "--allow-repetition": allowRep = True
             case "-o" | "--other-step": step = True
             case "-a" | "--alternate": alternate = True
+            case "-t" | "--times":
+                if (i + 1 >= ac):
+                    print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
+                try:
+                    times = str(int(av[i + 1])); i += 1
+                    if (int(times) < 1):
+                        raise ValueError("The number of iterations must be positive.")
+                    if (int(times) > int(DEF_NB_UBOUND)): times = DEF_NB_UBOUND
+                    print(f"\t... number of iterations set to {nbPhrases}.")
+                except ValueError as e:
+                    print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-i" | "--infinite": infinite = True
+            case "-d" | "--delay":
+                if (i + 1 >= ac):
+                    print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
+                try:
+                    delay = str(int(av[i + 1])); i += 1
+                    if (int(delay) < 0):
+                        raise ValueError("The delay cannot be negative.")
+                    print(f"\t... delay set to {delay}.")
+                except ValueError as e:
+                    print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "--ignore":
-                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, i=infinite, v=verbose, sav=saving))
+                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, t=times, i=infinite, d=delay, v=verbose, sav=saving))
             case "-S" | "--save": saving = True
 
             case "--verbose": pass # still needs to be here to avoid an invalid parameter error
@@ -287,7 +301,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, i=infinite, v=verbose, sav=saving), av + FILE_AV)
+    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, t=times, i=infinite, d=delay, v=verbose, sav=saving), av + FILE_AV)
 
 def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
@@ -311,16 +325,19 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
                 elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
+                elif (line.startswith("times=")):     p.times       =      line[len("times="):-1]
+                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):-1]
                 else: raise ValueError(f"Invalid line '{line}'")
     except Exception as e:
         print(f"Error reading file '{savefile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)
     if (noParam): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
+    if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
     return p
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
     p = Parameters(c = DEF_COPY, n = DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
-                    r = DEF_REPETITION, o = DEF_STEP, a = DEF_ALTERNATE, i = DEF_INFINITE, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
+                    r = DEF_REPETITION, o = DEF_STEP, a = DEF_ALTERNATE, t = DEF_TIMES, i = DEF_INFINITE, d = DEF_DELAY, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p

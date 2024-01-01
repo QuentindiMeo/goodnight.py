@@ -21,7 +21,9 @@ DEF_FOR_WHOM:    str = " " # space to skip the CLI if the user used the default 
 DEF_REPETITION: bool = False
 DEF_STEP:       bool = False
 DEF_ALTERNATE:  bool = False
+DEF_TIMES:       str = "1 "
 DEF_INFINITE:   bool = False
+DEF_DELAY:       str = "0 "
 DEF_VERBOSITY:  bool = False
 DEF_SAVE_PREF:  bool = False
 
@@ -63,7 +65,7 @@ class Parameters:
                 f"\tsaving preferences: {self.saving}"
 
     def __init__(self, c: bool = DEF_COPY, n: str = DEF_NB_PHRASES, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
-                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, i: bool = DEF_INFINITE, \
+                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, t: str = DEF_TIMES, i: bool = DEF_INFINITE, d: str = DEF_DELAY, \
                  v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
         self.copy      = c
 
@@ -75,13 +77,12 @@ class Parameters:
         self.allowRep  = r
         self.step      = o
         self.alternate = a
+        self.times     = t
         self.infinite  = i
+        self.delay     = d
 
         self.verbose   = v
         self.saving    = sav
-
-        self.times     = 1
-        self.delay     = 0
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:

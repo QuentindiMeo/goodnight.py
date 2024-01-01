@@ -124,6 +124,7 @@ This program was tested on and designed for WSL2 and Ubuntu 22.04.
 - ***[DEV 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav with -D and -i, Ctrl+C handler
 - ***[DEV 0.0.4]** Nov 01 2023* - Added sources extractor (phrases, emoji), multioptional parameters handling
 - ***[DEV 0.0.5]** Nov 01 2023* - Added nicknames to source extractor; removed -D, added --debug; added Types for clarity
+
 - ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class); renamed --debug as --verbose
 - ***[DEV 0.1.1]** Nov 03 2023* - Added possibility to set a random range as nbPhrases, added --isave
 - ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added warning if high upper bound on range, --default, links on README badges
@@ -131,16 +132,19 @@ This program was tested on and designed for WSL2 and Ubuntu 22.04.
 - ***[DEV 0.1.4]** Nov 05 2023* - Added emoji picking, improved --verbose, fixed missing file extraction case
 - ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity, removed CLI need for parameters set by file
 - ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction, removed "s surrounding every element
+
 - ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, added -r as alias for --allow-repetition, presentation gif
 - ***[DEV 0.2.1]** Nov 06 2023* - Adjusted gif, adding nicer transition "and" between phrases
 - ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
 - ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
 - ***[DEV 0.2.4]** Nov 09 2023* - Adding some documentation, fixing default parameter r/n skip
+
 - ***[DEV 0.2.5]** Nov 13 2023* - Adding --other-step; updating usage/help; setting 999 as max r/n bound
 - ***[DEV 0.2.6]** Nov 26 2023* - Adding --save; improving largely code efficiency and structure for maintainability
 - ***[DEV 0.2.7]** Dec 13 2023* - Adding --no-copy, preparing --alternate; deprecating --isave
 - ***[DEV 0.2.8]** Dec 31 2023* - Adding --alternate, --infinite; creating Goodnight class
 - ***[DEV 0.2.9]** Jan ?? 2024* - Adding --delay, --times
+
 - ***[REL 1.0.0]** Jan ?? 2024* - First release; major README update
 
 <br />
