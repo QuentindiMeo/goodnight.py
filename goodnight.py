@@ -5,7 +5,6 @@ from pyperclip import copy # for copying the result to the clipboard
 from sys import argv as av
 from random import randint as rand
 from time import sleep
-from typing import Optional
 
 from Utils import rreplace
 from Exit import exitCode, gnExit
@@ -42,7 +41,8 @@ def goodnight(p: Parameters) -> Goodnight:
         gn.txt += " "
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
-    gn.txt = rreplace(gn.txt.strip(), "  ", " ").capitalize()
+    gn.txt = rreplace(gn.txt.strip(), "  ", " ")
+    gn.txt = gn.txt[0].upper() + gn.txt[1:]
     return gn
 
 def main(ac: int, av: list[str]) -> int:

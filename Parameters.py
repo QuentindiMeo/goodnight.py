@@ -8,7 +8,7 @@ from Utils import isIn, askConfirmation, askConfirmationNumber
 from Types import Parameters
 from Exit import exitCode, gnExit
 
-FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-i", "-d"]
+FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-d"]
 PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "t", "d"]
 SAVE_FILEPATH:     str = "preferences.sav"
 DEF_COPY:         bool = True
@@ -171,6 +171,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     newP.pickNbPhrases()
     return newP
 
+# TODO --parameter=value
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
@@ -277,7 +278,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     times = str(int(av[i + 1])); i += 1
                     if (int(times) < 1):
                         raise ValueError("The number of iterations must be positive.")
-                    if (int(times) > int(DEF_NB_UBOUND)): times = DEF_NB_UBOUND
                     print(f"\t... number of iterations set to {nbPhrases}.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
