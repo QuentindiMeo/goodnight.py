@@ -12,7 +12,7 @@ Please note that this project is released with a [Contributor Code of Conduct][c
 
 ## Development and Testing
 
-Before you start, ensure that you meet [all of the project's requirements](README.md).
+Before you start, ensure that you meet [all of the project's requirements](../README.md).
 
 ### Running the action
 
