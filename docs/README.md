@@ -6,8 +6,7 @@
     <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
     <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
     <a href="#paperclips-requirements">Requirements</a> &#xa0; | &#xa0;
-    <a href="#card_file_box-change-log">Change log</a> &#xa0; | &#xa0;
-    <a href="/docs/LICENSE.md">License</a>
+    <a href="#card_file_box-change-log">Change log</a>
 </div>
 &#xa0;
 <div align="center">
