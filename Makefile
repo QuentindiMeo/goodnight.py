@@ -3,14 +3,25 @@
 all: goodnight
 
 goodnight:
-	cp src/goodnight.py goodnight
-	chmod +x goodnight
+	@chmod +x goodnight
 
 clean:
-	rm -f goodnight
+	@echo "Cleaning up..."
+	@rm -rf __pycache__/
+	@rm -rf tests/__pycache__/
+	@rm -rf tests/*.pyc
+	@rm -rf *.pyc
+	@echo "Cleaning complete."
 
 tests:
-	./tests/test.sh
+	@echo "Running tests..."
+	@./tests/test.sh
+	@echo "Tests complete."
 
 install:
-	pip install -r requirements.txt
+	@echo "Installing pyperclip..."
+	@pip install pyperclip==1.8.2
+	@echo "Installation complete."
+	@echo ""
+	@echo "Depending on your system, you may now need to install:"
+	@echo "xclip or xsel (Linux), pbcopy and pbpaste (Mac), pywin32 (Windows)."

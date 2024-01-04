@@ -2,7 +2,6 @@
 
 from pyperclip import copy # for copying the result to the clipboard
 
-from sys import argv as av
 from random import randint as rand
 from time import sleep
 
@@ -61,8 +60,5 @@ def main(ac: int, av: list[str]) -> int:
         times -= 1
         if (times > 0 or p.infinite):
             sleep(delay)
-            if (delay == 0): 1 # TODO ask for keypress
+            if (delay == 0): 1
     return 0
-
-if (__name__ == "__main__"): exit(main(len(av), av))
-# TODO new demo gif
