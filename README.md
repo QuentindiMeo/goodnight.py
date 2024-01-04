@@ -12,7 +12,7 @@
 &#xa0;
 <div align="center">
     <a href="#top"><img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" /></a>
-    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.8-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.9-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -27,7 +27,7 @@
 &#xa0;
 <div align="center" width="75%">
     <a href="#top"><abbr title="Demonstration v0.2.0">
-    <img alt="Demo v0.2.0" src="./assets/demo_head.gif" />
+    <img alt="Demo v0.2.0" src="./assets/demo-0_2_0-head.gif" />
     </abbr></a>
 </div>
 <div align="center">
@@ -73,7 +73,9 @@ python goodnight.py [OPTIONS]
 -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: odd-)
 -a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e, def: False)
+-t, --times      <int>  Generate and print a given amount of goodnights (def: 1)
 -i, --infinite          Toggle infinite mode
+-d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0)
 --ignore                Ignore preferences (preferences.sav file)
 -S, --save              Save preferences to file (preferences.sav)
 
@@ -83,7 +85,7 @@ python goodnight.py [OPTIONS]
 
 &#xa0;
 
-&nbsp;&nbsp; :hotsprings:&nbsp; **Default behavior** / its equivalents
+&nbsp;&nbsp; :hotsprings:&nbsp; **Default Behavior** & Equivalents
 
 ``` bash
 python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""

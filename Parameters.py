@@ -26,7 +26,9 @@ DEF_INFINITE:     bool = False
 DEF_DELAY:         str = "0 " # same as above
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
+MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
+MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
 MAT_NAME_LOGFILE:  str = r".*\.log$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
@@ -59,9 +61,9 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     allowRep:  bool = p.allowRep
     step:      bool = p.step
     alternate: bool = p.alternate
-    times:      str = p.times # TODO --times: play the goodnight x times (no infinite mode)
+    times:      str = p.times
     infinite:  bool = p.infinite
-    delay:    float = p.delay # TODO --delay: with --infinite, delay between loop iterations (in ms)
+    delay:    float = p.delay
     randomOrNumber:  str = DEF_NB_PHRASES
     timesOrInfinite: str = DEF_TIMES
 
@@ -90,7 +92,11 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                 nbPhrases = bounds
         else: # determined number of phrases...
             while (nbPhrases == DEF_NB_PHRASES):
-                buf: str = input("Number of phrases to draw: ")
+                buf: str = ""
+                while (not matches(MAT_INTEGER_INPUT, buf)):
+                    buf = input("Number of phrases to draw: ").strip()
+                    if (not matches(MAT_INTEGER_INPUT, buf)):
+                        print("\tInvalid input: must be a positive integer.")
                 nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
                 if (buf == ""):
                     print(f"\t... using default value: {nbPhrases}, picked randomly between 2 and 5.")
@@ -109,7 +115,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             if (p.verbose): print("\tEmoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
     if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
-        source = input("What source file to use: ")
+        source = input("What source file to use: ").strip()
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE.strip()}.")
@@ -142,7 +148,11 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             timesOrInfinite = input("Play the goodnight x times or infinitely (t/i): ").strip().lower()
         if (timesOrInfinite == "t"): # play x times...
             while (times == DEF_TIMES):
-                buf: str = input("Number of times to iterate: ")
+                buf: str = ""
+                while (not matches(MAT_INTEGER_INPUT, buf)):
+                    buf = input("Number of times to iterate (int): ").strip()
+                    if (not matches(MAT_INTEGER_INPUT, buf)):
+                        print("\tInvalid input: must be a positive integer.")
                 times = str(1 if buf == "" else int(buf))
                 if (buf == ""):
                     print(f"\t... using default value: {times}.")
@@ -157,7 +167,11 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             else: print(MAT_DEFAULTING_N)
     if (delay == DEF_DELAY and "-d" not in av and "--delay" not in av):
         while (delay == DEF_DELAY):
-            buf: str = input("Delay between every iteration (in ms): ")
+            buf: str = ""
+            while (not matches(MAT_FLOATNB_INPUT, buf)):
+                buf = input("Delay between every iteration (in ms): ").strip()
+                if (not matches(MAT_FLOATNB_INPUT, buf)):
+                    print("\tInvalid input: must be a positive float number.")
             delay = str(0 if buf == "" else int(buf))
             if (buf == ""):
                 print(f"\t... using default value: {delay}.")
@@ -171,7 +185,6 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
     newP.pickNbPhrases()
     return newP
 
-# TODO --parameter=value
 def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-n" in av or "--nb-phrases" in av) and ("-b" in av or "--bounds" in av)):
         print("Cannot use both -n/--nb-phrases and -b/--bounds at the same time."); gnExit(exitCode.ERR_INV_ARG)
@@ -344,5 +357,4 @@ def getParameters(ac: int, av: list[str]) -> Parameters:
     if (ac > 1): print("") # marking the end of parameter prints if any
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
-    print(p.times)
     return p

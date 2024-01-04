@@ -2,22 +2,46 @@
 
 ## [UNRELEASED]
 
-### REL 1.0.0 - Jan ?? 2024 [[#x]()]
+### REL 1.0.0 - XXX ?? 2024 [[#x]()]
 
-First release; major README update
+First release
+Announcing the release on Reddit & Discord
 
-### DEV 0.2.9 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
 
-Adding and implementing `--delay`, `--times`
+Adding a values unpacking function for parameters, for clarity
+Adding a dynamic loading bar while the program is generating a goodnight
+Announcing the release date of the first release on Reddit & Discord
+
+### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
+
+Adding and implementing `--version` aka `-v`: print the program's version
+Adding a Ctrl+D handler, exiting the program gracefully with a context message [EOFError, SIGTERM]
+Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters
+Making tests
+Preparing for release
+
+### DEV 0.3.0 - Jan ?? 2024 [[#x]()]
+
+Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI
 Implementing `--XXX=x` parameter syntax
-Centralizing Markdown files in [docs/](.) (hello)
+Redacting a demonstration script and a demonstration source file
+Updating the [README](../README.md)'s general information to reflect changes
+Updating the [README demonstration gif](../README.md)
 
 ---
 
+### DEV 0.2.9 - Jan 04 2024 [[#x]()]
+
+Adding and implementing `--times`: compute and print x goodnights
+Adding and implementing `--delay`: add a delay between each goodnight iteration (in milliseconds)
+Centralizing Markdown files in [docs/](.)
+Creating this file (hello), [CODE OF CONDUCT](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIBUTING.md)
+
 ### DEV 0.2.8 - Dec 31 2023 [[#x]()]
 
-Implemented `--alternate` aka `-a`, making the program alternate between commas/emoji and "and"s
-Added and implemented `--infinite` aka `-i`, making the program infinitely generate goodnights
+Implemented `--alternate` aka `-a`: make the program alternate between commas/emoji and "and"s
+Added and implemented `--infinite` aka `-i`: make the program infinitely generate goodnights
 `-i` is therefore not an alias of `--ignore` any more.
 Created Goodnight class holding the result text and a boolean for `--other-step`'s steps
 
@@ -29,15 +53,16 @@ Deprecated and removed `--isave`; as `--save` can be combined with `--default`
 
 ### DEV 0.2.6 - Nov 26 2023 [[#x]()]
 
-Added and implemented `--save` aka `-S`, saving preferences to file
+Added and implemented `--save` aka `-S`: save runtime preferences to file
 Improved largely code efficiency and structure for maintainability
 Added [LICENSE](LICENSE.md) file and [issue templates](../.github/ISSUE_TEMPLATE)
 
 ### DEV 0.2.5 - Nov 13 2023 [[#x]()]
 
-Added and implemented `--other-step` aka `-o`, making the program use the even-numbered phrase gaps as "and"s instead of commas
+Added and implemented `--other-step` aka `-o`: makr the program use the even-numbered phrase gaps as "and"s instead of commas
 Updated usage/help function to reflect additions
 Set 999 as maximum value for `-n` and `-b` upper bound
+Adding confirmation prompt if `-n` or `-b` is set to a high value (> 6) through CLI
 
 ---
 
@@ -69,7 +94,7 @@ Added a presentation gif to the [README](../README.md)
 
 ---
 
-### DEV 0.1.6 - Nov 05 2023 [[#x]()]
+### DEV 0.1.6 - Nov 05 2023 [[#34](https://github.com/QuentindiMeo/goodnight.py/commit/01be6a583fa6057cbf1058478a09e4530f21278d)]
 
 Fixed usedEmoji malfunction (picked emoji not removed from list)
 Removed apparent double quotes around every element (e.g. `"phrase"` instead of `phrase`)
@@ -109,6 +134,7 @@ Added possibility to set a random range as a value nbPhrases (picks a random num
 
 Added weighting feature to source extractor (Contents class)
 Renamed `--debug` to `--verbose`
+Major README overhaul
 
 ---
 
@@ -129,7 +155,7 @@ Added multioptional parameters handling for boolean parameters (e.g. `-eD`)
 
 Added `-s` (implementation in progress)
 Added preferences.sav file: save to it with `-D`, ignore its contents with `-i`/`--ignore`
-Added a Ctrl+C handler
+Added a Ctrl+C handler, exiting the program gracefully with a context message
 
 ### DEV 0.0.2 - Oct 31 2023 [[#6](https://github.com/QuentindiMeo/goodnight.py/commit/5da4d12644290f576cc462df6057c9c9770e224a)]
 

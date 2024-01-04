@@ -67,7 +67,9 @@ def gnUsage() -> None:
         "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file" \
         "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: [odd-])" \
         "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e, def: False)" \
+        "\n  -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)" \
         "\n  -i, --infinite          Toggle infinite mode" \
+        "\n  -d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0)" \
         "\n  --ignore                Ignore preferences (preferences.sav)" \
         "\n  -S, --save              Save preferences to file (preferences.sav)" \
         "\n" \
