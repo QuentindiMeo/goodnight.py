@@ -5,8 +5,12 @@
 *.txt
 assets/
 
+## GitHub
+
+.github/
+
 ## Trash
 
 __pycache__/
 *~
-*#
+#*#

@@ -46,7 +46,8 @@ class Parameters:
         repetition = "allowed" if self.allowRep else "not allowed"
         step = ("even" if self.step else "odd") + "-numbered gaps"
         alternate = "" if self.alternate else "not "
-        return  f"{copynating} {self.times} goodnight(s) with "\
+        return \
+                f"{copynating} {self.times} goodnight(s) with "\
                 f"{self.nbPhrases} phrases, " \
                 f"{wEmoji} emoji, " \
                 f"using {source} as a source, " \
