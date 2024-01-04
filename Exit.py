@@ -5,6 +5,7 @@ from enum import Enum
 class exitCode(Enum):
     SUCCESS = 0x00
     HELP    = 0x01
+    FAILURE = 0x84
 
     ERR_INV_SAV = 0x10
     ERR_INV_ARG = 0x11
@@ -26,6 +27,7 @@ def gnExit(code: exitCode) -> None:
     switch: dict[int, str] = {
         0x00: "Success",
         0x01: "Help",
+        0x84: "Failure",
 
         0x10: "Invalid saved parameters",
         0x11: "Invalid parameters",

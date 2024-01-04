@@ -121,42 +121,7 @@ Pyperclip itself uses the a clipboard package, which you may need to install. Re
 
 ## :card_file_box: Change log
 
-- ***[DEV 0.0.0]** Oct 30 2023* - Project creation
-- ***[DEV 0.0.1]** Oct 30 2023* - Added Parameters class (-new) and first elementary components
-- ***[DEV 0.0.2]** Oct 31 2023* - Added parameter handling (- and --); set Exit and Help up
-- ***[DEV 0.0.3]** Nov 01 2023* - Added -s (wip), preferences.sav: [save with -D, --ignore], Ctrl+C handler
-- ***[DEV 0.0.4]** Nov 01 2023* - Added -s and sources extractor (phrases, emoji); multioptional parameters handling
-- ***[DEV 0.0.5]** Nov 01 2023* - Added --debug, nicknames to source extractor; removed -D; created Types for clarity
-
----
-
-- ***[DEV 0.1.0]** Nov 02 2023* - Added weighting feature to source extractor (Contents class); renamed --debug to --verbose
-- ***[DEV 0.1.1]** Nov 03 2023* - Added --isave (ignore+save), possibility to set a random range as nbPhrases
-- ***[DEV 0.1.2]** Nov 04 2023* - Fixed CLI oddities; added --default, warning if high upper bound on range, links on README badges
-- ***[DEV 0.1.3]** Nov 05 2023* - Added and implemented --allow-repetition and nickname picking; fixed -n/-b oddities
-- ***[DEV 0.1.4]** Nov 05 2023* - Added emoji picking; improved --verbose; fixed missing file extraction case
-- ***[DEV 0.1.5]** Nov 05 2023* - Fixed multi-optional param oddity; removed CLI need for parameters set by file
-- ***[DEV 0.1.6]** Nov 05 2023* - Fixed usedEmoji malfunction; removed "s surrounding every element
-
----
-
-- ***[DEV 0.2.0]** Nov 06 2023* - Added phrase picking, -r as alias of --allow-repetition, presentation gif
-- ***[DEV 0.2.1]** Nov 06 2023* - Added nicer transition "and" between phrases; adjusted presentation gif
-- ***[DEV 0.2.2]** Nov 06 2023* - Added possibility to have several PHRASES (and others) in source file
-- ***[DEV 0.2.3]** Nov 08 2023* - Minor coding style improvements (ty SonarLint), README adjustments
-- ***[DEV 0.2.4]** Nov 09 2023* - Added some documentation; fixed default parameter r/n skip
-
----
-
-- ***[DEV 0.2.5]** Nov 13 2023* - Added --other-step; updated usage/help; set 999 as max r/n bound
-- ***[DEV 0.2.6]** Nov 26 2023* - Added --save; improved largely code efficiency and structure for maintainability
-- ***[DEV 0.2.7]** Dec 13 2023* - Added --no-copy, prepared --alternate; deprecated --isave
-- ***[DEV 0.2.8]** Dec 31 2023* - Added --alternate, --infinite; created Goodnight class
-- ***[DEV 0.2.9]** Jan ?? 2024* - Adding --delay, --times; implementing --parameter=value syntax
-
----
-
-- ***[REL 1.0.0]** Jan ?? 2024* - First release; major README update
+The project's exchaustive change log is available [**here**](./docs/CHANGELOG.md).
 
 <br />
 
