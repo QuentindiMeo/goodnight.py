@@ -39,20 +39,25 @@ class Parameters:
             self.nbPhrases = str(rand(lowerBound, upperBound))
 
     def toString(self) -> str:
+        copynating = "copying" if self.copy else "generating"
         source = self.source.split("\\" if osName == 'nt' else "/")[-1]
         wEmoji = "with" if self.emoji else "without"
+        forWhom = "(no name)" if self.forWhom == "" else self.forWhom
         repetition = "allowed" if self.allowRep else "not allowed"
         step = ("even" if self.step else "odd") + "-numbered gaps"
         alternate = "" if self.alternate else "not "
-        return  f"{self.nbPhrases} phrases, " \
+        return  f"{copynating} {self.times} goodnight(s) with "\
+                f"{self.nbPhrases} phrases, " \
                 f"{wEmoji} emoji, " \
-                f"source: {source}, " \
-                f"for {self.forWhom}, " \
+                f"using {source} as a source, " \
+                f"for {forWhom}, " \
                 f"repetition {repetition}, " \
                 f"step: {step}, " \
-                f"{alternate}alternating"
+                f"{alternate}alternating, " \
+                f"with a {self.delay}ms delay"
     def __str__(self) -> str:
         return \
+                f"\tcopy: {self.copy}\n" \
                 f"\t{self.nbPhrases} phrases\n" \
                 f"\temoji: {self.emoji}\n" \
                 f"\tsource file: {self.source}\n" \
@@ -60,7 +65,8 @@ class Parameters:
                 f"\trepetition: {self.allowRep}\n" \
                 f"\tstep: {self.step}\n" \
                 f"\talternate: {self.alternate}\n" \
-                f"\tcopy: {self.copy}\n" \
+                f"\ttimes: {self.times}\n" \
+                f"\tdelay: {self.delay}\n" \
                 f"\tverbose mode: {self.verbose}\n" \
                 f"\tsaving preferences: {self.saving}"
 

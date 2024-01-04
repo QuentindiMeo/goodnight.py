@@ -21,9 +21,9 @@ DEF_FOR_WHOM:      str = " " # space to skip the CLI if the user used the defaul
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_ALTERNATE:    bool = False
-DEF_TIMES:         str = "1 "
+DEF_TIMES:         str = "1 " # same as above
 DEF_INFINITE:     bool = False
-DEF_DELAY:         str = "0 "
+DEF_DELAY:         str = "0 " # same as above
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
@@ -207,7 +207,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
     if (verbose): print(f"\tProgram arguments interpreted as: {av}")
 
-    extractP: Parameters = defaultParameters() if ("-i" in av) else fromFile(extraction = True)
+    extractP: Parameters = defaultParameters() if ("--ignore" in av) else fromFile(extraction = True)
     copy:      bool = extractP.copy
     nbPhrases:  str = extractP.nbPhrases
     emoji:     bool = extractP.emoji
@@ -331,8 +331,6 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
     except Exception as e:
         print(f"Error reading file '{savefile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)
     if (noParam): p.pickNbPhrases()
-    p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
-    if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
     return p
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
@@ -344,4 +342,7 @@ def defaultParameters(fromParameter: bool = False) -> Parameters:
 def getParameters(ac: int, av: list[str]) -> Parameters:
     p = fromParameters(ac, av) if (ac > 1) else fromFile(extraction = False, noParam = True)
     if (ac > 1): print("") # marking the end of parameter prints if any
+    p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
+    if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
+    print(p.times)
     return p
