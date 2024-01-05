@@ -1,9 +1,9 @@
 #!/usr/bin/env python3.10
 
 from os import getcwd
-path.append(getcwd() + "/src") # fetch src/ to get the main's module
-
 from sys import argv as av, path
+
+path.append(getcwd() + "/src") # fetch src/ to get the main's module
 
 from Goodnight import main
 

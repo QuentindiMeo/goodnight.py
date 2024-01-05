@@ -1,5 +1,7 @@
 # goodnight\.py Changelog
 
+<div id="top" />
+
 ## [UNRELEASED]
 
 ### REL 1.0.0 - XXX ?? 2024 [[#x]()]
@@ -7,31 +9,37 @@
 First release
 Announcing the release on Reddit & Discord
 
-### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.3 - Jan ?? 2024 [[#x]()]
 
 Adding and implementing `--version` aka `-v`: print the program's version.  
 Adding a dynamic loading bar while the program is generating a goodnight.  
-Making tests.  
+Redacting and making unit tests.  
 Announcing the release date of the first release on Reddit & Discord.
 
-### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
 
 Adding and implementing `--proceed` aka `-p`: set the proceeder key.  
 Adding a values unpacking function for parameters, for clarity.  
 Adding a Ctrl+D handler, exiting the program gracefully with a context message [EOFError, SIGTERM].  
 Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.
 
-### DEV 0.3.0 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
 
-Creating a Makefile.  
-Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
-Adding a keypress proceeder if the delay is null.  
-Implementing `--XXX=x` parameter syntax.  
-Redacting a demonstration script and a demonstration source file.  
+Enhancing the Makefile and its prints.  
 Updating the [README](README.md)'s general information to reflect changes.  
+Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 
+### DEV 0.3.0 - Jan ?? 2024 [[#x]()]
+
+Creating a Makefile and executable file at the root of the repository, for clarity.  
+Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
+Implementing the possibility to set the delay to `p`: press any key to proceed after each interation.  
+Implementing `--XXX=x` parameter syntax.
+
 ---
+
+## [RELEASED]
 
 ### DEV 0.2.9 - Jan 04 2024 [[#x]()]
 
@@ -173,3 +181,7 @@ Adding first elementary components.
 ### DEV 0.0.0 - Oct 30 2023 [[#1](https://github.com/QuentindiMeo/goodnight.py/commit/10593fa32045e11cfd8621fe0bf106547ce16f80)]
 
 Project creation.
+
+<br />
+
+[Back to top](#top)

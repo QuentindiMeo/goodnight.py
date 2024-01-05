@@ -10,7 +10,7 @@ from Exit import exitCode, gnExit
 from ContentsExtractor import contentsExtractor
 from Parameters import getParameters
 from Types import Goodnight, Contents, Parameters
-from CtrlC import handler as CtrlCHandler
+from CtrlHandlers import handler as CtrlHandler
 
 def pickJunction(nth: int, nbPhrases: int, step: bool) -> str:
     if (nth >= nbPhrases - 1): return ""
@@ -23,7 +23,7 @@ def goodnight(p: Parameters) -> Goodnight:
 
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
     usedEmoji:   list[int] = [] # stores indices of  emoji  already used to avoid repetition
-    nickIdx: int = rand(0, nbPhrases - 1)
+    nickIdx: int = rand(0, nbPhrases - 1) # index of the phrase that will be followed by the nickname
 
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)
@@ -45,10 +45,11 @@ def goodnight(p: Parameters) -> Goodnight:
     return gn
 
 def main(ac: int, av: list[str]) -> int:
-    CtrlCHandler() # binding Ctrl+C to a graceful program exit
+    CtrlHandler() # binding Ctrl+C/D to a graceful program exit
 
     p: Parameters = getParameters(ac, av)
-    times = int(p.times); delay = float(p.delay) / 1000
+    times = int(p.times)
+    delay = (float(p.delay) / 1000) if (not p.delay.isalpha()) else 0
 
     while (times > 0 or p.infinite):
         result: Goodnight = goodnight(p)

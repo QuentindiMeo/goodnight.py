@@ -29,6 +29,7 @@ DEF_SAVE_PREF:    bool = False
 MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
+MAT_KEYPRES_INPUT: str = r"^p[a-ZA-Z]$"
 MAT_NAME_LOGFILE:  str = r".*\.log$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
@@ -77,25 +78,26 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
         if (randomOrNumber == "r"): # random quantity of phrases in bounds...
-            bounds = "?"
-            while (bounds == "?"):
+            bounds = DEF_NB_PHRASES
+            while (bounds == DEF_NB_PHRASES):
                 bounds = input("Bounds of the random range: ").strip()
                 if (not matches(MAT_BOUNDED_INPUT, bounds)):
-                    print("\tBounds must be of the form \"x,y\"."); bounds = "?"
+                    print("\tBounds must be of the form \"x,y\"."); bounds = DEF_NB_PHRASES
                     continue
                 (lowerBound, upperBound) = (int(bounds.split(",")[0]), int(bounds.split(",")[1]))
                 if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = DEF_NB_UBOUND
                 while (int(bounds.split(",")[1]) > 6):
-                    buf = askConfirmationNumber(f"Warning: you set the upper bound to a large number ({upperBound})")
+                    buf = askConfirmationNumber(f"\twarning: you set the upper bound to a large number ({upperBound})")
                     if (buf == "y"): break
                     bounds = str(lowerBound) + "," + buf
                 nbPhrases = bounds
         else: # determined number of phrases...
             while (nbPhrases == DEF_NB_PHRASES):
-                buf: str = ""
-                while (not matches(MAT_INTEGER_INPUT, buf)):
+                isMatching: bool = False
+                while (not isMatching):
                     buf = input("Number of phrases to draw: ").strip()
-                    if (not matches(MAT_INTEGER_INPUT, buf)):
+                    isMatching = matches(MAT_INTEGER_INPUT, buf)
+                    if (isMatching):
                         print("\tInvalid input: must be a positive integer.")
                 nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
                 if (buf == ""):
@@ -104,7 +106,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     print("The number of phrases must be positive."); nbPhrases = DEF_NB_PHRASES
                 if (int(nbPhrases) > int(DEF_NB_UBOUND)): nbPhrases = DEF_NB_UBOUND
                 while (int(nbPhrases) > 6):
-                    buf = askConfirmationNumber(f"Warning: you set the number of phrases to a large number ({nbPhrases})")
+                    buf = askConfirmationNumber(f"\twarning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
                     nbPhrases = buf
         if (p.verbose): print(f"\tNumber of phrases set to {nbPhrases}.")
@@ -167,16 +169,23 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             else: print(MAT_DEFAULTING_N)
     if (delay == DEF_DELAY and "-d" not in av and "--delay" not in av):
         while (delay == DEF_DELAY):
-            buf: str = ""
-            while (not matches(MAT_FLOATNB_INPUT, buf)):
-                buf = input("Delay between every iteration (in ms): ").strip()
-                if (not matches(MAT_FLOATNB_INPUT, buf)):
-                    print("\tInvalid input: must be a positive float number.")
-            delay = str(0 if buf == "" else int(buf))
-            if (buf == ""):
-                print(f"\t... using default value: {delay}.")
-            elif (int(delay) < 0):
-                print("The number of iterations cannot be negative."); delay = DEF_DELAY
+            isMatching: bool = False
+            while (not isMatching):
+                buf = input("Delay between every iteration (in ms), or p? (with ? a letter): ").strip()
+                isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_KEYPRES_INPUT, buf)
+                if (not isMatching):
+                    print("\tInvalid input: must be a positive float number or p?.")
+            if (buf[0] != 'p'):
+                delay = str(0 if buf == "" else int(buf))
+                if (buf == ""):
+                    print(f"\t... using default value: {delay}.")
+                elif (int(delay) < 0):
+                    print("The number of iterations cannot be negative."); delay = DEF_DELAY
+                while (int(delay) > 10000):
+                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay})")
+                    if (buf == "y"): break
+                    delay = buf
+            else: delay = str(buf[1:])
             if (p.verbose): print(f"\tDelay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
@@ -299,6 +308,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
+                    if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_KEYPRES_INPUT, av[i + 1])):
+                        raise ValueError("Delay must be a positive float number or p?.")
+                    if (av[i + 1][0] == 'p'):
+                        delay = av[i + 1][1:]; continue
                     delay = str(int(av[i + 1])); i += 1
                     if (int(delay) < 0):
                         raise ValueError("The delay cannot be negative.")
@@ -357,4 +370,5 @@ def getParameters(ac: int, av: list[str]) -> Parameters:
     if (ac > 1): print("") # marking the end of parameter prints if any
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
+    if (p.delay[0] == 'p'): p.delay = p.delay[1:]
     return p

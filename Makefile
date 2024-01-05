@@ -1,9 +1,12 @@
-.PHONY: all clean goodnight tests install
+.PHONY: all clean goodnight run tests install
 
 all: goodnight
 
 goodnight:
-	@chmod +x goodnight
+	@chmod +x goodnight.py
+
+run:
+	@./goodnight.py --default
 
 clean:
 	@echo "Cleaning up..."
