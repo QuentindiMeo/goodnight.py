@@ -49,7 +49,7 @@ def main(ac: int, av: list[str]) -> int:
 
     p: Parameters = getParameters(ac, av)
     times = int(p.times)
-    delay = (float(p.delay) / 1000) if (not p.delay.isalpha()) else 0
+    delay = (float(p.delay) / 1000) if (not p.delay.isalpha()) else -1
 
     while (times > 0 or p.infinite):
         result: Goodnight = goodnight(p)
@@ -60,6 +60,6 @@ def main(ac: int, av: list[str]) -> int:
             print("\nCopied the result to your clipboard!")
         times -= 1
         if (times > 0 or p.infinite):
-            sleep(delay)
-            if (delay == 0): 1
+            sleep(delay if (delay >= 0) else 0)
+            if (delay == -1): input()
     return 0

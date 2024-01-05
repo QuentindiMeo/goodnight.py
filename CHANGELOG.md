@@ -18,7 +18,6 @@ Announcing the release date of the first release on Reddit & Discord.
 
 ### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
 
-Adding and implementing `--proceed` aka `-p`: set the proceeder key.  
 Adding a values unpacking function for parameters, for clarity.  
 Adding a Ctrl+D handler, exiting the program gracefully with a context message [EOFError, SIGTERM].  
 Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.
@@ -34,7 +33,7 @@ Updating the [README demonstration gif](README.md).
 
 Creating a Makefile and executable file at the root of the repository, for clarity.  
 Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
-Implementing the possibility to set the delay to `p`: press any key to proceed after each interation.  
+Implementing the possibility to set the delay to `p`: press Enter to proceed after each interation.  
 Implementing `--XXX=x` parameter syntax.
 
 ---

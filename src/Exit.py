@@ -47,12 +47,13 @@ def gnExit(code: exitCode) -> None:
     }
     if (code == exitCode.HELP):
         gnUsage(); code = exitCode.SUCCESS
-    if (code.value > 0x10):
+    if (code.value > 0x0f):
         print(f"Exit: {switch.get(code.value, 'Unknown error')}.")
+        print("Execute \"./goodnight.py --help\" for more information.")
     exit(code.value)
 
 def gnUsage() -> None:
-    print("Usage: python Goodnight.py [OPTIONS]" \
+    print("Usage: python goodnight.py [OPTIONS]" \
         "\n" \
         "\nOptions:" \
         "\n  --default               Launch once with default values (ignores other parameters)" \
@@ -69,7 +70,7 @@ def gnUsage() -> None:
         "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e, def: False)" \
         "\n  -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)" \
         "\n  -i, --infinite          Toggle infinite mode" \
-        "\n  -d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0)" \
+        "\n  -d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue" \
         "\n  --ignore                Ignore preferences (preferences.sav)" \
         "\n  -S, --save              Save preferences to file (preferences.sav)" \
         "\n" \

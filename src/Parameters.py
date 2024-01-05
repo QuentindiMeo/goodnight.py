@@ -29,7 +29,7 @@ DEF_SAVE_PREF:    bool = False
 MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
-MAT_KEYPRES_INPUT: str = r"^p[a-ZA-Z]$"
+MAT_THEPKEY_INPUT: str = r"^p$"
 MAT_NAME_LOGFILE:  str = r".*\.log$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
@@ -172,9 +172,9 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
             isMatching: bool = False
             while (not isMatching):
                 buf = input("Delay between every iteration (in ms), or p? (with ? a letter): ").strip()
-                isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_KEYPRES_INPUT, buf)
+                isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_THEPKEY_INPUT, buf)
                 if (not isMatching):
-                    print("\tInvalid input: must be a positive float number or p?.")
+                    print("\tInvalid input: must be a positive float number or p.")
             if (buf[0] != 'p'):
                 delay = str(0 if buf == "" else int(buf))
                 if (buf == ""):
@@ -185,7 +185,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay})")
                     if (buf == "y"): break
                     delay = buf
-            else: delay = str(buf[1:])
+            else: delay = buf
             if (p.verbose): print(f"\tDelay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
@@ -308,10 +308,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
-                    if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_KEYPRES_INPUT, av[i + 1])):
-                        raise ValueError("Delay must be a positive float number or p?.")
+                    if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_THEPKEY_INPUT, av[i + 1])):
+                        raise ValueError("Delay must be a positive float number or 'p'.")
                     if (av[i + 1][0] == 'p'):
-                        delay = av[i + 1][1:]; continue
+                        delay = av[i + 1]; continue
                     delay = str(int(av[i + 1])); i += 1
                     if (int(delay) < 0):
                         raise ValueError("The delay cannot be negative.")
@@ -370,5 +370,4 @@ def getParameters(ac: int, av: list[str]) -> Parameters:
     if (ac > 1): print("") # marking the end of parameter prints if any
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
-    if (p.delay[0] == 'p'): p.delay = p.delay[1:]
     return p
