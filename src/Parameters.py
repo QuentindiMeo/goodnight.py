@@ -4,7 +4,8 @@ from os import path, chmod
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn, askConfirmation, askConfirmationNumber
+from Utils import isIn, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
+from Longparam import applyLongParameters
 from Types import Parameters
 from Exit import exitCode, gnExit
 
@@ -26,6 +27,7 @@ DEF_INFINITE:     bool = False
 DEF_DELAY:         str = "0 " # same as above
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
+MAT_LONGPAR_INPUT: str = r"^\-\-[a-zA-Z\-]*\=.*$"
 MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
@@ -72,7 +74,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
         if (not confirmed):
             copy = False
-            if (p.verbose): print("\tClipboard copy toggle set to {copy}.")
+            if (p.verbose): print("VVVV: Clipboard copy toggle set to {copy}.")
         else: print(MAT_DEFAULTING_Y)
     if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
         while (randomOrNumber != "r" and randomOrNumber != "n"):
@@ -109,41 +111,41 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     buf = askConfirmationNumber(f"\twarning: you set the number of phrases to a large number ({nbPhrases})")
                     if (buf == "y"): break
                     nbPhrases = buf
-        if (p.verbose): print(f"\tNumber of phrases set to {nbPhrases}.")
+        if (p.verbose): print(f"VVVV: Number of phrases set to {nbPhrases}.")
     if (emoji == DEF_EMOJI and "-e" not in av and "--emoji" not in av):
         confirmed: bool = askConfirmation("Add emoji between phrases")
         if (confirmed):
             emoji = True
-            if (p.verbose): print("\tEmoji toggle set to {emoji}.")
+            if (p.verbose): print("VVVV: Emoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
     if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
         source = input("What source file to use: ").strip()
         if (source == ""):
             source = DEF_SOURCE
             print(f"\t... using default value: {DEF_SOURCE.strip()}.")
-        elif (p.verbose): print(f"\tSource file set to '{source}'.")
+        elif (p.verbose): print(f"VVVV: Source file set to '{source}'.")
     if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
-        elif (p.verbose): print(f"\tFor whom the goodnight is set to '{forWhom}'.")
+        elif (p.verbose): print(f"VVVV: For whom the goodnight is set to '{forWhom}'.")
     if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
-            if (p.verbose): print("\tRepetition toggle set to {allowRep}.")
+            if (p.verbose): print("VVVV: Repetition toggle set to {allowRep}.")
         else: print(MAT_DEFAULTING_N)
     if (step == DEF_STEP and "-o" not in av and "--other-step" not in av):
         confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
         if (confirmed):
             step = True
-            if (p.verbose): print("\tStep toggle set to {step}.")
+            if (p.verbose): print("VVVV: Step toggle set to {step}.")
         else: print(MAT_DEFAULTING_N)
     if (emoji and alternate == DEF_ALTERNATE and "-a" not in av and "--alternate" not in av):
         confirmed: bool = askConfirmation("Alternate between \"and\"s, and emoji instead of commas")
         if (confirmed):
             alternate = True
-            if (p.verbose): print("\tAlternating set to {alternate}.")
+            if (p.verbose): print("VVVV: Alternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
     if (times == DEF_TIMES and "-t" not in av and "--times" not in av and infinite == DEF_INFINITE and "-i" not in av and "--infinite" not in av):
         while (timesOrInfinite != "t" and timesOrInfinite != "i"):
@@ -160,12 +162,12 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     print(f"\t... using default value: {times}.")
                 elif (int(times) < 1):
                     print("The number of iterations must be positive."); times = DEF_TIMES
-                if (p.verbose): print(f"\tNumber of iterations set to {times}.")
+                if (p.verbose): print(f"VVVV: Number of iterations set to {times}.")
         else: # play infinitely...
             confirmed: bool = askConfirmation("Toggle infinite mode on")
             if (confirmed):
                 infinite = True
-                if (p.verbose): print("\tInfinite mode set to {infinite}.")
+                if (p.verbose): print("VVVV: Infinite mode set to {infinite}.")
             else: print(MAT_DEFAULTING_N)
     if (delay == DEF_DELAY and "-d" not in av and "--delay" not in av):
         while (delay == DEF_DELAY):
@@ -186,7 +188,7 @@ def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
                     if (buf == "y"): break
                     delay = buf
             else: delay = buf
-            if (p.verbose): print(f"\tDelay between iterations set to {delay}.")
+            if (p.verbose): print(f"VVVV: Delay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
                       r = allowRep, a = alternate, t = times, i = infinite, d = delay, o = step, v = p.verbose, sav = p.saving)
@@ -200,13 +202,17 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-t" in av or "--times" in av) and ("-i" in av or "--infinite" in av)):
         print("Cannot use both -t/--times and -i/--infinite at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
+    verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
+
+    if (verbose): print(f"VVVV: Entering sanitization with av: {av}")
+
     def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAv: list[str] = [av[0]]
 
         def isMultioptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
         try:
-            for i in range(1, ac):
+            for i in range(1, ac): # check for multioptional parameters and unwrap them
                 if (isMultioptional(av[i])):
                     s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
                     if (isIn(PAR_HAS_ARG, s)):
@@ -215,21 +221,30 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         newAv.append("-" + c)
                 else:
                     newAv.append(av[i])
+            runParameterDuplicateChecks(newAv)
         except ValueError as e:
             print(f"Invalid argument: {e}"); gnExit(exitCode.ERR_INV_ARG)
-        newAv = list(dict.fromkeys(newAv)) # filter out all possible duplicates
 
         if ("--default" in newAv): # --default ignores all other parameters
             newAv.remove("--default"); newAv.insert(1, "--default")
         # if newAv has --ignore, move it to the end (because it instantly jumps to CLI)
         if ("--ignore" in newAv): newAv.remove("--ignore"); newAv.append("--ignore")
+
         return (len(newAv), newAv)
     (ac, av) = getSanitizedAv(ac, av)
 
-    verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
-    if (verbose): print(f"\tProgram arguments interpreted as: {av}")
-
     extractP: Parameters = defaultParameters() if ("--ignore" in av) else fromFile(extraction = True)
+    try:
+        if (verbose): print(f"VVVV: Entering long parameters handling with av: {av}")
+        av = applyLongParameters(av, "--verbose" in av)
+    except ValueError as e:
+        print(f"Invalid argument: {e}"); gnExit(exitCode.ERR_INV_ARG)
+
+    verbose = "--verbose" in av
+    if (verbose): print(f"VVVV: Program arguments interpreted as: {av}")
+    av = [arg for arg in av if not matches(MAT_LONGPAR_INPUT, arg)] # remove all long parameters from av to avoid confusion
+    ac = len(av)
+
     copy:      bool = extractP.copy
     nbPhrases:  str = extractP.nbPhrases
     emoji:     bool = extractP.emoji
@@ -262,7 +277,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("Bounds must be positive.")
                     if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = int(DEF_NB_UBOUND)
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
-                    buf = str(upperBound)
                     i += 1
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -273,7 +287,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     nbPhrases = str(int(av[i + 1])); i += 1
                     if (int(nbPhrases) < 1):
                         raise ValueError("The number of phrases must be positive.")
-                    print(f"\t... number of phrases set to {nbPhrases}.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-e" | "--emoji": emoji = True
@@ -300,7 +313,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     times = str(int(av[i + 1])); i += 1
                     if (int(times) < 1):
                         raise ValueError("The number of iterations must be positive.")
-                    print(f"\t... number of iterations set to {nbPhrases}.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "-i" | "--infinite": infinite = True
@@ -315,7 +327,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     delay = str(int(av[i + 1])); i += 1
                     if (int(delay) < 0):
                         raise ValueError("The delay cannot be negative.")
-                    print(f"\t... delay set to {delay}.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "--ignore":
@@ -367,7 +378,6 @@ def defaultParameters(fromParameter: bool = False) -> Parameters:
     return p
 def getParameters(ac: int, av: list[str]) -> Parameters:
     p = fromParameters(ac, av) if (ac > 1) else fromFile(extraction = False, noParam = True)
-    if (ac > 1): print("") # marking the end of parameter prints if any
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
     return p

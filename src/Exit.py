@@ -20,6 +20,7 @@ class exitCode(Enum):
     ERR_DUP_PHR = 0x21
     ERR_DUP_EMO = 0x22
     ERR_DUP_NIC = 0x23
+    ERR_DUP_PAR = 0x24
 
     ERR_PAR_REP = 0x30
 
@@ -42,6 +43,7 @@ def gnExit(code: exitCode) -> None:
         0x21: "Duplicate phrases header",
         0x22: "Duplicate emoji header",
         0x23: "Duplicate nicknames header",
+        0x24: "Duplicate parameter",
 
         0x30: "Insufficient number of phrases to draw without repetition",
     }
@@ -49,7 +51,7 @@ def gnExit(code: exitCode) -> None:
         gnUsage(); code = exitCode.SUCCESS
     if (code.value > 0x0f):
         print(f"Exit: {switch.get(code.value, 'Unknown error')}.")
-        print("Execute \"./goodnight.py --help\" for more information.")
+        print("Run \"./goodnight.py --help\" for more information.")
     exit(code.value)
 
 def gnUsage() -> None:
@@ -67,7 +69,7 @@ def gnUsage() -> None:
         "\n" \
         "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file" \
         "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: [odd-])" \
-        "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e, def: False)" \
+        "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e)" \
         "\n  -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)" \
         "\n  -i, --infinite          Toggle infinite mode" \
         "\n  -d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue" \

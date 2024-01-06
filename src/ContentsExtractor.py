@@ -91,9 +91,9 @@ def contentsExtractor(p: Parameters) -> Contents:
         print(f"One or more duplicate entries were found in '{p.source}'.")
         askConfirmation("Do you want to continue regardless?", exitCode.ERR_DUP_ENT)
     if (p.verbose):
-        if (dphrases): print("Log file contains duplicate phrases.")
-        if (demoji):   print("Log file contains duplicate emoji.")
-        if (dnicks):   print("Log file contains duplicate nicknames.")
+        if (dphrases): print("VVVV: Log file contains duplicate phrases.")
+        if (demoji):   print("VVVV: Log file contains duplicate emoji.")
+        if (dnicks):   print("VVVV: Log file contains duplicate nicknames.")
 
     try:
         c = Contents(
@@ -105,5 +105,5 @@ def contentsExtractor(p: Parameters) -> Contents:
     c.emoji   = [(e[0][1:-1], e[1]) for e in c.emoji] # ^ same
     c.nicks   = [(n[0][1:-1], n[1]) for n in c.nicks] # ^ same
 
-    if (p.verbose): print(c)
+    if (p.verbose): print("VVVV:", c)
     return c

@@ -28,7 +28,7 @@ def goodnight(p: Parameters) -> Goodnight:
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)
 
-    if (p.verbose): print(f"Starting with parameters: \n{p}\n")
+    if (p.verbose): print(f"VVVV: Starting with parameters: \n{p}\n")
     for x in range(nbPhrases):
         usedPhrases = contents.pickPhrase(gn, usedPhrases)
         if (x == nickIdx) : gn.txt += (" " + p.forWhom)
@@ -54,7 +54,7 @@ def main(ac: int, av: list[str]) -> int:
     while (times > 0 or p.infinite):
         result: Goodnight = goodnight(p)
         print(f"Result: \"{result.txt}\"")
-        if (p.verbose): print(f"for parameters: {p.toString()}")
+        if (p.verbose): print(f"\nVVVV: for parameters: {p.toString()}")
         if (p.copy):
             copy(result.txt)
             print("\nCopied the result to your clipboard!")
