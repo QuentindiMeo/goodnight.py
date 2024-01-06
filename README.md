@@ -12,7 +12,7 @@
 &#xa0;
 <div align="center">
     <a href="#top"><img alt="Python version" src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" /></a>
-    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.2.9-blue?logo=windows-terminal" /></a>
+    <a href="#card_file_box-change-log"><img alt="Last version released" src="https://img.shields.io/badge/release-v0.3.0-blue?logo=windows-terminal" /></a>
     <a href="https://github.com/QuentindiMeo/goodnight.py/commits/main"><img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/QuentindiMeo/goodnight.py?color=blueviolet&logo=clarifai" /></a>
     <a href="#top"><img alt="Lines of code" src="https://tokei.rs/b1/github/QuentindiMeo/goodnight.py?category=code" /></a>
     <!-- <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/QuentindiMeo/goodnight.py?color=green&logo=haveibeenpwned" /> -->
@@ -53,6 +53,7 @@ The author declines all responsibility for any conflict caused by the (over)use 
 &nbsp;&nbsp; :checkered_flag:&nbsp; **Launch**
 
 ``` bash
+./goodnight.py [OPTIONS]
 python goodnight.py [OPTIONS]
 ```
 
@@ -72,10 +73,10 @@ python goodnight.py [OPTIONS]
 
 -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file
 -o, --other-step        Use the even-numbered phrase gaps as "and"s instead of commas (def: odd-)
--a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e, def: False)
+-a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e)
 -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)
 -i, --infinite          Toggle infinite mode
--d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0)
+-d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue
 --ignore                Ignore preferences (preferences.sav file)
 -S, --save              Save preferences to file (preferences.sav)
 
@@ -88,9 +89,9 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default Behavior** & Equivalents
 
 ``` bash
-python goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
-python goodnight.py -b "2,5" -s "assets/source" -w ""
-python goodnight.py --default
+./goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
+./goodnight.py -b "2,5" -s "assets/source" -w ""
+./goodnight.py --default
 ```
 
 &#xa0;
@@ -123,7 +124,7 @@ Pyperclip itself uses the a clipboard package, which you may need to install. Re
 
 ## :card_file_box: Change log
 
-The project's exchaustive change log is available [**here**](./docs/CHANGELOG.md).
+The project's exchaustive change log is available [**here**](CHANGELOG.md).
 
 <br />
 

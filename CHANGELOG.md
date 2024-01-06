@@ -24,21 +24,25 @@ Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for
 
 ### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
 
+Implementing duplicate parameter error handling.  
 Enhancing the Makefile and its prints.  
 Updating the [README](README.md)'s general information to reflect changes.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 
-### DEV 0.3.0 - Jan ?? 2024 [[#x]()]
+---
+
+## [RELEASED]
+
+### DEV 0.3.0 - Jan 06 2024 [[#x]()]
 
 Creating a Makefile and executable file at the root of the repository, for clarity.  
 Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
 Implementing the possibility to set the delay to `p`: press Enter to proceed after each interation.  
-Implementing `--XXX=x` parameter syntax.
+Implementing `--XXX=x` parameter syntax.  
+Enhancing verbosity and context messages.
 
 ---
-
-## [RELEASED]
 
 ### DEV 0.2.9 - Jan 04 2024 [[#x]()]
 

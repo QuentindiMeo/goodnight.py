@@ -9,6 +9,20 @@ DEF_NB_UBOUND:     str = "999"
 MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
 
+def runParameterDuplicateChecks(av: list[str]) -> None:
+    parametersLong:  list[str] = [arg for arg in av if arg.startswith("--")]
+    parametersShort: list[str] = [arg for arg in av if arg.startswith("-") and arg not in parametersLong]
+
+    # if duplicate among parameters, raise error
+    if (len(parametersLong)  != len(set(parametersLong)) or \
+        len(parametersShort) != len(set(parametersShort))):
+            print(f"Duplicate argument(s) in '{av}':")
+            for par in parametersLong:
+                if (parametersLong.count(par) != 1): print(f"\t'{par}' is present several times."); break
+            for par in parametersShort:
+                if (parametersShort.count(par) != 1): print(f"\t'{par}' is present several times."); break
+            gnExit(exitCode.ERR_DUP_PAR)
+
 def hasDuplicates(listOfLists: Ulist) -> bool:
     flatList = [item for sublist in listOfLists for item in sublist]
     return len(set(flatList)) != len(flatList)
