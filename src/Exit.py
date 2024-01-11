@@ -72,7 +72,7 @@ def gnUsage() -> None:
         "\n  -a, --alternate         Alternate between \"and\"s, and emoji instead of commas (requires -e)" \
         "\n  -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)" \
         "\n  -i, --infinite          Toggle infinite mode" \
-        "\n  -d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue" \
+        "\n  -d, --delay      <val>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue" \
         "\n  --ignore                Ignore preferences (preferences.sav)" \
         "\n  -S, --save              Save preferences to file (preferences.sav)" \
         "\n" \

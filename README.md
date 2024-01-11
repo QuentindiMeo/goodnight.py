@@ -76,7 +76,7 @@ python goodnight.py [OPTIONS]
 -a, --alternate         Alternate between "and"s, and emoji instead of commas (requires -e)
 -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)
 -i, --infinite          Toggle infinite mode
--d, --delay      <flt>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue
+-d, --delay      <val>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue
 --ignore                Ignore preferences (preferences.sav file)
 -S, --save              Save preferences to file (preferences.sav)
 
@@ -113,8 +113,8 @@ python goodnight.py [OPTIONS]
 
 ## :paperclips: Requirements
 
-This program was tested on and designed for Ubuntu 22.04; it is WSL2-compatible.
-The program uses the **Pyperclip** module to copy the result to your clipboard; you may need to install it with `pip install pyperclip`
+This program was tested on and designed for Ubuntu 22.04; it is WSL2-compatible.  
+The program uses the **Pyperclip** module to copy the result to your clipboard; you may need to install it with `pip install pyperclip`  
 Pyperclip itself uses the a clipboard package, which you may need to install. Refer to [Pyperclip's documentation](https://pyperclip.readthedocs.io/en/latest/) for more information.
 
 > [!CAUTION]
@@ -124,7 +124,14 @@ Pyperclip itself uses the a clipboard package, which you may need to install. Re
 
 ## :card_file_box: Change log
 
+Only the major checkpoints will be listed here.  
 The project's exchaustive change log is available [**here**](CHANGELOG.md).
+
+- ***[DEV 0.0.0]** Oct 30 2023*: Project creation.
+- ***[DEV 0.1.0]** Nov 02 2023*: Project comprehends its core components: phrases, emoji, nickname, weighting.
+- ***[DEV 0.2.0]** Nov 06 2023*: Project generates goodnights using its core components, added fancy options.
+- ***[DEV 0.2.5]** Nov 13 2023*: Code security and quality was improved, new options were added.
+- ***[DEV 0.3.0]** Jan 06 2024*: Repo was enhanced, quality was improved, a Makefile and new options were added.
 
 <br />
 

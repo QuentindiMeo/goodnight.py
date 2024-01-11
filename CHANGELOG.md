@@ -24,7 +24,6 @@ Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for
 
 ### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
 
-Implementing duplicate parameter error handling.  
 Enhancing the Makefile and its prints.  
 Updating the [README](README.md)'s general information to reflect changes.  
 Redacting a demonstration script and a demonstration source file.  
@@ -40,37 +39,39 @@ Creating a Makefile and executable file at the root of the repository, for clari
 Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
 Implementing the possibility to set the delay to `p`: press Enter to proceed after each interation.  
 Implementing `--XXX=x` parameter syntax.  
+Implementing duplicate parameter error handling.  
 Enhancing verbosity and context messages.
 
 ---
 
-### DEV 0.2.9 - Jan 04 2024 [[#x]()]
+### DEV 0.2.9 - Jan 04 2024 [[#73](https://github.com/QuentindiMeo/goodnight.py/commit/9e869cdd585183bd89673fda99fbc057efb5b8fa)]
 
 Added and implemented `--times`: compute and print x goodnights.  
 Added and implemented `--delay`: add a delay between each goodnight iteration (in milliseconds).  
 Created this file (hello), [CODE OF CONDUCT](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIBUTING.md).
 
-### DEV 0.2.8 - Dec 31 2023 [[#x]()]
+### DEV 0.2.8 - Dec 31 2023 [[#64](https://github.com/QuentindiMeo/goodnight.py/commit/7fa2780f0411992f1704d1b91860585eb5394a82)]
 
 Implemented `--alternate` aka `-a`: make the program alternate between commas/emoji and "and"s.  
 Added and implemented `--infinite` aka `-i`: make the program infinitely generate goodnights.  
 `-i` is therefore not an alias of `--ignore` any more.  
 Created Goodnight class holding the result text and a boolean for `--other-step`'s steps.
 
-### DEV 0.2.7 - Dec 13 2023 [[#x]()]
+### DEV 0.2.7 - Dec 13 2023 [[#60](https://github.com/QuentindiMeo/goodnight.py/commit/52fb39d61c1f5143bc0c9e00628f7f76acdb67ee)]
 
 Added and implemented `--no-copy`, disabling clipboard copy.  
 Added `--alternate`.  
 Deprecated and removed `--isave`; as `--save` can be combined with `--default`.
 
-### DEV 0.2.6 - Nov 26 2023 [[#x]()]
+### DEV 0.2.6 - Nov 26 2023 [[#56](https://github.com/QuentindiMeo/goodnight.py/commit/40b273f84baaac2488be58acf6c3ce6ec2430545)]
 
 Added and implemented `--save` aka `-S`: save runtime preferences to file.  
-Improved largely the code efficiency and its structure for maintainability.  
-Added typings to exception handling.  
+Improved largely the code efficiency and its structure, for maintainability.  
+Implemented regex handles for arguments interpretation, for clarity.  
+Added types on handled exceptions.  
 Added [LICENSE](LICENSE.md) file and [issue templates](.github/ISSUE_TEMPLATE).
 
-### DEV 0.2.5 - Nov 13 2023 [[#x]()]
+### DEV 0.2.5 - Nov 13 2023 [[#46](https://github.com/QuentindiMeo/goodnight.py/commit/11c4ee16af7233d136cd283ac1411e9ee1ab37c7)]
 
 Added and implemented `--other-step` aka `-o`: make the program use the even-numbered phrase gaps as "and"s instead of commas.  
 Updated usage/help function to reflect additions.  
@@ -79,27 +80,27 @@ Adding confirmation prompt if `-n` or `-b` is set to a high value (> 6) through 
 
 ---
 
-### DEV 0.2.4 - Nov 09 2023 [[#x]()]
+### DEV 0.2.4 - Nov 09 2023 [[#44](https://github.com/QuentindiMeo/goodnight.py/commit/a9dc5d7f87523405adb64bdb5071a715e0cd5608)]
 
 Added documentation: commenting code, [source.log](assets/source.log) and boosting the [README](README.md).  
 Fixed default parameter skip for `-n` and `-b`.
 
-### DEV 0.2.3 - Nov 08 2023 [[#x]()]
+### DEV 0.2.3 - Nov 08 2023 [[#42](https://github.com/QuentindiMeo/goodnight.py/commit/53c4f656d62f88e5c8d29d50c604e59f740b3cb0)]
 
 Improved coding style (ty [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode)).  
 Adjusted [README](README.md) badges.
 
-### DEV 0.2.2 - Nov 06 2023 [[#x]()]
+### DEV 0.2.2 - Nov 06 2023 [[#39](https://github.com/QuentindiMeo/goodnight.py/commit/18fbf246d579934cd737bae7db1bbe6e6d715619)]
 
 Implemented the possibility to have several PHRASES (and others) in a source file.  
 Added warning prompt if it is the case, asking if the user wants to continue.
 
-### DEV 0.2.1 - Nov 06 2023 [[#x]()]
+### DEV 0.2.1 - Nov 06 2023 [[#38](https://github.com/QuentindiMeo/goodnight.py/commit/44eae7fdfb83faa957940478f57066c84cb6389d)]
 
 Added nicer transition `"and"` between phrases instead of commas.  
 Adjusted the presentation gif.
 
-### DEV 0.2.0 - Nov 06 2023 [[#x]()]
+### DEV 0.2.0 - Nov 06 2023 [[#37](https://github.com/QuentindiMeo/goodnight.py/commit/54af7148d9bebdcc8a61c35a3aea227632081389)]
 
 Implemented phrase picking.  
 Added `-r` as an alias of `--allow-repetition`.  
