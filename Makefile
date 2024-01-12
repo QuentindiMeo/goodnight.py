@@ -42,7 +42,7 @@ install:
 	@pip install pyperclip==1.8.2
 	@$(ECHO) $(BOLDGRN) " Installation complete.\n"$(DEF)
 	@$(ECHO) $(BLU) " Depending on your system, you may now need to install:"
-	@$(ECHO) "\txclip or xsel (Linux),\n\tpbcopy and pbpaste (Mac),\n\tpywin32 (Windows) $(DEF)"
+	@$(ECHO) "\txclip or xsel (Linux),\n\tpbcopy and pbpaste (Mac),\n\tpywin32 (Windows)"$(DEF)
 
 # COLORING PRINTS #
 

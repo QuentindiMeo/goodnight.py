@@ -5,9 +5,9 @@
 <div align="center">
     <a href="#full_moon_with_face-description">Description</a> &#xa0; | &#xa0;
     <a href="#city_sunset-usage">Usage</a> &#xa0; | &#xa0;
-    <a href="#paperclips-requirements">Requirements</a> &#xa0; | &#xa0;
+    <a href="#gear-requirements">Requirements</a> &#xa0; | &#xa0;
     <a href="#card_file_box-change-log">Change log</a> &#xa0; | &#xa0;
-    <a href="/docs/LICENSE.md">License</a>
+    <a href="LICENSE.md">License</a>
 </div>
 &#xa0;
 <div align="center">
@@ -45,12 +45,13 @@ The author declines all responsibility for any conflict caused by the (over)use 
 
 > [!NOTE]
 > Don't hesitate and report any kind of malfunction or request a feature by [**opening an issue**](https://github.com/QuentindiMeo/goodnight.py/issues)!
+> Feel free to also check the [code of conduct](CODE_OF_CONDUCT.md) and [contributing guide](CONTRIBUTING.md).
 
 &#xa0;
 
 ## :city_sunset: Usage
 
-&nbsp;&nbsp; :checkered_flag:&nbsp; **Launch**
+&nbsp;&nbsp; :rocket:&nbsp; **Launch**
 
 ``` bash
 ./goodnight.py [OPTIONS]
@@ -89,7 +90,7 @@ python goodnight.py [OPTIONS]
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default Behavior** & Equivalents
 
 ``` bash
-./goodnight.py --bounds "2,5" --source "./assets/source.log" --for-whom ""
+./goodnight.py --bounds=2,5 --source="./assets/source.log" --for-whom=""
 ./goodnight.py -b "2,5" -s "assets/source" -w ""
 ./goodnight.py --default
 ```
@@ -100,9 +101,9 @@ python goodnight.py [OPTIONS]
 
 - Fear not having to copy the result of the program, it will be automatically **copied to your clipboard**! :wink: (unless [`--no-copy`](#city_sunset-usage) is present)
 - Your preferences are **automatically saved** upon the first launch unless specified otherwise (see above: [`-i`](#city_sunset-usage)).
-  - Settings will be set based on parameters; if none is provided, they will be based on the preference file; if there is none, the CLI will ask you for them.
+  - Settings will be set based on parameters; all unfilled parameters will be based on the preference file; if there are still unfilled parameters, the CLI will ask you for them.
 - Though Ctrl+D cannot be caught in this script, you can **use Ctrl+C** to exit at any time.
-- [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage) are mutually exclusive. If both are provided, the program will exit with an error.
+- [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage), just like [`-t`](#city_sunset-usage) and [`-i`](#city_sunset-usage), are mutually exclusive. If both are provided, the program will exit with an error.
 - [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase, or [`-e`](#city_sunset-usage) is present.
 - A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
   - You may create your own `.log` source file (see above: [`-s`](#city_sunset-usage)). Open the default source file to see how to format it.
@@ -111,7 +112,7 @@ python goodnight.py [OPTIONS]
 
 &#xa0;
 
-## :paperclips: Requirements
+## :gear: Requirements
 
 This program was tested on and designed for Ubuntu 22.04; it is WSL2-compatible.  
 The program uses the **Pyperclip** module to copy the result to your clipboard; you may need to install it with `pip install pyperclip`  
