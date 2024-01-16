@@ -59,7 +59,7 @@ class Parameters:
     def __str__(self) -> str:
         return \
                 f"\tcopy: {self.copy}\n" \
-                f"\t{self.nbPhrases} phrases\n" \
+                f"\tnumber of phrases: {self.nbPhrases}\n" \
                 f"\temoji: {self.emoji}\n" \
                 f"\tsource file: {self.source}\n" \
                 f"\tfor: {self.forWhom}\n" \
@@ -96,7 +96,7 @@ class Contents:
         if (p.forWhom != ""): return p.forWhom
 
         if (self.nicks == []):
-            if (p.verbose): print(f"No nicknames found, using default: {p.forWhom}")
+            if (p.verbose): print(f"VVVV: No nicknames found, using default: {p.forWhom}")
             return p.forWhom
 
         randWeight: int = rand(0, sum([n[1] for n in self.nicks]))

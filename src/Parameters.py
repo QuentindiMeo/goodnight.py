@@ -55,7 +55,7 @@ def saveParameters(p: Parameters) -> None:
     except PermissionError as e:
         print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_PER)
 
-def fromCommandLine(p: Parameters, av: list[str] = []) -> Parameters:
+def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     copy:      bool = p.copy
     nbPhrases:  str = p.nbPhrases
     emoji:     bool = p.emoji
@@ -205,7 +205,6 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
 
     if (verbose): print(f"VVVV: Entering sanitization with av: {av}")
-
     def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
         newAv: list[str] = [av[0]]
 
@@ -228,7 +227,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         if ("--default" in newAv): # --default ignores all other parameters
             newAv.remove("--default"); newAv.insert(1, "--default")
         # if newAv has --ignore, move it to the end (because it instantly jumps to CLI)
-        if ("--ignore" in newAv): newAv.remove("--ignore"); newAv.append("--ignore")
+        if ("--ignore"  in newAv): newAv.remove("--ignore");  newAv.append("--ignore")
+        if ("--default" in newAv): newAv.remove("--default"); newAv.append("--default")
 
         return (len(newAv), newAv)
     (ac, av) = getSanitizedAv(ac, av)
