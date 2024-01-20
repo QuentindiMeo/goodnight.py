@@ -20,14 +20,17 @@ Announcing the release date of the first release on Reddit & Discord.
 
 Adding a values unpacking function for parameters, for clarity.  
 Adding a Ctrl+D handler, exiting the program gracefully with a context message [EOFError, SIGTERM].  
-Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.
+Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.  
+Redacting a demonstration script and a demonstration source file.  
+Updating the [README demonstration gif](README.md).
 
 ### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
 
 Enhancing the Makefile and its prints.  
-Updating the [README](README.md)'s general information to reflect changes.  
-Redacting a demonstration script and a demonstration source file.  
-Updating the [README demonstration gif](README.md).
+Changed the Parameters class' constructor to taking a dictionary argument, to avoid having 20 arguments.  
+Adding and implementing `--nick-nth`: forcing the nickname to be after the nth phrase.  
+Adding and implementing `--preferences` aka `-p`: punctually, using a specifice file as set preferences file.  
+Updating the [README](README.md)'s general information to reflect changes.
 
 ---
 

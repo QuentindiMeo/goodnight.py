@@ -18,7 +18,8 @@ DEF_NB_DBOUND:     str = "2,5"
 DEF_NB_UBOUND:     str = "999"
 DEF_EMOJI:        bool = False
 DEF_SOURCE:        str = "./assets/source.log " # same as below
-DEF_FOR_WHOM:      str = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_FOR_WHOM:      str = " " # same as below
+DEF_NICK_NTH:      str = "0 " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_ALTERNATE:    bool = False
@@ -190,8 +191,12 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
             else: delay = buf
             if (p.verbose): print(f"VVVV: Delay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
-    newP = Parameters(c = copy, n = nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, e = emoji, s = source.strip(), w = forWhom.strip(), \
-                      r = allowRep, a = alternate, t = times, i = infinite, d = delay, o = step, v = p.verbose, sav = p.saving)
+    newP = Parameters({
+        "copy": copy,
+        "nbPhrases": nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, "emoji": emoji, "source": source.strip(), "forWhom": forWhom.strip(), "nickNth": DEF_NICK_NTH,
+        "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
+        "verbose": p.verbose, "saving": p.saving
+    })
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
     return newP
@@ -250,6 +255,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     emoji:     bool = extractP.emoji
     source:     str = extractP.source
     forWhom:    str = extractP.forWhom
+    nickNth:    str = extractP.nickNth
     allowRep:  bool = extractP.allowRep
     step:      bool = extractP.step
     alternate: bool = extractP.alternate
@@ -330,7 +336,12 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
             case "--ignore":
-                return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, t=times, i=infinite, d=delay, v=verbose, sav=saving))
+                return fromCommandLine(Parameters({
+                    "copy": copy,
+                    "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
+                    "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
+                    "verbose": verbose, "saving": saving
+                }))
             case "-S" | "--save": saving = True
 
             case "--verbose": pass # still needs to be here to avoid an invalid parameter error
@@ -338,7 +349,12 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
         i += 1
-    return fromCommandLine(Parameters(c=copy, n=nbPhrases, e=emoji, s=source, w=forWhom, r=allowRep, o=step, a=alternate, t=times, i=infinite, d=delay, v=verbose, sav=saving), av + FILE_AV)
+    return fromCommandLine(Parameters({
+            "copy": copy,
+            "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
+            "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
+            "verbose": verbose, "saving": saving
+        }), av + FILE_AV)
 
 def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
@@ -359,6 +375,7 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
                 elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
+                elif (line.startswith("nicknth=")):   p.nicknth     =      line[len("who="):-1]
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
                 elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
@@ -371,8 +388,12 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
     return p
 
 def defaultParameters(fromParameter: bool = False) -> Parameters:
-    p = Parameters(c = DEF_COPY, n = DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, e = DEF_EMOJI, s = DEF_SOURCE, w = DEF_FOR_WHOM, \
-                    r = DEF_REPETITION, o = DEF_STEP, a = DEF_ALTERNATE, t = DEF_TIMES, i = DEF_INFINITE, d = DEF_DELAY, v = DEF_VERBOSITY, sav = DEF_SAVE_PREF)
+    p = Parameters({
+            "copy": DEF_COPY,
+            "nbPhrases": DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, "emoji": DEF_EMOJI, "source": DEF_SOURCE, "forWhom": DEF_FOR_WHOM, "nickNth": DEF_NICK_NTH,
+            "allowRep": DEF_REPETITION, "step": DEF_STEP, "alternate": DEF_ALTERNATE, "times": DEF_TIMES, "infinite": DEF_INFINITE, "delay": DEF_DELAY,
+            "verbose": DEF_VERBOSITY, "saving": DEF_SAVE_PREF
+        })
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p

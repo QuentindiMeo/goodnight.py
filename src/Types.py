@@ -10,6 +10,7 @@ ElementList:     TypeAlias = list[str] # a list of P/E/N elements
 WeightedElement: TypeAlias = (str, int) # a P/E/N and its weight
 WeightedList:    TypeAlias = (ElementList, int) # a list of P/E/N elements and its weight
 UnweightedList:  TypeAlias = list[ElementList] # an unweighted list of P/E/N elements
+ParamDict:       TypeAlias = dict[str]
 
 DEF_COPY:       bool = True
 DEF_NB_PHRASES:  str = "?"
@@ -17,7 +18,8 @@ DEF_NB_DBOUND:   str = "2,5"
 DEF_NB_UBOUND:   str = "999"
 DEF_EMOJI:      bool = False
 DEF_SOURCE:      str = "./assets/source.log " # same as below
-DEF_FOR_WHOM:    str = " " # space to skip the CLI if the user used the default value as a parameter
+DEF_FOR_WHOM:    str = " " # same as below
+DEF_NICK_NTH:    str = "0 " # space to skip the CLI if the user used the default value as a parameter
 DEF_REPETITION: bool = False
 DEF_STEP:       bool = False
 DEF_ALTERNATE:  bool = False
@@ -71,25 +73,44 @@ class Parameters:
                 f"\tverbose mode: {self.verbose}\n" \
                 f"\tsaving preferences: {self.saving}"
 
-    def __init__(self, c: bool = DEF_COPY, n: str = DEF_NB_PHRASES, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, \
-                 r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, t: str = DEF_TIMES, i: bool = DEF_INFINITE, d: str = DEF_DELAY, \
-                 v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
-        self.copy      = c
+    def __init__(self, p: ParamDict) -> None:
+        self.copy      = p["copy"]
 
-        self.nbPhrases = n
-        self.emoji     = e
-        self.source    = s
-        self.forWhom   = w
+        self.nbPhrases = p["nbPhrases"]
+        self.emoji     = p["emoji"]
+        self.source    = p["source"]
+        self.forWhom   = p["forWhom"]
+        self.nickNth   = p["nickNth"]
 
-        self.allowRep  = r
-        self.step      = o
-        self.alternate = a
-        self.times     = t
-        self.infinite  = i
-        self.delay     = d
+        self.allowRep  = p["allowRep"]
+        self.step      = p["step"]
+        self.alternate = p["alternate"]
+        self.times     = p["times"]
+        self.infinite  = p["infinite"]
+        self.delay     = p["delay"]
 
-        self.verbose   = v
-        self.saving    = sav
+        self.verbose   = p["verbose"]
+        self.saving    = p["save"]
+    # def __init__(self, c: bool = DEF_COPY, n: str = DEF_NB_PHRASES, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, nth: str = DEF_NICK_NTH, \
+    #              r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, t: str = DEF_TIMES, i: bool = DEF_INFINITE, d: str = DEF_DELAY, \
+    #              v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
+    #     self.copy      = c
+
+    #     self.nbPhrases = n
+    #     self.emoji     = e
+    #     self.source    = s
+    #     self.forWhom   = w
+    #     self.nickNth   = nth
+
+    #     self.allowRep  = r
+    #     self.step      = o
+    #     self.alternate = a
+    #     self.times     = t
+    #     self.infinite  = i
+    #     self.delay     = d
+
+    #     self.verbose   = v
+    #     self.saving    = sav
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:
