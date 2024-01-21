@@ -61,5 +61,5 @@ def main(ac: int, av: list[str]) -> int:
         times -= 1
         if (times > 0 or p.infinite):
             sleep(delay if (delay >= 0) else 0)
-            if (delay == -1): input()
+            if (delay == -1): input("\tPress Enter to proceed...")
     return 0

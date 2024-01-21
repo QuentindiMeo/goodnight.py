@@ -29,7 +29,7 @@ DEF_DELAY:         str = "0 " # same as above
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_LONGPAR_INPUT: str = r"^\-\-[a-zA-Z\-]*\=.*$"
-MAT_INTEGER_INPUT: str = r"^[0-9]+$"
+MAT_INTEGER_INPUT: str = r"^\-?[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
 MAT_THEPKEY_INPUT: str = r"^p$"
@@ -74,6 +74,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     randomOrNumber:  str = DEF_NB_PHRASES
     timesOrInfinite: str = DEF_TIMES
 
+    av = [] if (av == None) else av
     if (copy == DEF_COPY and "--no-copy" not in av):
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
         if (not confirmed):
@@ -103,7 +104,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
                 while (not isMatching):
                     buf = input("Number of phrases to draw: ").strip()
                     isMatching = matches(MAT_INTEGER_INPUT, buf)
-                    if (isMatching):
+                    if (not isMatching):
                         print("\tInvalid input: must be a positive integer.")
                 nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
                 if (buf == ""):
@@ -137,13 +138,13 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
         while (nickNth == DEF_NICK_NTH):
             buf: str = ""
             while (not matches(MAT_INTEGER_INPUT, buf)):
-                buf = input("Place the nickname after the nth phrase (integer): ").strip()
+                buf = input("Place the nickname after the nth phrase\n\t(-1 [nowhere] | 0 [random] | int): ").strip()
                 if (not matches(MAT_INTEGER_INPUT, buf)):
                     print("\tInvalid input: N must be positive, 0 (random position) or -1 (no nickname).")
             nickNth = str(1 if buf == "" else int(buf))
             if (buf == ""):
                 print(f"\t... using default value: {nickNth.strip()}.")
-            elif (int(nickNth) < 1):
+            elif (int(nickNth) < -1):
                 print("N must be positive, 0 (random position) or -1 (no nickname)."); nickNth = DEF_NICK_NTH
             if (p.verbose): print(f"VVVV: Index of phrase after which the nickname is printed set to {nickNth}.")
     if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
@@ -190,7 +191,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
         while (delay == DEF_DELAY):
             isMatching: bool = False
             while (not isMatching):
-                buf = input("Delay between every iteration (in ms), or p? (with ? a letter): ").strip()
+                buf = input("Delay between every iteration (in ms), or p (press Enter): ").strip()
                 isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_THEPKEY_INPUT, buf)
                 if (not isMatching):
                     print("\tInvalid input: must be a positive float number or p.")
@@ -375,7 +376,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     "copy": copy,
                     "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
                     "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
-                    "verbose": verbose, "saving": saving
+                    "verbose": verbose, "saving": saving, "prefFile": prefFile
                 }))
             case "-S" | "--save": saving = True
             case "-p" | "--pref-file": i += 1 # still needs to be here to avoid an invalid parameter error
