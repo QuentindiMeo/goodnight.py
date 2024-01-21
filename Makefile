@@ -1,10 +1,12 @@
 # VARIABLES #
 
 ECHO	=	/bin/echo -e
-RM		=	rm -rf
+RM	=	rm -rf
 CHMOD	=	chmod +x
 
 COMPIL	=	*.pyc
+SRC	=	src/
+TESTS	=	tests/
 CACHE	=	__pycache__/
 NAME	=	goodnight.py
 
@@ -26,10 +28,10 @@ run:
 
 clean:
 	@$(ECHO) $(BOLDGRN) " Cleaning..."$(DEF)
-	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(CACHE)$(DEF) && $(RM) $(CACHE)
-	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(COMPIL)$(DEF) && $(RM) $(COMPIL)
-	@$(ECHO) $(GRN) " Cleaning " $(BLU)tests/$(CACHE)$(DEF) && $(RM) tests/$(CACHE)
-	@$(ECHO) $(GRN) " Cleaning " $(BLU)tests/$(COMPIL)$(DEF) && $(RM) tests/$(COMPIL)
+	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(CACHE)$(DEF) && $(RM) $(SRC)$(CACHE)
+	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(COMPIL)$(DEF) && $(RM) $(TESTS)$(COMPIL)
+	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(TESTS)$(CACHE)$(DEF) && $(RM) $(TESTS)$(CACHE)
+	@$(ECHO) $(GRN) " Cleaning " $(BLU)$(TESTS)$(COMPIL)$(DEF) && $(RM) $(TESTS)$(COMPIL)
 	@$(ECHO) $(BOLDGRN) " Cleaning complete."$(DEF) || $(ECHO) $(RED) " Cleaning failed."$(DEF)
 
 tests:
