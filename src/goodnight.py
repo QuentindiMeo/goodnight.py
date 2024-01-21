@@ -14,7 +14,7 @@ from CtrlHandlers import handler as CtrlHandler
 
 def pickJunction(nth: int, nbPhrases: int, step: bool) -> str:
     if (nth >= nbPhrases - 1): return ""
-    return " and" if ((nth + 1) % 3 == step) else ","
+    return " and" if ((nth + 1) % 2 == step) else ","
 
 def goodnight(p: Parameters) -> Goodnight:
     gn = Goodnight("")
@@ -35,9 +35,9 @@ def goodnight(p: Parameters) -> Goodnight:
         if (p.emoji):
             if (p.alternate and gn.step): gn.txt += pickJunction(x, nbPhrases, p.step)
             else: usedEmoji = contents.pickEmoji(gn, usedEmoji)
-            gn.step = not gn.step
         else: gn.txt += pickJunction(x, nbPhrases, p.step)
         gn.txt += " "
+        gn.step = not gn.step
         if (len(usedPhrases) == len(contents.phrases)): usedPhrases = []
         if (len(usedEmoji)   == len(contents.emoji))  : usedEmoji   = []
     gn.txt = rreplace(gn.txt.strip(), "  ", " ")

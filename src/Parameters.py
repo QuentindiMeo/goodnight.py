@@ -245,7 +245,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     if (("-t" in av or "--times" in av) and ("-i" in av or "--infinite" in av)):
         print("Cannot use both -t/--times and -i/--infinite at the same time."); gnExit(exitCode.ERR_INV_ARG)
 
-    verbose: bool = DEF_VERBOSITY if ("--verbose" not in av) else (not DEF_VERBOSITY)
+    verbose: bool = False if ("--verbose" not in av or "--verbose=false" in str(av).lower()) else True
 
     if (verbose): print(f"VVVV: Entering sanitization with av: {av}")
     def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
@@ -288,11 +288,11 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     extractP: Parameters = defaultParameters() if ("--ignore" in av) else fromFile(getPreferencesFile(ac, av), extraction = True)
     try:
         if (verbose): print(f"VVVV: Entering long parameters handling with av: {av}")
-        av = applyLongParameters(av, "--verbose" in av)
+        av = applyLongParameters(av, "--verbose" in av and "--verbose=false" not in str(av))
     except ValueError as e:
         print(f"Invalid argument: {e}"); gnExit(exitCode.ERR_INV_ARG)
 
-    verbose = "--verbose" in av
+    verbose = "--verbose" in av and "'--verbose', 'False'" not in str(av)
     if (verbose): print(f"VVVV: Program arguments interpreted as: {av}")
     av = [arg for arg in av if not matches(MAT_LONGPAR_INPUT, arg)] # remove all long parameters from av to avoid confusion
     ac = len(av)
@@ -317,7 +317,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     while (i < ac): # hence can't use a for in range loop
         match av[i]:
             case "--default": return defaultParameters(fromParameter = True)
-            case "--no-copy": copy = False
+            case "--no-copy":
+                if (i + 1 == ac): copy = False; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    copy = not eval(av[i + 1]); i += 1
+                else: copy = False
+                setParams.append(av[i])
 
             case "-b" | "--bounds":
                 if (i + 1 >= ac):
@@ -345,7 +351,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
                 setParams.append(av[i]); i += 1
-            case "-e" | "--emoji": emoji = True; setParams.append(av[i])
+            case "-e" | "--emoji":
+                if (i + 1 == ac): emoji = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    emoji = eval(av[i + 1]); i += 1
+                else: emoji = True
+                setParams.append(av[i])
             case "-s" | "--source":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -368,9 +380,27 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
                 setParams.append(av[i]); i += 1
 
-            case "-r" | "--allow-repetition": allowRep = True; setParams.append(av[i])
-            case "-o" | "--other-step": step = True; setParams.append(av[i])
-            case "-a" | "--alternate": alternate = True; setParams.append(av[i])
+            case "-r" | "--allow-repetition":
+                if (i + 1 == ac): allowRep = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    allowRep = eval(av[i + 1]); i += 1
+                else: allowRep = True
+                setParams.append(av[i])
+            case "-o" | "--other-step":
+                if (i + 1 == ac): step = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    step = eval(av[i + 1]); i += 1
+                else: step = True
+                setParams.append(av[i])
+            case "-a" | "--alternate":
+                if (i + 1 == ac): alternate = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    alternate = eval(av[i + 1]); i += 1
+                else: alternate = True
+                setParams.append(av[i])
             case "-t" | "--times":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -381,7 +411,13 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
                 setParams.append(av[i]); i += 1
-            case "-i" | "--infinite": infinite = True; setParams.append(av[i])
+            case "-i" | "--infinite":
+                if (i + 1 == ac): infinite = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    infinite = eval(av[i + 1]); i += 1
+                else: infinite = True
+                setParams.append(av[i])
             case "-d" | "--delay":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -395,16 +431,27 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
                 setParams.append(av[i]); i += 1
             case "--ignore":
+                if (i + 1 < ac and eval(av[i + 1].capitalize()) == False): break
                 return fromCommandLine(Parameters({
                     "copy": copy,
                     "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
                     "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
                     "verbose": verbose, "saving": saving, "prefFile": prefFile
                 }))
-            case "-S" | "--save": saving = True; setParams.append(av[i])
+            case "-S" | "--save":
+                if (i + 1 == ac): saving = True; break
+                nextArg: str = av[i + 1].capitalize()
+                if (nextArg in ["True", "False"]):
+                    saving = eval(av[i + 1]); i += 1
+                else: saving = True
+                setParams.append(av[i])
             case "-p" | "--pref-file": i += 1 # still needs to be here to avoid an invalid parameter error
 
-            case "--verbose": setParams.append(av[i]) # still needs to be here to avoid an invalid parameter error
+            case "--verbose":
+                if (i + 1 < ac):
+                    if (eval(av[i + 1].capitalize()) == False): break
+                    i += 1
+                verbose = True
             case "-h" | "--help": gnExit(exitCode.HELP)
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)

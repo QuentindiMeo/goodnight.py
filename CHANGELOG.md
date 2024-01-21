@@ -12,6 +12,7 @@ Announcing the release on Reddit & Discord
 ### DEV 0.3.3 - Jan ?? 2024 [[#x]()]
 
 Adding and implementing `--version` aka `-v`: print the program's version.  
+Making `--ignore` not ignore other parameters.  
 Adding a dynamic loading bar while the program is generating a goodnight.  
 Redacting and making unit tests.  
 Announcing the release date of the first release on Reddit & Discord.
@@ -19,7 +20,8 @@ Announcing the release date of the first release on Reddit & Discord.
 ### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
 
 Adding a Ctrl+D handler, exiting the program gracefully with a context message.  
-Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.  
+Fixing the long overdue bug of FILE_AV suppressing the CLI asking for parameters.  
+Adding True/False logic to boolean program parameters; allowing `--no-copy=False`, etc.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 

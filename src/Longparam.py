@@ -4,7 +4,6 @@ from re import search as matches
 from Utils import runParameterDuplicateChecks
 from Exit import exitCode, gnExit
 
-DEF_EMPTY_STRING:  str = "$$$EMPTY$$$"
 MAT_LONGPAR_INPUT: str = r"^\-\-[a-zA-Z\-]*\=.*$"
 MAT_INTEGER_INPUT: str = r"^\-?[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
@@ -28,11 +27,12 @@ def handleBounds(arg: str) -> str:
     if (not matches(MAT_BOUNDED_INPUT, arg)): raise ValueError(f"unexpected bounds value for '{arg}'")
     return arg
 
-def isBoolean(arg: str) -> bool: return arg == "true" or arg == "false"
+def isBoolean(arg: str) -> bool: return arg in ["True", "False"]
+
 def handleBoolean(arg: str) -> str:
-    value: str = arg[arg.find("=") + 1:].strip().lower()
-    if (not isBoolean(arg[arg.find("=") + 1:])): raise ValueError(f"unexpected boolean value for '{arg}'")
-    return DEF_EMPTY_STRING if (eval(value) == False) else arg[:arg.find("=")]
+    value: str = arg[arg.find("=") + 1:].strip().capitalize()
+    if (not isBoolean(value)): raise ValueError(f"unexpected boolean value for '{arg}'")
+    return value
 
 def applyLongParameters(av: list[str], verbose: bool) -> list[str]:
     booleans: list[str] = ["default", "no-copy", "emoji", "allow-repetition", "other-step", "alternate", "infinite", "ignore", "save", "verbose", "help"]
@@ -40,7 +40,7 @@ def applyLongParameters(av: list[str], verbose: bool) -> list[str]:
 
     for arg in av:
         if (not matches(MAT_LONGPAR_INPUT, arg)): newAv.append(arg); continue
-        if (arg[2:arg.find("=")] in booleans): newAv.append(handleBoolean(arg))
+        if (arg[2:arg.find("=")] in booleans): newAv.append(arg[:arg.find("=")]); newAv.append(handleBoolean(arg))
         else:
             newAv.append(arg[:arg.find("=")])
             if   (arg.startswith("--bounds=")):     newAv.append(handleBounds( arg[arg.find("=") + 1:]))
@@ -53,8 +53,8 @@ def applyLongParameters(av: list[str], verbose: bool) -> list[str]:
             elif (arg.startswith("--pref-file=")):  newAv.append(handleString( arg[arg.find("=") + 1:]))
             else: print(f"Invalid argument '{arg}'."); gnExit(exitCode.ERR_INV_ARG)
 
-    if (verbose or "--verbose" in newAv): print(f"VVVV: Diving through duplicate inspection for: {newAv}")
+    newAvVerbose: bool = "--verbose" in newAv and "'--verbose', 'False'" not in str(newAv)
+    if (verbose or newAvVerbose): print(f"VVVV: Diving through duplicate inspection for: {newAv}")
     runParameterDuplicateChecks(newAv)
-    newAv = [arg for arg in newAv if arg != DEF_EMPTY_STRING]
-    if (verbose or "--verbose" in newAv): print(f"VVVV: New av with long parameters: {newAv}")
+    if (verbose or newAvVerbose): print(f"VVVV: New av with long parameters: {newAv}")
     return newAv
