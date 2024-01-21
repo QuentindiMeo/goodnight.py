@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.10
 
 from os import path, chmod
+from signal import SIGTERM
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
+from Utils import isIn, sendSignal, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
 from Longparam import applyLongParameters
 from Types import Parameters
 from Exit import exitCode, gnExit
@@ -438,7 +439,11 @@ def defaultParameters(savefile: str = DEF_PREFFPATH, fromParameter: bool = False
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
     return p
 def getParameters(ac: int, av: list[str]) -> Parameters:
-    p = fromParameters(ac, av) if (ac > 1) else fromFile(extraction = False, noParam = True)
+    p: Parameters
+    try:
+        p = fromParameters(ac, av) if (ac > 1) else fromFile(extraction = False, noParam = True)
+    except EOFError:
+        sendSignal(SIGTERM) # SIGTERM is caught by CtrlDHandler, which terminates the program
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
     return p

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3.10
 
+from os import kill, getpid
+
 from re import search as matches
 
 from Exit import exitCode, gnExit
@@ -45,6 +47,9 @@ def askConfirmation(context: str, e: exitCode = exitCode.SUCCESS) -> bool:
             if (e != exitCode.SUCCESS): gnExit(e)
             return False
     return False
+
+def sendSignal(sig: int) -> None:
+    kill(getpid(), sig)
 
 def isIn(chars: list[str], s: str) -> bool:
     for c in chars:
