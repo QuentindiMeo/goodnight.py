@@ -10,7 +10,6 @@ MAT_INTEGER_INPUT: str = r"^\-?[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
 MAT_THEPKEY_INPUT: str = r"^p$"
-MAT_NAME_LOGFILE:  str = r".*\.log$"
 
 def handleDelay(arg: str) -> str:
     if (not matches(MAT_THEPKEY_INPUT, arg) and \
@@ -51,6 +50,7 @@ def applyLongParameters(av: list[str], verbose: bool) -> list[str]:
             elif (arg.startswith("--nick-nth=")):   newAv.append(handleInteger(arg[arg.find("=") + 1:]))
             elif (arg.startswith("--times=")):      newAv.append(handleInteger(arg[arg.find("=") + 1:], positive=True))
             elif (arg.startswith("--delay=")):      newAv.append(handleDelay(  arg[arg.find("=") + 1:]))
+            elif (arg.startswith("--pref-file=")):  newAv.append(handleString( arg[arg.find("=") + 1:]))
             else: print(f"Invalid argument '{arg}'."); gnExit(exitCode.ERR_INV_ARG)
 
     if (verbose or "--verbose" in newAv): print(f"VVVV: Diving through duplicate inspection for: {newAv}")

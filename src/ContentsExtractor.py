@@ -58,10 +58,9 @@ def contentsExtractor(p: Parameters) -> Contents:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
         if (HEAD_PHRASES not in lines or (p.emoji and HEAD_EMOJI not in lines)):
             raise ValueError("Corrupted or invalid file: missing header")
-    except ValueError as e:
-        print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_HEA)
-    except FileNotFoundError as e:
-        print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_FIL)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Error reading from file '{p.source}': {e}")
+        gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_HEA)
 
     i: int = 0; skipLines: int = 0
     while (i < len(lines)):
