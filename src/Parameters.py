@@ -62,6 +62,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     emoji:     bool = p.emoji
     source:     str = p.source
     forWhom:    str = p.forWhom
+    nickNth:    str = p.nickNth
     allowRep:  bool = p.allowRep
     step:      bool = p.step
     alternate: bool = p.alternate
@@ -128,8 +129,21 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
-            print(f"\t... using default value: {DEF_FOR_WHOM.strip()} (no name used)).")
+            print(f"\t... using default value: '{DEF_FOR_WHOM.strip()}' (no name used)).")
         elif (p.verbose): print(f"VVVV: For whom the goodnight is set to '{forWhom}'.")
+    if (nickNth == DEF_NICK_NTH and "-N" not in av and "--nick-nth" not in av):
+        while (nickNth == DEF_NICK_NTH):
+            buf: str = ""
+            while (not matches(MAT_INTEGER_INPUT, buf)):
+                buf = input("Place the nickname after the nth phrase (integer): ").strip()
+                if (not matches(MAT_INTEGER_INPUT, buf)):
+                    print("\tInvalid input: N must be positive, 0 (random position) or -1 (no nickname).")
+            nickNth = str(1 if buf == "" else int(buf))
+            if (buf == ""):
+                print(f"\t... using default value: {nickNth.strip()}.")
+            elif (int(nickNth) < 1):
+                print("N must be positive, 0 (random position) or -1 (no nickname)."); nickNth = DEF_NICK_NTH
+            if (p.verbose): print(f"VVVV: Index of phrase after which the nickname is printed set to {nickNth}.")
     if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
@@ -160,7 +174,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
                         print("\tInvalid input: must be a positive integer.")
                 times = str(1 if buf == "" else int(buf))
                 if (buf == ""):
-                    print(f"\t... using default value: {times}.")
+                    print(f"\t... using default value: {times.strip()}.")
                 elif (int(times) < 1):
                     print("The number of iterations must be positive."); times = DEF_TIMES
                 if (p.verbose): print(f"VVVV: Number of iterations set to {times}.")
@@ -185,7 +199,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
                 elif (int(delay) < 0):
                     print("The number of iterations cannot be negative."); delay = DEF_DELAY
                 while (int(delay) > 10000):
-                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay})")
+                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay.strip()})")
                     if (buf == "y"): break
                     delay = buf
             else: delay = buf
@@ -308,6 +322,15 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 forWhom = str(av[i + 1]); i += 1
+            case "-N" | "--nick-nth":
+                if (i + 1 >= ac):
+                    print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
+                try:
+                    nickNth = str(int(av[i + 1])); i += 1
+                    if (int(nickNth) < -1):
+                        raise ValueError("N for --nick-nth must be positive, 0 (random position) or -1 (no nickname).")
+                except ValueError as e:
+                    print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
 
             case "-r" | "--allow-repetition": allowRep = True
             case "-o" | "--other-step": step = True

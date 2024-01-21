@@ -66,6 +66,7 @@ def gnUsage() -> None:
         "\n  -e, --emoji             Add emoji between phrases (from source file)" \
         "\n  -s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)" \
         "\n  -w, --for-whom   <str>  For whom the goodnight is (def: \"\" [no name used])" \
+        "\n  -N, --nick-nth   <int>  Use the nth nickname from the source file (def: 0 [no nickname used])" \
         "\n" \
         "\n  -r, --allow-repetition  Allow repetition of phrases if you ask for more than there are in the source file" \
         "\n  -o, --other-step        Use the even-numbered phrase gaps as \"and\"s instead of commas (def: [odd-])" \

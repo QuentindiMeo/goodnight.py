@@ -6,7 +6,7 @@ from Exit import exitCode, gnExit
 
 DEF_EMPTY_STRING:  str = "$$$EMPTY$$$"
 MAT_LONGPAR_INPUT: str = r"^\-\-[a-zA-Z\-]*\=.*$"
-MAT_INTEGER_INPUT: str = r"^[0-9]+$"
+MAT_INTEGER_INPUT: str = r"^\-?[0-9]+$"
 MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
 MAT_THEPKEY_INPUT: str = r"^p$"
@@ -20,8 +20,9 @@ def handleDelay(arg: str) -> str:
 def handleString(arg: str) -> str:
     return arg
 
-def handleInteger(arg: str) -> str:
+def handleInteger(arg: str, positive: bool = False) -> str:
     if (not matches(MAT_INTEGER_INPUT, arg)): raise ValueError(f"unexpected integer value for '{arg}'")
+    if (positive and int(arg) < 1): raise ValueError(f"unexpected integer value for '{arg}'")
     return arg
 
 def handleBounds(arg: str) -> str:
@@ -47,7 +48,8 @@ def applyLongParameters(av: list[str], verbose: bool) -> list[str]:
             elif (arg.startswith("--nb-phrases=")): newAv.append(handleInteger(arg[arg.find("=") + 1:]))
             elif (arg.startswith("--source=")):     newAv.append(handleString( arg[arg.find("=") + 1:]))
             elif (arg.startswith("--for-whom=")):   newAv.append(handleString( arg[arg.find("=") + 1:]))
-            elif (arg.startswith("--times=")):      newAv.append(handleInteger(arg[arg.find("=") + 1:]))
+            elif (arg.startswith("--nick-nth=")):   newAv.append(handleInteger(arg[arg.find("=") + 1:]))
+            elif (arg.startswith("--times=")):      newAv.append(handleInteger(arg[arg.find("=") + 1:], positive=True))
             elif (arg.startswith("--delay=")):      newAv.append(handleDelay(  arg[arg.find("=") + 1:]))
             else: print(f"Invalid argument '{arg}'."); gnExit(exitCode.ERR_INV_ARG)
 
