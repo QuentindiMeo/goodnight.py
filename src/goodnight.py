@@ -23,7 +23,7 @@ def goodnight(p: Parameters) -> Goodnight:
 
     usedPhrases: list[int] = [] # stores indices of phrases already used to avoid repetition
     usedEmoji:   list[int] = [] # stores indices of  emoji  already used to avoid repetition
-    nickIdx: int = rand(0, nbPhrases - 1) # index of the phrase that will be followed by the nickname
+    nickIdx: int = rand(0, nbPhrases - 1) if int(p.nickNth) == 0 else int(p.nickNth) - 1 # index of the phrase that will be followed by the nickname
 
     if (not p.allowRep and nbPhrases > len(contents.phrases)): gnExit(exitCode.ERR_PAR_REP)
     p.forWhom = contents.pickNick(p)

@@ -47,6 +47,7 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"emoji={p.emoji}\n")
             f.write(f"src={p.source}\n")
             f.write(f"who={p.forWhom}\n")
+            f.write(f"nickNth={p.nickNth}\n")
             f.write(f"allowRep={p.allowRep}\n")
             f.write(f"step={p.step}\n")
             f.write(f"alternate={p.alternate}\n")
@@ -207,7 +208,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters({
         "copy": copy,
-        "nbPhrases": nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, "emoji": emoji, "source": source.strip(), "forWhom": forWhom.strip(), "nickNth": DEF_NICK_NTH,
+        "nbPhrases": nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, "emoji": emoji, "source": source.strip(), "forWhom": forWhom.strip(), "nickNth": nickNth,
         "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
         "verbose": p.verbose, "saving": p.saving
     })
@@ -398,7 +399,7 @@ def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: b
                 elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
-                elif (line.startswith("nicknth=")):   p.nicknth     =      line[len("who="):-1]
+                elif (line.startswith("nickNth=")):   p.nicknth     =      line[len("who="):-1]
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
                 elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])

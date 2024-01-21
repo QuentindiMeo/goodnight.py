@@ -45,6 +45,10 @@ class Parameters:
         source = self.source.split("\\" if osName == 'nt' else "/")[-1]
         wEmoji = "with" if self.emoji else "without"
         forWhom = "(no name)" if self.forWhom == "" else self.forWhom
+        match self.nickNth:
+            case "0":  nickNth = "at random"
+            case "-1": nickNth = "nowhere"
+            case _:    nickNth = "after phrase " + self.nickNth
         repetition = "allowed" if self.allowRep else "not allowed"
         step = ("even" if self.step else "odd") + "-numbered gaps"
         alternate = "" if self.alternate else "not "
@@ -54,6 +58,7 @@ class Parameters:
                 f"{wEmoji} emoji, " \
                 f"using {source} as a source, " \
                 f"for {forWhom}, " \
+                f"placing nick {nickNth}, " \
                 f"repetition {repetition}, " \
                 f"step: {step}, " \
                 f"{alternate}alternating, " \
@@ -65,6 +70,7 @@ class Parameters:
                 f"\temoji: {self.emoji}\n" \
                 f"\tsource file: {self.source}\n" \
                 f"\tfor: {self.forWhom}\n" \
+                f"\tnick-nth: {self.nickNth}\n" \
                 f"\trepetition: {self.allowRep}\n" \
                 f"\tstep: {self.step}\n" \
                 f"\talternate: {self.alternate}\n" \
@@ -90,27 +96,7 @@ class Parameters:
         self.delay     = p["delay"]
 
         self.verbose   = p["verbose"]
-        self.saving    = p["save"]
-    # def __init__(self, c: bool = DEF_COPY, n: str = DEF_NB_PHRASES, e: bool = DEF_EMOJI, s: str = DEF_SOURCE, w: str = DEF_FOR_WHOM, nth: str = DEF_NICK_NTH, \
-    #              r: bool = DEF_REPETITION, o: bool = DEF_STEP, a: bool = DEF_ALTERNATE, t: str = DEF_TIMES, i: bool = DEF_INFINITE, d: str = DEF_DELAY, \
-    #              v: bool = DEF_VERBOSITY, sav: bool = DEF_SAVE_PREF) -> None:
-    #     self.copy      = c
-
-    #     self.nbPhrases = n
-    #     self.emoji     = e
-    #     self.source    = s
-    #     self.forWhom   = w
-    #     self.nickNth   = nth
-
-    #     self.allowRep  = r
-    #     self.step      = o
-    #     self.alternate = a
-    #     self.times     = t
-    #     self.infinite  = i
-    #     self.delay     = d
-
-    #     self.verbose   = v
-    #     self.saving    = sav
+        self.saving    = p["saving"]
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:
