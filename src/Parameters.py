@@ -10,8 +10,8 @@ from Longparam import applyLongParameters
 from Types import Parameters
 from Exit import exitCode, gnExit
 
-FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-d"]
-PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "t", "d"]
+FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-N", "-r", "-o", "-a", "-t", "-d"]
+PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "N", "t", "d"]
 COMMENT_MARKER:    str = "--"
 DEF_PREFFPATH:     str = "./assets/preferences.sav"
 DEF_COPY:         bool = True
@@ -19,15 +19,15 @@ DEF_NB_PHRASES:    str = "?"
 DEF_NB_DBOUND:     str = "2,5"
 DEF_NB_UBOUND:     str = "999"
 DEF_EMOJI:        bool = False
-DEF_SOURCE:        str = "./assets/source.log " # same as below
-DEF_FOR_WHOM:      str = " " # same as below
-DEF_NICK_NTH:      str = "0 " # space to skip the CLI if the user used the default value as a parameter
+DEF_SOURCE:        str = "./assets/source.log "
+DEF_FOR_WHOM:      str = ""
+DEF_NICK_NTH:      str = "0"
 DEF_REPETITION:   bool = False
 DEF_STEP:         bool = False
 DEF_ALTERNATE:    bool = False
-DEF_TIMES:         str = "1 " # same as above
+DEF_TIMES:         str = "1"
 DEF_INFINITE:     bool = False
-DEF_DELAY:         str = "0 " # same as above
+DEF_DELAY:         str = "0"
 DEF_VERBOSITY:    bool = False
 DEF_SAVE_PREF:    bool = False
 MAT_LONGPAR_INPUT: str = r"^\-\-[a-zA-Z\-]*\=.*$"
@@ -60,7 +60,12 @@ def saveParameters(p: Parameters) -> None:
     except PermissionError as e:
         print(f"Error writing to file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_PER)
 
-def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
+def deduceRemaining(alreadySet: list[str]) -> list[str]:
+    remaining: list[str] = FILE_AV
+    for s in alreadySet:
+        if (s in remaining): remaining.remove(s)
+    return remaining
+def fromCommandLine(p: Parameters) -> Parameters:
     copy:      bool = p.copy
     nbPhrases:  str = p.nbPhrases
     emoji:     bool = p.emoji
@@ -76,14 +81,16 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     randomOrNumber:  str = DEF_NB_PHRASES
     timesOrInfinite: str = DEF_TIMES
 
-    av = [] if (av == None) else av
-    if (copy == DEF_COPY and "--no-copy" not in av):
+    if (p.verbose): print(f"VVVV: Entering CLI handling with set parameters: {p.setParams}")
+    toSet = deduceRemaining([] if (p.setParams == None) else p.setParams)
+    if (p.verbose): print(f"VVVV: Remaining parameters to set: {toSet}")
+    if ("--no-copy" in toSet):
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
         if (not confirmed):
             copy = False
             if (p.verbose): print("VVVV: Clipboard copy toggle set to {copy}.")
         else: print(MAT_DEFAULTING_Y)
-    if (nbPhrases == DEF_NB_PHRASES and "-n" not in av and "--nb-phrases" not in av and "-b" not in av and "--bounds" not in av):
+    if ("-n" in toSet):
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
         if (randomOrNumber == "r"): # random quantity of phrases in bounds...
@@ -119,55 +126,67 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
                     if (buf == "y"): break
                     nbPhrases = buf
         if (p.verbose): print(f"VVVV: Number of phrases set to {nbPhrases}.")
-    if (emoji == DEF_EMOJI and "-e" not in av and "--emoji" not in av):
+    if ("-e" in toSet):
         confirmed: bool = askConfirmation("Add emoji between phrases")
         if (confirmed):
             emoji = True
             if (p.verbose): print("VVVV: Emoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
-    if (source == DEF_SOURCE and "-s" not in av and "--source" not in av):
-        source = input("What source file to use: ").strip()
-        if (source == ""):
-            source = DEF_SOURCE
-            print(f"\t... using default value: {DEF_SOURCE.strip()}.")
-        elif (p.verbose): print(f"VVVV: Source file set to '{source}'.")
-    if (forWhom == DEF_FOR_WHOM and "-w" not in av and "--for-whom" not in av):
+    if ("-s" in toSet):
+        source: str = ""
+        isMatching: bool = False
+        while (not isMatching):
+            source = input("What source file to use: ").strip()
+            isMatching = matches(MAT_NAME_LOGFILE, source)
+            if (source == ""):
+                source = DEF_SOURCE
+                print(f"\t... using default value: {DEF_SOURCE.strip()}.")
+            elif (isMatching and p.verbose): print(f"VVVV: Source file set to '{source}'.")
+            else: print("\tInvalid input: must be a .log file.")
+    if ("-w" in toSet):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: '{DEF_FOR_WHOM.strip()}' (no name used)).")
         elif (p.verbose): print(f"VVVV: For whom the goodnight is set to '{forWhom}'.")
-    if (nickNth == DEF_NICK_NTH and "-N" not in av and "--nick-nth" not in av):
+    if ("-N" in toSet):
         while (nickNth == DEF_NICK_NTH):
             buf: str = ""
-            while (not matches(MAT_INTEGER_INPUT, buf)):
+            isMatching: bool = False
+            while (not isMatching):
                 buf = input("Place the nickname after the nth phrase\n\t(-1 [nowhere] | 0 [random] | int): ").strip()
-                if (not matches(MAT_INTEGER_INPUT, buf)):
+                isMatching = matches(MAT_INTEGER_INPUT, buf)
+                if (not isMatching):
                     print("\tInvalid input: N must be positive, 0 (random position) or -1 (no nickname).")
             nickNth = str(1 if buf == "" else int(buf))
             if (buf == ""):
                 print(f"\t... using default value: {nickNth.strip()}.")
             elif (int(nickNth) < -1):
                 print("N must be positive, 0 (random position) or -1 (no nickname)."); nickNth = DEF_NICK_NTH
-            if (p.verbose): print(f"VVVV: Index of phrase after which the nickname is printed set to {nickNth}.")
-    if (allowRep == DEF_REPETITION and "-r" not in av and "--allow-repetition" not in av):
+            if (p.verbose):
+                match nickNth:
+                    case "-1": nth = "nowhere"
+                    case "0":  nth = "random"
+                    case _:    nth = nickNth
+                print(f"VVVV: Index of phrase after which the nickname is printed set to {nth}.")
+    if ("-r" in toSet):
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
             if (p.verbose): print("VVVV: Repetition toggle set to {allowRep}.")
         else: print(MAT_DEFAULTING_N)
-    if (step == DEF_STEP and "-o" not in av and "--other-step" not in av):
+    if ("-o" in toSet):
         confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
         if (confirmed):
             step = True
             if (p.verbose): print("VVVV: Step toggle set to {step}.")
         else: print(MAT_DEFAULTING_N)
-    if (emoji and alternate == DEF_ALTERNATE and "-a" not in av and "--alternate" not in av):
+    if (emoji and "-a" in toSet):
         confirmed: bool = askConfirmation("Alternate between \"and\"s, and emoji instead of commas")
         if (confirmed):
             alternate = True
             if (p.verbose): print("VVVV: Alternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
-    if (times == DEF_TIMES and "-t" not in av and "--times" not in av and infinite == DEF_INFINITE and "-i" not in av and "--infinite" not in av):
+    if ("-t" in toSet):
         while (timesOrInfinite != "t" and timesOrInfinite != "i"):
             timesOrInfinite = input("Play the goodnight x times or infinitely (t/i): ").strip().lower()
         if (timesOrInfinite == "t"): # play x times...
@@ -189,7 +208,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
                 infinite = True
                 if (p.verbose): print("VVVV: Infinite mode set to {infinite}.")
             else: print(MAT_DEFAULTING_N)
-    if (delay == DEF_DELAY and "-d" not in av and "--delay" not in av):
+    if ("-d" in toSet):
         while (delay == DEF_DELAY):
             isMatching: bool = False
             while (not isMatching):
@@ -214,7 +233,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
         "copy": copy,
         "nbPhrases": nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, "emoji": emoji, "source": source.strip(), "forWhom": forWhom.strip(), "nickNth": nickNth,
         "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
-        "verbose": p.verbose, "saving": p.saving, "prefFile": p.prefFile
+        "verbose": p.verbose, "saving": p.saving
     })
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
@@ -292,6 +311,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     delay:    float = extractP.delay
     saving:    bool = extractP.saving
     prefFile:   str = extractP.prefFile
+    setParams: list[str] = extractP.setParams
 
     i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
     while (i < ac): # hence can't use a for in range loop
@@ -312,67 +332,68 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("Bounds must be positive.")
                     if (int(upperBound) > int(DEF_NB_UBOUND)): upperBound = int(DEF_NB_UBOUND)
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
-                    i += 1
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+                setParams.append(av[i]); i += 1
             case "-n" | "--nb-phrases":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
-                    nbPhrases = str(int(av[i + 1])); i += 1
+                    nbPhrases = str(int(av[i + 1]))
                     if (int(nbPhrases) < 1):
                         raise ValueError("The number of phrases must be positive.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-            case "-e" | "--emoji": emoji = True
+                setParams.append(av[i]); i += 1
+            case "-e" | "--emoji": emoji = True; setParams.append(av[i])
             case "-s" | "--source":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
-                try:
-                    source: str = av[i + 1]; i += 1
-                    if (not matches(MAT_NAME_LOGFILE, source)): source += ".log"
-                except ValueError as e:
-                    print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+                source: str = av[i + 1]
+                if (not matches(MAT_NAME_LOGFILE, source)): source += ".log"
+                setParams.append(av[i]); i += 1
             case "-w" | "--for-whom":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
-                forWhom = str(av[i + 1]); i += 1
+                forWhom = str(av[i + 1])
+                setParams.append(av[i]); i += 1
             case "-N" | "--nick-nth":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
-                    nickNth = str(int(av[i + 1])); i += 1
+                    nickNth = str(int(av[i + 1]))
                     if (int(nickNth) < -1):
                         raise ValueError("N for --nick-nth must be positive, 0 (random position) or -1 (no nickname).")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+                setParams.append(av[i]); i += 1
 
-            case "-r" | "--allow-repetition": allowRep = True
-            case "-o" | "--other-step": step = True
-            case "-a" | "--alternate": alternate = True
+            case "-r" | "--allow-repetition": allowRep = True; setParams.append(av[i])
+            case "-o" | "--other-step": step = True; setParams.append(av[i])
+            case "-a" | "--alternate": alternate = True; setParams.append(av[i])
             case "-t" | "--times":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
-                    times = str(int(av[i + 1])); i += 1
+                    times = str(int(av[i + 1]))
                     if (int(times) < 1):
                         raise ValueError("The number of iterations must be positive.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-            case "-i" | "--infinite": infinite = True
+                setParams.append(av[i]); i += 1
+            case "-i" | "--infinite": infinite = True; setParams.append(av[i])
             case "-d" | "--delay":
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
                     if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_THEPKEY_INPUT, av[i + 1])):
                         raise ValueError("Delay must be a positive float number or 'p'.")
-                    if (av[i + 1][0] == 'p'):
-                        delay = av[i + 1]; continue
-                    delay = str(int(av[i + 1])); i += 1
+                    delay = str(int(av[i + 1])) if av[i + 1] != 'p' else av[i + 1]
                     if (int(delay) < 0):
                         raise ValueError("The delay cannot be negative.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
+                setParams.append(av[i]); i += 1
             case "--ignore":
                 return fromCommandLine(Parameters({
                     "copy": copy,
@@ -380,10 +401,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
                     "verbose": verbose, "saving": saving, "prefFile": prefFile
                 }))
-            case "-S" | "--save": saving = True
+            case "-S" | "--save": saving = True; setParams.append(av[i])
             case "-p" | "--pref-file": i += 1 # still needs to be here to avoid an invalid parameter error
 
-            case "--verbose": pass # still needs to be here to avoid an invalid parameter error
+            case "--verbose": setParams.append(av[i]) # still needs to be here to avoid an invalid parameter error
             case "-h" | "--help": gnExit(exitCode.HELP)
 
             case _: print(f"Invalid argument '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
@@ -392,8 +413,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             "copy": copy,
             "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
             "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
-            "verbose": verbose, "saving": saving, "prefFile": prefFile
-        }), av + FILE_AV)
+            "verbose": verbose, "saving": saving, "prefFile": prefFile, "setParams": setParams
+        }))
 
 def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters(savefile)
@@ -411,17 +432,17 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
             lines = [line.strip() for line in lines]
             for line in lines:
                 if   (len(line) == 0 or line.startswith(COMMENT_MARKER)): continue # comments
-                elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):])
-                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):]
-                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):])
-                elif (line.startswith("src=")):       p.source      =      line[len("src="):]
-                elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):]
-                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):]
-                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):])
-                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):])
-                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):])
-                elif (line.startswith("times=")):     p.times       =      line[len("times="):]
-                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):]
+                elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):])     ; p.setParams.append("--no-copy")
+                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):] ; p.setParams.append("-n")
+                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):])    ; p.setParams.append("-e")
+                elif (line.startswith("src=")):       p.source      =      line[len("src="):]       ; p.setParams.append("-s")
+                elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):]       ; p.setParams.append("-w")
+                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):]   ; p.setParams.append("-N")
+                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):]) ; p.setParams.append("-r")
+                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):])     ; p.setParams.append("-o")
+                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):]); p.setParams.append("-a")
+                elif (line.startswith("times=")):     p.times       =      line[len("times="):]     ; p.setParams.append("-t")
+                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):]     ; p.setParams.append("-d")
                 else: raise ValueError(f"Invalid line '{line}'")
     except (FileNotFoundError, ValueError) as e:
         print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)

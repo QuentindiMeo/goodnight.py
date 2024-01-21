@@ -18,8 +18,7 @@ Announcing the release date of the first release on Reddit & Discord.
 
 ### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
 
-Adding a values unpacking function for parameters, for clarity.  
-Adding a Ctrl+D handler, exiting the program gracefully with a context message [EOFError, SIGTERM].  
+Adding a Ctrl+D handler, exiting the program gracefully with a context message.  
 Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for parameters.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
@@ -28,16 +27,16 @@ Updating the [README demonstration gif](README.md).
 
 ## [RELEASED]
 
-### DEV 0.3.1 - Jan 21 2024 [[#x]()]
+### DEV 0.3.1 - Jan 21 2024 [[#90](https://github.com/QuentindiMeo/goodnight.py/commit/3b2ba0e929a5ffb9de3ea8ba6f00d735414e9575)]
 
 Enhancing the Makefile and its prints.  
 Changed the Parameters class' constructor to taking a dictionary argument, to avoid having 20 arguments.  
 Added and implemented `--nick-nth`: forcing the nickname to be after the nth phrase.  
-Added and implemented `--preferences` aka `-p`: punctually, using a specifice file as set preferences file.  
+Added and implemented `--pref-file` aka `-p`: punctually, using a specifice file as set preferences file.  
 Added [default.sav](assets/default.sav), a tutorial preferences file.  
 Updated the [README](README.md)'s general information to reflect changes.
 
-### DEV 0.3.0 - Jan 06 2024 [[#x]()]
+### DEV 0.3.0 - Jan 06 2024 [[#79](https://github.com/QuentindiMeo/goodnight.py/commit/ee7a5b40a7d023a5f18580d37e38a1f3139192c1)]
 
 Creating a Makefile and executable file at the root of the repository, for clarity.  
 Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  

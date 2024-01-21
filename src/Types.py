@@ -12,20 +12,21 @@ WeightedList:    TypeAlias = (ElementList, int) # a list of P/E/N elements and i
 UnweightedList:  TypeAlias = list[ElementList] # an unweighted list of P/E/N elements
 ParamDict:       TypeAlias = dict[str]
 
+DEF_PREFFPATH:   str = "./assets/preferences.sav"
 DEF_COPY:       bool = True
 DEF_NB_PHRASES:  str = "?"
 DEF_NB_DBOUND:   str = "2,5"
 DEF_NB_UBOUND:   str = "999"
 DEF_EMOJI:      bool = False
-DEF_SOURCE:      str = "./assets/source.log " # same as below
-DEF_FOR_WHOM:    str = " " # same as below
-DEF_NICK_NTH:    str = "0 " # space to skip the CLI if the user used the default value as a parameter
+DEF_SOURCE:      str = "./assets/source.log "
+DEF_FOR_WHOM:    str = ""
+DEF_NICK_NTH:    str = "0"
 DEF_REPETITION: bool = False
 DEF_STEP:       bool = False
 DEF_ALTERNATE:  bool = False
-DEF_TIMES:       str = "1 "
+DEF_TIMES:       str = "1"
 DEF_INFINITE:   bool = False
-DEF_DELAY:       str = "0 "
+DEF_DELAY:       str = "0"
 DEF_VERBOSITY:  bool = False
 DEF_SAVE_PREF:  bool = False
 
@@ -80,25 +81,26 @@ class Parameters:
                 f"\tsaving preferences: {self.saving}"
 
     def __init__(self, p: ParamDict) -> None:
-        self.copy      = p["copy"]
+        self.copy      = p.get("copy")
 
-        self.nbPhrases = p["nbPhrases"]
-        self.emoji     = p["emoji"]
-        self.source    = p["source"]
-        self.forWhom   = p["forWhom"]
-        self.nickNth   = p["nickNth"]
+        self.nbPhrases = p.get("nbPhrases")
+        self.emoji     = p.get("emoji")
+        self.source    = p.get("source")
+        self.forWhom   = p.get("forWhom")
+        self.nickNth   = p.get("nickNth")
 
-        self.allowRep  = p["allowRep"]
-        self.step      = p["step"]
-        self.alternate = p["alternate"]
-        self.times     = p["times"]
-        self.infinite  = p["infinite"]
-        self.delay     = p["delay"]
+        self.allowRep  = p.get("allowRep")
+        self.step      = p.get("step")
+        self.alternate = p.get("alternate")
+        self.times     = p.get("times")
+        self.infinite  = p.get("infinite")
+        self.delay     = p.get("delay")
 
-        self.verbose   = p["verbose"]
-        self.saving    = p["saving"]
+        self.verbose   = p.get("verbose")
+        self.saving    = p.get("saving")
 
-        self.prefFile  = p["prefFile"]
+        self.prefFile  = p.get("prefFile", DEF_PREFFPATH)
+        self.setParams = p.get("setParams", [])
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:
