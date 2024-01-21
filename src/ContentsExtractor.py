@@ -60,6 +60,8 @@ def contentsExtractor(p: Parameters) -> Contents:
             raise ValueError("Corrupted or invalid file: missing header")
     except ValueError as e:
         print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_HEA)
+    except FileNotFoundError as e:
+        print(f"Error reading from file '{p.source}': {e}"); gnExit(exitCode.ERR_INV_FIL)
 
     i: int = 0; skipLines: int = 0
     while (i < len(lines)):

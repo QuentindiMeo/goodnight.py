@@ -98,6 +98,8 @@ class Parameters:
         self.verbose   = p["verbose"]
         self.saving    = p["saving"]
 
+        self.prefFile  = p["prefFile"]
+
 class Contents:
     def pickNick(self, p: Parameters) -> str:
         if (p.forWhom != ""): return p.forWhom

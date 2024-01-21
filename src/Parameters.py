@@ -11,7 +11,7 @@ from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-d"]
 PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "t", "d"]
-SAVE_FILEPATH:     str = "preferences.sav"
+DEF_PREFFPATH:     str = "./assets/preferences.sav"
 DEF_COPY:         bool = True
 DEF_NB_PHRASES:    str = "?"
 DEF_NB_DBOUND:     str = "2,5"
@@ -34,14 +34,15 @@ MAT_BOUNDED_INPUT: str = r"^[0-9]+,[0-9]+$"
 MAT_FLOATNB_INPUT: str = r"^[0-9]+(\.[0-9]+)?$"
 MAT_THEPKEY_INPUT: str = r"^p$"
 MAT_NAME_LOGFILE:  str = r".*\.log$"
+MAT_NAME_SAVFILE:  str = r".*\.sav$"
 MAT_DEFAULTING_Y:  str = "\t... using default value: yes (True)."
 MAT_DEFAULTING_N:  str = "\t... using default value: no (False)."
 
 def saveParameters(p: Parameters) -> None:
-    print(f"Saving preferences in file '{SAVE_FILEPATH}'...")
+    print(f"Saving preferences in file '{DEF_PREFFPATH}'...")
     if (p.infinite): p.times = "infinite"
     try:
-        with open(SAVE_FILEPATH, "w") as f:
+        with open(DEF_PREFFPATH, "w") as f:
             f.write(f"copy={p.copy}\n")
             f.write(f"nbPhrases={p.nbPhrases}\n")
             f.write(f"emoji={p.emoji}\n")
@@ -53,9 +54,9 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"alternate={p.alternate}\n")
             f.write(f"times={p.times}\n")
             f.write(f"delay={p.delay}\n")
-        chmod(SAVE_FILEPATH, 0o644)
+        chmod(DEF_PREFFPATH, 0o644)
     except PermissionError as e:
-        print(f"Error writing to file '{SAVE_FILEPATH}': {e}"); gnExit(exitCode.ERR_INV_PER)
+        print(f"Error writing to file '{DEF_PREFFPATH}': {e}"); gnExit(exitCode.ERR_INV_PER)
 
 def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
     copy:      bool = p.copy
@@ -210,7 +211,7 @@ def fromCommandLine(p: Parameters, av: list[str] = None) -> Parameters:
         "copy": copy,
         "nbPhrases": nbPhrases if nbPhrases != DEF_NB_PHRASES else DEF_NB_DBOUND, "emoji": emoji, "source": source.strip(), "forWhom": forWhom.strip(), "nickNth": nickNth,
         "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
-        "verbose": p.verbose, "saving": p.saving
+        "verbose": p.verbose, "saving": p.saving, "prefFile": DEF_PREFFPATH
     })
     if (p.saving): saveParameters(newP)
     newP.pickNbPhrases()
@@ -253,7 +254,16 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         return (len(newAv), newAv)
     (ac, av) = getSanitizedAv(ac, av)
 
-    extractP: Parameters = defaultParameters() if ("--ignore" in av) else fromFile(extraction = True)
+    def getPreferencesFile(ac: int, av: list[str]) -> str:
+        ARG_PREF: str = "--preferences="
+        if (verbose): print(f"VVVV: Entering preferences file handling with av: {av}")
+        for i in range(ac):
+            if (isIn(["-p", "--preferences"], av[i])):
+                return av[i + 1].strip() + ("" if av[i + 1].endswith(".sav") else ".sav")
+            if (av[i].startswith(ARG_PREF)):
+                return av[i][len(ARG_PREF):].strip() + ("" if av[i].endswith(".sav") else ".sav")
+        return DEF_PREFFPATH
+    extractP: Parameters = defaultParameters() if ("--ignore" in av) else fromFile(getPreferencesFile(ac, av), extraction = True)
     try:
         if (verbose): print(f"VVVV: Entering long parameters handling with av: {av}")
         av = applyLongParameters(av, "--verbose" in av)
@@ -367,6 +377,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     "verbose": verbose, "saving": saving
                 }))
             case "-S" | "--save": saving = True
+            case "-p" | "--preferences": i += 1 # still needs to be here to avoid an invalid parameter error
 
             case "--verbose": pass # still needs to be here to avoid an invalid parameter error
             case "-h" | "--help": gnExit(exitCode.HELP)
@@ -377,18 +388,19 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
             "copy": copy,
             "nbPhrases": nbPhrases, "emoji": emoji, "source": source, "forWhom": forWhom, "nickNth": nickNth,
             "allowRep": allowRep, "step": step, "alternate": alternate, "times": times, "infinite": infinite, "delay": delay,
-            "verbose": verbose, "saving": saving
+            "verbose": verbose, "saving": saving, "prefFile": DEF_PREFFPATH
         }), av + FILE_AV)
 
-def fromFile(savefile: str = SAVE_FILEPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
+def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters()
 
     if (not path.isfile(savefile)):
-        print(f"File '{savefile}' does not exist...")
+        print(f"File '{savefile}' does not exist...", end = "\n" if p.saving or (not extraction and noParam) else "")
         if (extraction): p.nbPhrases = DEF_NB_DBOUND
         else: p = fromCommandLine(p)
         if (p.saving or (not extraction and noParam)):
             saveParameters(p)
+        print(" using default parameters.")
         return p
     try:
         with open(savefile, "r") as f:
@@ -416,7 +428,7 @@ def defaultParameters(fromParameter: bool = False) -> Parameters:
             "copy": DEF_COPY,
             "nbPhrases": DEF_NB_DBOUND if fromParameter else DEF_NB_PHRASES, "emoji": DEF_EMOJI, "source": DEF_SOURCE, "forWhom": DEF_FOR_WHOM, "nickNth": DEF_NICK_NTH,
             "allowRep": DEF_REPETITION, "step": DEF_STEP, "alternate": DEF_ALTERNATE, "times": DEF_TIMES, "infinite": DEF_INFINITE, "delay": DEF_DELAY,
-            "verbose": DEF_VERBOSITY, "saving": DEF_SAVE_PREF
+            "verbose": DEF_VERBOSITY, "saving": DEF_SAVE_PREF, "prefFile": DEF_PREFFPATH
         })
     if (fromParameter): p.pickNbPhrases()
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip()
