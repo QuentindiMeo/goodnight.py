@@ -8,7 +8,8 @@ from Parameters import Parameters
 from Types import WeightedList as Wlist, UnweightedList as Ulist, Contents
 from Exit import exitCode, gnExit
 
-HEADER_MARKER:  str = "## "
+COMMENT_MARKER: str = "--"
+HEADERS_MARKER: str = "## "
 HEAD_PHRASES:   str = "## PHRASES.log"
 HEAD_EMOJI:     str = "## EMOJI.log"
 HEAD_NICKS:     str = "## NICKNAMES.log"
@@ -39,7 +40,7 @@ def extractor(lines: list[str], i: int) -> (Ulist, int):
     output: Ulist = []
 
     diff: int = 1
-    while (i < len(lines) and not lines[i].startswith(HEADER_MARKER)):
+    while (i < len(lines) and not lines[i].startswith(HEADERS_MARKER)):
         extract = rreplace(lines[i].strip(), ", ", ",").split(",")
         output.append(extract)
         i += 1; diff += 1
@@ -53,7 +54,7 @@ def contentsExtractor(p: Parameters) -> Contents:
     try:
         with open(p.source, "r") as f: lines = f.readlines()
         # vvv remove empty lines and comments, and \n at the end of each line
-        lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith("--"))]
+        lines = [l[:-1] for l in lines if (len(l.strip()) > 1 and not l.strip().startswith(COMMENT_MARKER))]
         for line in lines:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
         if (HEAD_PHRASES not in lines or (p.emoji and HEAD_EMOJI not in lines)):

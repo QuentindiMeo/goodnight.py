@@ -11,6 +11,7 @@ from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-r", "-o", "-a", "-t", "-d"]
 PAR_HAS_ARG: list[str] = ["b", "n", "s", "w", "t", "d"]
+COMMENT_MARKER:    str = "--"
 DEF_PREFFPATH:     str = "./assets/preferences.sav"
 DEF_COPY:         bool = True
 DEF_NB_PHRASES:    str = "?"
@@ -406,18 +407,20 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
     try:
         with open(p.prefFile, "r") as f:
             lines = f.readlines()
+            lines = [line.strip() for line in lines]
             for line in lines:
-                if   (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):-1])
-                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):-1]
-                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):-1])
-                elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
-                elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
-                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):-1]
-                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
-                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
-                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
-                elif (line.startswith("times=")):     p.times       =      line[len("times="):-1]
-                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):-1]
+                if   (len(line) == 0 or line.startswith(COMMENT_MARKER)): continue # comments
+                elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):])
+                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):]
+                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):])
+                elif (line.startswith("src=")):       p.source      =      line[len("src="):]
+                elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):]
+                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):]
+                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):])
+                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):])
+                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):])
+                elif (line.startswith("times=")):     p.times       =      line[len("times="):]
+                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):]
                 else: raise ValueError(f"Invalid line '{line}'")
     except (FileNotFoundError, ValueError) as e:
         print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)

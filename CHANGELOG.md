@@ -24,17 +24,18 @@ Fixing the long overdue bug of the static FILE_AV suppressing the CLI asking for
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 
-### DEV 0.3.1 - Jan ?? 2024 [[#x]()]
-
-Enhancing the Makefile and its prints.  
-Changed the Parameters class' constructor to taking a dictionary argument, to avoid having 20 arguments.  
-Adding and implementing `--nick-nth`: forcing the nickname to be after the nth phrase.  
-Adding and implementing `--preferences` aka `-p`: punctually, using a specifice file as set preferences file.  
-Updating the [README](README.md)'s general information to reflect changes.
-
 ---
 
 ## [RELEASED]
+
+### DEV 0.3.1 - Jan 21 2024 [[#x]()]
+
+Enhancing the Makefile and its prints.  
+Changed the Parameters class' constructor to taking a dictionary argument, to avoid having 20 arguments.  
+Added and implemented `--nick-nth`: forcing the nickname to be after the nth phrase.  
+Added and implemented `--preferences` aka `-p`: punctually, using a specifice file as set preferences file.  
+Added [default.sav](assets/default.sav), a tutorial preferences file.  
+Updated the [README](README.md)'s general information to reflect changes.
 
 ### DEV 0.3.0 - Jan 06 2024 [[#x]()]
 

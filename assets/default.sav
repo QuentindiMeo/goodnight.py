@@ -1,0 +1,39 @@
+-- This is a tutorial configuration/preferences file.
+-- It is not meant to be used as-is, but rather to be read and understood.
+-- You can copy it to your own configuration file and modify it to your liking.
+-- Note that configuration files are meant to have a .sav extension.
+-- NB: The order of the options is not important.
+-- You can use "--" at the beginning of a line as a comment trigger; empty lines are also ignored.
+
+-- Use True or False only
+copy=False
+
+-- This is the format for a bounded range: min,max. You can also use a single number.
+nbPhrases=2,5
+
+-- Use True or False only
+emoji=True
+
+-- The path to the source file is relative and is NOT lenient on the absence of the extension.
+src=./assets/source.log
+
+-- You are free to leave this option empty, using the format "who="
+who=Whomever
+
+-- Remember that -1, 0 and positive integers, are the only valid values for this option.
+nickNth=0
+
+-- Use True or False only
+allowRep=True
+
+-- Use True or False only
+step=False
+
+-- Use True or False only
+alternate=False
+
+-- Remember that "infinite" and positive integers are the only valid values for this option.
+times=1
+
+-- Remember that 'p', 0 and positive integers, are the only valid values for this option.
+delay=0
