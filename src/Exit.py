@@ -74,8 +74,9 @@ def gnUsage() -> None:
         "\n  -t, --times      <int>  Generate and print a given amount of goodnights (def: 1)" \
         "\n  -i, --infinite          Toggle infinite mode" \
         "\n  -d, --delay      <val>  Add delay after each iteration, in milliseconds (def: 0) | 'p': press Enter to continue" \
-        "\n  --ignore                Ignore preferences (preferences.sav)" \
-        "\n  -S, --save              Save preferences to file (preferences.sav)" \
+        "\n  --ignore                Ignore preferences file" \
+        "\n  -S, --save              Save configuration to preferences file" \
+        "\n  -p, --pref-file  <str>  Use a specific preferences file (def: preferences.sav)" \
         "\n" \
         "\n  --verbose               Toggle verbose mode" \
         "\n  -h, --help              Display this help and exit" \

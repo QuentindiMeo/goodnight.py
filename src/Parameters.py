@@ -411,7 +411,7 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
                 elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):-1])
                 elif (line.startswith("src=")):       p.source      =      line[len("src="):-1]
                 elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):-1]
-                elif (line.startswith("nickNth=")):   p.nicknth     =      line[len("who="):-1]
+                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):-1]
                 elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):-1])
                 elif (line.startswith("step=")):      p.step        = eval(line[len("step="):-1])
                 elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):-1])
