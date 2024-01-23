@@ -59,7 +59,7 @@ class Parameters:
                 f"{wEmoji} emoji, " \
                 f"using {source} as a source, " \
                 f"for {forWhom}, " \
-                f"placing nick {nickNth}, " \
+                f"placing nickname {nickNth}, " \
                 f"repetition {repetition}, " \
                 f"step: {step}, " \
                 f"{alternate}alternating, " \

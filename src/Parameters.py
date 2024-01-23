@@ -82,7 +82,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     timesOrInfinite: str = DEF_TIMES
 
     if (p.verbose): print(f"VVVV: Entering CLI handling with set parameters: {p.setParams}")
-    toSet = deduceRemaining([] if (p.setParams == None) else p.setParams)
+    toSet: list[str] = deduceRemaining([] if (p.setParams == None) else p.setParams)
     if (p.verbose): print(f"VVVV: Remaining parameters to set: {toSet}")
     if ("--no-copy" in toSet):
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
@@ -318,14 +318,15 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
         match av[i]:
             case "--default": return defaultParameters(fromParameter = True)
             case "--no-copy":
+                setParams.append(av[i])
                 if (i + 1 == ac): copy = False; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     copy = not eval(av[i + 1]); i += 1
                 else: copy = False
-                setParams.append(av[i])
 
             case "-b" | "--bounds":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
@@ -340,8 +341,9 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     nbPhrases = str(lowerBound) + "," + str(upperBound)
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-                setParams.append(av[i]); i += 1
+                i += 1
             case "-n" | "--nb-phrases":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
@@ -350,26 +352,29 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("The number of phrases must be positive.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-                setParams.append(av[i]); i += 1
+                i += 1
             case "-e" | "--emoji":
+                setParams.append(av[i])
                 if (i + 1 == ac): emoji = True; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     emoji = eval(av[i + 1]); i += 1
                 else: emoji = True
-                setParams.append(av[i])
             case "-s" | "--source":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 source: str = av[i + 1]
                 if (not matches(MAT_NAME_LOGFILE, source)): source += ".log"
-                setParams.append(av[i]); i += 1
+                i += 1
             case "-w" | "--for-whom":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 forWhom = str(av[i + 1])
-                setParams.append(av[i]); i += 1
+                i += 1
             case "-N" | "--nick-nth":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
@@ -378,30 +383,31 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("N for --nick-nth must be positive, 0 (random position) or -1 (no nickname).")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-                setParams.append(av[i]); i += 1
+                i += 1
 
             case "-r" | "--allow-repetition":
+                setParams.append(av[i])
                 if (i + 1 == ac): allowRep = True; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     allowRep = eval(av[i + 1]); i += 1
                 else: allowRep = True
-                setParams.append(av[i])
             case "-o" | "--other-step":
+                setParams.append(av[i])
                 if (i + 1 == ac): step = True; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     step = eval(av[i + 1]); i += 1
                 else: step = True
-                setParams.append(av[i])
             case "-a" | "--alternate":
+                setParams.append(av[i])
                 if (i + 1 == ac): alternate = True; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     alternate = eval(av[i + 1]); i += 1
                 else: alternate = True
-                setParams.append(av[i])
             case "-t" | "--times":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
@@ -410,15 +416,16 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("The number of iterations must be positive.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-                setParams.append(av[i]); i += 1
+                i += 1
             case "-i" | "--infinite":
                 if (i + 1 == ac): infinite = True; break
+                setParams.append(av[i])
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     infinite = eval(av[i + 1]); i += 1
                 else: infinite = True
-                setParams.append(av[i])
             case "-d" | "--delay":
+                setParams.append(av[i])
                 if (i + 1 >= ac):
                     print(f"Missing argument for '{av[i]}'."); gnExit(exitCode.ERR_INV_ARG)
                 try:
@@ -429,7 +436,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                         raise ValueError("The delay cannot be negative.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
-                setParams.append(av[i]); i += 1
+                i += 1
             case "--ignore":
                 if (i + 1 < ac and eval(av[i + 1].capitalize()) == False): break
                 return fromCommandLine(Parameters({
@@ -439,12 +446,12 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                     "verbose": verbose, "saving": saving, "prefFile": prefFile
                 }))
             case "-S" | "--save":
+                setParams.append(av[i])
                 if (i + 1 == ac): saving = True; break
                 nextArg: str = av[i + 1].capitalize()
                 if (nextArg in ["True", "False"]):
                     saving = eval(av[i + 1]); i += 1
                 else: saving = True
-                setParams.append(av[i])
             case "-p" | "--pref-file": i += 1 # still needs to be here to avoid an invalid parameter error
 
             case "--verbose":

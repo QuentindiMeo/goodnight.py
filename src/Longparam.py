@@ -20,7 +20,7 @@ def handleString(arg: str) -> str:
 
 def handleInteger(arg: str, positive: bool = False) -> str:
     if (not matches(MAT_INTEGER_INPUT, arg)): raise ValueError(f"unexpected integer value for '{arg}'")
-    if (positive and int(arg) < 1): raise ValueError(f"unexpected integer value for '{arg}'")
+    if (positive and int(arg) < 1): raise ValueError(f"unexpected non-positive integer value for '{arg}'")
     return arg
 
 def handleBounds(arg: str) -> str:
