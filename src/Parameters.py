@@ -5,7 +5,7 @@ from signal import SIGTERM
 from random import randint as rand
 from re import search as matches
 
-from Utils import isIn, sendSignal, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
+from Utils import isIn, sendSignal, matchAnyParam, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
 from Longparam import applyLongParameters
 from Types import Parameters
 from Exit import exitCode, gnExit
@@ -19,7 +19,7 @@ DEF_NB_PHRASES:    str = "?"
 DEF_NB_DBOUND:     str = "2,5"
 DEF_NB_UBOUND:     str = "999"
 DEF_EMOJI:        bool = False
-DEF_SOURCE:        str = "./assets/source.log "
+DEF_SOURCE:        str = "./assets/source.log"
 DEF_FOR_WHOM:      str = ""
 DEF_NICK_NTH:      str = "0"
 DEF_REPETITION:   bool = False
@@ -48,8 +48,8 @@ def saveParameters(p: Parameters) -> None:
             f.write(f"copy={p.copy}\n")
             f.write(f"nbPhrases={p.nbPhrases}\n")
             f.write(f"emoji={p.emoji}\n")
-            f.write(f"src={p.source}\n")
-            f.write(f"who={p.forWhom}\n")
+            f.write(f"source={p.source}\n")
+            f.write(f"forWhom={p.forWhom}\n")
             f.write(f"nickNth={p.nickNth}\n")
             f.write(f"allowRep={p.allowRep}\n")
             f.write(f"step={p.step}\n")
@@ -483,23 +483,26 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
     try:
         with open(p.prefFile, "r") as f:
             lines = f.readlines()
-            lines = [line.strip() for line in lines]
-            for line in lines:
-                if   (len(line) == 0 or line.startswith(COMMENT_MARKER)): continue # comments
-                elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):])     ; p.setParams.append("--no-copy")
-                elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):] ; p.setParams.append("-n")
-                elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):])    ; p.setParams.append("-e")
-                elif (line.startswith("src=")):       p.source      =      line[len("src="):]       ; p.setParams.append("-s")
-                elif (line.startswith("who=")):       p.forWhom     =      line[len("who="):]       ; p.setParams.append("-w")
-                elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):]   ; p.setParams.append("-N")
-                elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):]) ; p.setParams.append("-r")
-                elif (line.startswith("step=")):      p.step        = eval(line[len("step="):])     ; p.setParams.append("-o")
-                elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):]); p.setParams.append("-a")
-                elif (line.startswith("times=")):     p.times       =      line[len("times="):]     ; p.setParams.append("-t")
-                elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):]     ; p.setParams.append("-d")
-                else: raise ValueError(f"Invalid line '{line}'")
-    except (FileNotFoundError, ValueError) as e:
-        print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_SAV)
+    except FileNotFoundError as e:
+        print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_FIL)
+    lines = [line.strip() for line in lines]
+    try:
+        for line in lines:
+            if (not matchAnyParam(line)): raise ValueError(f"Invalid line '{line}'")
+            if   (len(line) == 0 or line.startswith(COMMENT_MARKER)): continue # comments
+            elif (line.startswith("copy=")):      p.copy        = eval(line[len("copy="):])     ; p.setParams.append("--no-copy")
+            elif (line.startswith("nbPhrases=")): p.nbPhrases   =      line[len("nbPhrases="):] ; p.setParams.append("-n")
+            elif (line.startswith("emoji=")):     p.emoji       = eval(line[len("emoji="):])    ; p.setParams.append("-e")
+            elif (line.startswith("source=")):    p.source      =      line[len("source="):]    ; p.setParams.append("-s")
+            elif (line.startswith("forWhom=")):   p.forWhom     =      line[len("forWhom="):]   ; p.setParams.append("-w")
+            elif (line.startswith("nickNth=")):   p.nickNth     =      line[len("nickNth="):]   ; p.setParams.append("-N")
+            elif (line.startswith("allowRep=")):  p.allowRep    = eval(line[len("allowRep="):]) ; p.setParams.append("-r")
+            elif (line.startswith("step=")):      p.step        = eval(line[len("step="):])     ; p.setParams.append("-o")
+            elif (line.startswith("alternate=")): p.alternate   = eval(line[len("alternate="):]); p.setParams.append("-a")
+            elif (line.startswith("times=")):     p.times       =      line[len("times="):]     ; p.setParams.append("-t")
+            elif (line.startswith("delay=")):     p.delay       =      line[len("delay="):]     ; p.setParams.append("-d")
+    except ValueError as e:
+        print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_SAV)
     if (noParam): p.pickNbPhrases()
     return p
 

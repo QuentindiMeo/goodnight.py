@@ -2,8 +2,9 @@
 -- It is not meant to be used as-is, but rather to be read and understood.
 -- You can copy it to your own configuration file and modify it to your liking.
 -- Note that configuration files are meant to have a .sav extension.
--- NB: The order of the options is not important.
 -- You can use "--" at the beginning of a line as a comment trigger; empty lines are also ignored.
+-- NB1: The order of the options is not important.
+-- NB2: Comments are for templating, those you may add to a configuration file will be lost upon use.
 
 -- Use True or False only
 copy=False
@@ -15,22 +16,22 @@ nbPhrases=2,5
 emoji=True
 
 -- The path to the source file is relative and is NOT lenient on the absence of the extension.
-src=./assets/source.log
+source=./assets/source.log
 
 -- You are free to leave this option empty, using the format "who="
-who=Whomever
+forWhom=Whomever
 
 -- Remember that -1, 0 and positive integers, are the only valid values for this option.
-nickNth=0
+nickNth=1
 
 -- Use True or False only
 allowRep=True
 
 -- Use True or False only
-step=False
+step=True
 
 -- Use True or False only
-alternate=False
+alternate=True
 
 -- Remember that "infinite" and positive integers are the only valid values for this option.
 times=1
