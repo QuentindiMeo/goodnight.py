@@ -1,0 +1,47 @@
+-- This is a tutorial contents source file.
+-- It is not meant to be used as-is, but rather to be read and understood.
+-- You can copy it as your own source file and modify it to your liking.
+-- Note that source files are expected to have a .log extension.
+-- You can use "--" at the beginning of a line as a comment trigger; empty lines are also ignored.
+
+-- Sections
+--   Three sections exist, each of them starting with the marker "## "
+--   PHRASES.log holds your phrases.
+--   EMOJI.log holds your emoji list. (needed if the --emoji parameter is set to true)
+--   NICKNAMES.log holds nicknames you tuck alongside phrases. (optional)
+--   The sections are meant to keep that exact format and naming, so be careful.
+--   If there are several occurrences of a section, you will be asked if you want to concatenate
+--     their contents or keep the first occurrence of the section only.
+
+-- Notes
+--   The order of the sections is not important.
+--   Unlike in preferences files, comments will not be lost upon use of this file.
+--   Use double quotes as delimiters, and commas as separators between entries, or you might break the lexical analyzer.
+--   If several entries are on the same line, ONE of them will be picked at random.
+--   You can put a weight on a phrase line: place "3:" in front of it to make it three times as likely to appear.
+--     The default weight is 1, and a weight of 0 will ignore the entry.
+--     Weights are expected to be integers (i.e., use 3 and not 2.5 or 3.7).
+
+## EMOJI.log
+0:"🌙"
+"🥰","😍"
+"😘","😚"
+"🤗","😌"
+7:"💖","💗","💓","💞","❤️","💜","🤍"
+
+## NICKNAMES.log
+5:"baby","baby lover","sweet baby","my sweet baby"
+4:"my love","love","lover"
+"my angel"
+
+## PHRASES.log
+7:"good night","have a good night","have a great night"
+7:"have a good sleep","sleep tight","have a restful sleep","make sure you get solid sleep","enjoy a good sleep"
+7:"sweet dreams","have sweet dreams","have the loveliest dreams"
+9:"I love you","love you lots","don't forget I love you"
+"I'll be guarding your sleep"
+1:"I kiss you goodnight","kissing you goodnight","biggest kiss to you"
+"take good care","you take good care"
+
+## PHRASES.log
+9999:"this line","you will","be asked","if you","want to","ignore."
