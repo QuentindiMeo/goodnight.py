@@ -6,38 +6,39 @@
 -- Notes
 --   The order of the options is not important.
 --   You can use "--" at the beginning of a line as a comment trigger; empty lines are also ignored.
+--   When creating a configuration file, spaces may be placed around the equal sign (or not).
 --   Comments are for templating, those you add to a configuration file will be lost upon first use.
 --   The options are case-sensitive, so be careful. You're free to add spaces around the "=" sign.
 
 -- Use True or False only
-copy=False
+copy = True
 
 -- This is the format for a bounded range (min,max). You can also use a single number.
-nbPhrases=2,5
+nbPhrases= 2,5
 
 -- Use True or False only
-emoji=True
+emoji=False
 
 -- The path to the source file is relative and MUST end with ".log"
-source=./assets/source.log
+source  =  ./assets/default.log
 
 -- You are free to leave this option empty, using the format "forWhom="
-forWhom=Whomever
+forWhom=PersonName
 
 -- Use -1, 0 or positive integers only.
-nickNth=1
+nickNth = 0
 
 -- Use True or False only
-allowRep=True
+allowRep = False
 
 -- Use True or False only
-step=True
+step = False
 
 -- Use True or False only
-alternate=True
+alternate=False
 
 -- Use "infinite" or positive integers only.
-times=1
+times= 1
 
 -- Use 'p', 0 or positive integers only.
-delay=0
+delay= 0

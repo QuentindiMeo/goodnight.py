@@ -7,7 +7,6 @@ from re import search as matches
 from Exit import exitCode, gnExit
 from Types import UnweightedList as Ulist
 
-FILE_PARAMS: list[str] = ["copy", "nbPhrases", "emoji", "source", "forWhom", "nickNth", "allowRep", "step", "alternate", "times", "delay"]
 DEF_NB_UBOUND:     str = "999"
 MAT_INTEGER_INPUT: str = r"^[0-9]+$"
 MAT_INVALID_INPUT: str = "Invalid input: must be a positive number or 'y'."
@@ -46,13 +45,10 @@ def askConfirmation(context: str, e: exitCode = exitCode.SUCCESS) -> bool:
         if (ans == "y" or ans.startswith("yes")): return True
         if (ans == "n" or ans.startswith("no")):
             if (e != exitCode.SUCCESS): gnExit(e)
-            return False
+            break
     return False
 
-def matchAnyParam(line: str) -> bool:
-    for command in FILE_PARAMS:
-        if (line.replace(' ', '').startswith(command + '=')): return True
-    return False
+def beval(value: str) -> bool: return eval(value.capitalize())
 
 def sendSignal(sig: int) -> None:
     kill(getpid(), sig)
