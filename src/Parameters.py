@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# PARAMETERS.PY #
 
 from os import path, chmod
 from signal import SIGTERM
@@ -82,7 +82,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     timesOrInfinite: str = DEF_TIMES
 
     if (p.verbose): print(f"VVVV: Entering CLI handling with set parameters: {p.setParams}")
-    toSet: list[str] = deduceRemaining([] if (p.setParams == None) else p.setParams)
+    toSet: list[str] = deduceRemaining([] if (p.setParams is None) else p.setParams)
     if (p.verbose): print(f"VVVV: Remaining parameters to set: {toSet}")
     if ("--no-copy" in toSet):
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
@@ -142,22 +142,22 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 source = DEF_SOURCE
                 print(f"\t... using default value: {DEF_SOURCE.strip()}.")
             elif (isMatching and p.verbose): print(f"VVVV: Source file set to '{source}'.")
-            else: print("\tInvalid input: must be a .log file.")
+            elif (not isMatching): print("\tInvalid input: must be a .log file.")
     if ("-w" in toSet):
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: '{DEF_FOR_WHOM.strip()}' (no name used)).")
         elif (p.verbose): print(f"VVVV: For whom the goodnight is set to '{forWhom}'.")
     if ("-N" in toSet):
-        while (nickNth == DEF_NICK_NTH):
+        isMatching: bool = False
+        while (nickNth == DEF_NICK_NTH and not isMatching):
             buf: str = ""
-            isMatching: bool = False
             while (not isMatching):
                 buf = input("Place the nickname after the nth phrase\n\t(-1 [nowhere] | 0 [random] | int): ").strip()
                 isMatching = matches(MAT_INTEGER_INPUT, buf)
                 if (not isMatching):
                     print("\tInvalid input: N must be positive, 0 (random position) or -1 (no nickname).")
-            nickNth = str(1 if buf == "" else int(buf))
+            nickNth = str(0 if buf == "" else int(buf))
             if (buf == ""):
                 print(f"\t... using default value: {nickNth.strip()}.")
             elif (int(nickNth) < -1):
@@ -190,11 +190,13 @@ def fromCommandLine(p: Parameters) -> Parameters:
         while (timesOrInfinite != "t" and timesOrInfinite != "i"):
             timesOrInfinite = input("Play the goodnight x times or infinitely (t/i): ").strip().lower()
         if (timesOrInfinite == "t"): # play x times...
-            while (times == DEF_TIMES):
+            isMatching: bool = False
+            while (times == DEF_TIMES and not isMatching):
                 buf: str = ""
-                while (not matches(MAT_INTEGER_INPUT, buf)):
+                while (not isMatching):
                     buf = input("Number of times to iterate (int): ").strip()
-                    if (not matches(MAT_INTEGER_INPUT, buf)):
+                    isMatching = matches(MAT_INTEGER_INPUT, buf)
+                    if (not isMatching):
                         print("\tInvalid input: must be a positive integer.")
                 times = str(1 if buf == "" else int(buf))
                 if (buf == ""):
@@ -209,8 +211,8 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 if (p.verbose): print("VVVV: Infinite mode set to {infinite}.")
             else: print(MAT_DEFAULTING_N)
     if ("-d" in toSet):
-        while (delay == DEF_DELAY):
-            isMatching: bool = False
+        isMatching: bool = False
+        while (delay == DEF_DELAY and not isMatching):
             while (not isMatching):
                 buf = input("Delay between every iteration (in ms), or p (press Enter): ").strip()
                 isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_THEPKEY_INPUT, buf)
