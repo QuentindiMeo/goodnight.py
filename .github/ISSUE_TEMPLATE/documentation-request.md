@@ -11,4 +11,4 @@ assignees: QuentindiMeo
 A clear and concise description of what the problem is. Ex. I really don't understand what happens when [...]
 
 **Additional context**
-Add any other context or screenshots about the feature request here.
+Add any other context or screenshots about the documentation request here.
