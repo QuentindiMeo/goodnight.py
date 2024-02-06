@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help me improve
-title: "[BUG] \U0001F41B "
+title: "[BUGZ \U0001F41B] "
 labels: bug
 assignees: QuentindiMeo
 
