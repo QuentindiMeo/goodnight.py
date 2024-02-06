@@ -22,7 +22,9 @@ all:
 default_run:
 	@$(ECHO) $(GRN)"  Running default case of "$(NAME)"..."$(DEF) && \
 	./$(NAME) --default && \
-	$(ECHO) $(GRN)"  "$(NAME)" run complete."$(DEF) || $(ECHO) $(RED)"  "$(NAME)" run failed."$(DEF)
+	$(ECHO) $(GRN)"  "$(NAME)" run complete."$(DEF) || ( \
+		$(ECHO) $(RED)"  "$(NAME)" run failed."$(DEF) \
+	)
 
 clean:
 	@$(ECHO) $(GRN)"  Cleaning..."$(DEF) && \
@@ -30,20 +32,26 @@ clean:
 	$(ECHO) $(LGTGRN)"  Cleaning " $(BLU)$(COMPIL)$(DEF) && $(RM) $(TESTS)$(COMPIL) && \
 	$(ECHO) $(LGTGRN)"  Cleaning " $(BLU)$(TESTS)$(CACHE)$(DEF) && $(RM) $(TESTS)$(CACHE) && \
 	$(ECHO) $(LGTGRN)"  Cleaning " $(BLU)$(TESTS)$(COMPIL)$(DEF) && $(RM) $(TESTS)$(COMPIL) && \
-	$(ECHO) $(GRN)"  Cleaning complete."$(DEF) || $(ECHO) $(RED)"  Cleaning failed."$(DEF)
+	$(ECHO) $(GRN)"  Cleaning complete."$(DEF) || ( \
+		$(ECHO) $(RED)"  Cleaning failed."$(DEF) \
+	)
 
 tests:
 	@$(ECHO) $(GRN)"  Running tests..."$(DEF) && \
 	./tests/test.sh && \
-	$(ECHO) $(GRN)"  Tests run complete."$(DEF) || $(ECHO) $(RED)"  Tests run failed."$(DEF)
+	$(ECHO) $(GRN)"  Tests run complete."$(DEF) || ( \
+		$(ECHO) $(RED)"  Tests run failed."$(DEF) \
+	)
 
 install:
 	@$(ECHO) $(GRN)"  Installing pyperclip..."$(DEF) && \
 	pip install pyperclip==1.8.2 && \
 	$(ECHO) $(GRN)"  Installation complete.\n"$(DEF) && \
 	$(ECHO) $(BLU)"  Depending on your system, you may now need to install:" && \
-	$(ECHO) "\txclip or xsel (Linux),\n\tpbcopy and pbpaste (Mac),\n\tpywin32 (Windows)"$(DEF) || \
-	$(ECHO) $(RED)"  Installation failed. Please make sure you have pip installed."$(DEF)
+	$(ECHO) "\txclip or xsel (Linux),\n\tpbcopy and pbpaste (Mac),\n\tpywin32 (Windows)"$(DEF) || ( \
+		$(ECHO) $(RED)"  Installation failed. Please make sure you have pip installed."$(DEF) && \
+		$(ECHO) $(BLU)"  On Ubuntu, for example... 'sudo apt-get install python3-pip' might help."$(DEF) \
+	)
 
 # COLORING PRINTS #
 

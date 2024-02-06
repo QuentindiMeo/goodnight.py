@@ -4,25 +4,25 @@
 
 ## [UNRELEASED]
 
-### REL 1.0.0 - XXX ?? 2024 [[#x]()]
+### REL 2.0.0 - ??? ?? 20?? [[#x]()]
+
+???
+
+### REL 1.0.0 - ??? ?? 2024 [[#x]()]
 
 First release
 Announcing the release on Reddit & Discord
 
-### DEV 0.3.3 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.4 - Feb ?? 2024 [[#x]()]
 
 Adding and implementing `--version` aka `-v`: print the program's version.  
-Making `--ignore` not ignore other parameters.  
-Adding a dynamic loading bar while the program is generating a goodnight.  
 Redacting and making unit tests.  
 Announcing the release date of the first release on Reddit & Discord.
 
-### DEV 0.3.2 - Jan ?? 2024 [[#x]()]
+### DEV 0.3.3 - Feb ?? 2024 [[#x]()]
 
-Adding a Ctrl+D handler, exiting the program gracefully with a context message.  
-Fixing the long overdue bug of FILE_AV suppressing the CLI asking for parameters.  
-Adding True/False logic to boolean program parameters; allowing `--no-copy=False`, etc.  
-Adjusting inability to use default values in some CLI prompts, shebangs oddity.  
+Adjusting the Makefile error prints, improving the `install` target.  
+Making `--ignore` not ignore other parameters.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 
@@ -30,9 +30,18 @@ Updating the [README demonstration gif](README.md).
 
 ## [RELEASED]
 
+### DEV 0.3.2 - Feb 06 2024 [[#101](https://github.com/QuentindiMeo/goodnight.py/commit/552568fd71dbc9bc5ab0e99648237333d9d628f1)]
+
+Added a Ctrl+D handler, exiting the program gracefully with a context message.  
+Fixed the long overdue bug of FILE_AV suppressing the CLI asking for parameters.  
+Added True/False logic to boolean program parameters; allowing `--no-copy=False`, etc.  
+Fixed inability to use default values in some CLI prompts, shebangs oddity.  
+Added more issue templates to the repository.  
+Reached the 100 commits milestone. (YOOHOO! 🎉)
+
 ### DEV 0.3.1 - Jan 21 2024 [[#90](https://github.com/QuentindiMeo/goodnight.py/commit/3b2ba0e929a5ffb9de3ea8ba6f00d735414e9575)]
 
-Enhancing the Makefile and its prints.  
+Enhanced the Makefile and its prints.  
 Changed the Parameters class' constructor to taking a dictionary argument, to avoid having 20 arguments.  
 Added and implemented `--nick-nth`: forcing the nickname to be after the nth phrase.  
 Added and implemented `--pref-file` aka `-p`: punctually, using a specifice file as set preferences file.  
@@ -41,12 +50,12 @@ Updated the [README](README.md)'s general information to reflect changes.
 
 ### DEV 0.3.0 - Jan 06 2024 [[#79](https://github.com/QuentindiMeo/goodnight.py/commit/ee7a5b40a7d023a5f18580d37e38a1f3139192c1)]
 
-Creating a Makefile and executable file at the root of the repository, for clarity.  
-Adding confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
-Implementing the possibility to set the delay to `p`: press Enter to proceed after each interation.  
-Implementing `--XXX=x` parameter syntax.  
-Implementing duplicate parameter error handling.  
-Enhancing verbosity and context messages.
+Created a Makefile and executable file at the root of the repository, for clarity.  
+Added confirmation prompt if the delay is set to a high value (> 10000) through CLI.  
+Implemented the possibility to set the delay to `p`: press Enter to proceed after each interation.  
+Implemented `--XXX=x` parameter syntax.  
+Implemented duplicate parameter error handling.  
+Enhanced verbosity presence and context messages.
 
 ---
 
@@ -82,7 +91,7 @@ Added [LICENSE](LICENSE.md) file and [issue templates](.github/ISSUE_TEMPLATE).
 Added and implemented `--other-step` aka `-o`: make the program use the even-numbered phrase gaps as "and"s instead of commas.  
 Updated usage/help function to reflect additions.  
 Set 999 as maximum value for `-n` and `-b` upper bound.  
-Adding confirmation prompt if `-n` or `-b` is set to a high value (> 6) through CLI.
+Added confirmation prompt if `-n` or `-b` is set to a high value (> 6) through CLI.
 
 ---
 
@@ -186,7 +195,7 @@ Completed setup for Exit and Help.
 
 Added Parameters class to handle and hold program parameters.  
 Added and implemented `-n` (number of phrases to draw), `-e` (toggle emoji mode), `-w` (for whom).  
-Adding first elementary components.
+Added first elementary components.
 
 ### DEV 0.0.0 - Oct 30 2023 [[#1](https://github.com/QuentindiMeo/goodnight.py/commit/10593fa32045e11cfd8621fe0bf106547ce16f80)]
 
