@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# CONTENTSEXTRACTOR.PY #
 
 from random import randint as rand
 from re import search as matches

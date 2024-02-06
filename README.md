@@ -54,7 +54,8 @@ The author declines all responsibility for any conflict caused by the (over)use 
 &nbsp;&nbsp; :rocket:&nbsp; **Launch**
 
 ``` bash
-make && ./goodnight.py [OPTIONS]
+make
+./goodnight.py [OPTIONS]
 ```
 
 &#xa0;
@@ -94,6 +95,7 @@ make && ./goodnight.py [OPTIONS]
 ./goodnight.py --bounds=2,5 --source="./assets/source.log" --for-whom="" --pref-file="./assets/preferences.sav"
 ./goodnight.py -b "2,5" -s "assets/source" -w "" -p "assets/preferences"
 ./goodnight.py --default
+make default_run
 ```
 
 &#xa0;
@@ -116,7 +118,7 @@ make && ./goodnight.py [OPTIONS]
 ## :gear: Requirements
 
 This program was tested on and designed for Ubuntu 22.04; it is WSL2-compatible.  
-It uses the **Pyperclip** module to copy its results to your clipboard; you may need to install it with `make install`  
+It uses the **Pyperclip** module to copy its results to your clipboard; you may need to install it with `make install`.  
 Pyperclip itself uses a clipboard package, which you may need to install as well. Refer to [Pyperclip's documentation](https://pyperclip.readthedocs.io/en/latest/) for more information.
 
 > [!CAUTION]

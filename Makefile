@@ -12,14 +12,14 @@ NAME	=	goodnight.py
 
 # TARGETS #
 
-.PHONY: all clean goodnight run tests install
+.PHONY: all clean goodnight default_run tests install
 
 all:
 	@$(ECHO) $(GRN)"  Assembling "$(NAME)"..."$(DEF) && \
 	$(CHMOD) $(NAME) && \
 	$(ECHO) $(GRN)"  "$(NAME)" ready to roll!!"$(DEF)
 
-run:
+default_run:
 	@$(ECHO) $(GRN)"  Running default case of "$(NAME)"..."$(DEF) && \
 	./$(NAME) --default && \
 	$(ECHO) $(GRN)"  "$(NAME)" run complete."$(DEF) || $(ECHO) $(RED)"  "$(NAME)" run failed."$(DEF)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# UTILS.PY #
 
 from os import kill, getpid
 

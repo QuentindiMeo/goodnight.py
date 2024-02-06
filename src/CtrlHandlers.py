@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# CTRLHANDLERS.PY #
 
 from os import name as osName
 from signal import signal as bindSignal, SIGINT, SIGTERM

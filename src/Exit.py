@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# EXIT.PY #
 
 from enum import Enum
 

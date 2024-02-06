@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# LONGPARAM.PY #
 
 from re import search as matches
 from Utils import runParameterDuplicateChecks

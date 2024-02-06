@@ -22,6 +22,7 @@ Announcing the release date of the first release on Reddit & Discord.
 Adding a Ctrl+D handler, exiting the program gracefully with a context message.  
 Fixing the long overdue bug of FILE_AV suppressing the CLI asking for parameters.  
 Adding True/False logic to boolean program parameters; allowing `--no-copy=False`, etc.  
+Adjusting inability to use default values in some CLI prompts, shebangs oddity.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
 

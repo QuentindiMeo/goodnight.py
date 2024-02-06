@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+# GOODNIGHT.PY #
 
 from pyperclip import copy # for copying the result to the clipboard
 
