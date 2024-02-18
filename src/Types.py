@@ -71,7 +71,7 @@ class Parameters:
                 f"\temoji: {self.emoji}\n" \
                 f"\tsource file: {self.source}\n" \
                 f"\tfor: {self.forWhom}\n" \
-                f"\tnick-nth: {self.nickNth}\n" \
+                f"\tnickname position: {self.nickNth}\n" \
                 f"\trepetition: {self.allowRep}\n" \
                 f"\tstep: {self.step}\n" \
                 f"\talternate: {self.alternate}\n" \

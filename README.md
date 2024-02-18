@@ -51,7 +51,7 @@ The author declines all responsibility for any conflict caused by the (over)use 
 
 ## :city_sunset: Usage
 
-&nbsp;&nbsp; :rocket:&nbsp; **Launch**
+&nbsp;&nbsp; :rocket:&nbsp; **Build & Launch**
 
 ``` bash
 make
@@ -69,7 +69,7 @@ make
 -b, --bounds     (x,y)  Bounds for the random range of how many phrases to draw (def: 2,5)
 -n, --nb-phrases <int>  Number of phrases to draw
 -e, --emoji             Add emoji after each phrase (from source file)
--s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/source.log)
+-s, --source     <str>  Source file to pull contents (phrases...) from (def: ./assets/default.log)
 -w, --for-whom   <str>  For whom the goodnight is (def: "" [no name used])
 -N, --nick-nth   <int>  Place the nickname after the nth phrase (def: 0 [random placement])
 
@@ -92,7 +92,7 @@ make
 &nbsp;&nbsp; :hotsprings:&nbsp; **Default Behavior** & Equivalents
 
 ``` bash
-./goodnight.py --bounds=2,5 --source="./assets/source.log" --for-whom="" --pref-file="./assets/preferences.sav"
+./goodnight.py --bounds=2,5 --source="./assets/default.log" --for-whom="" --pref-file="./assets/preferences.sav"
 ./goodnight.py -b "2,5" -s "assets/source" -w "" -p "assets/preferences"
 ./goodnight.py --default
 make default_run
@@ -109,8 +109,8 @@ make default_run
 - Though Ctrl+D cannot be caught in this script, you can **use Ctrl+C** to exit at any time.
 - [`-b`](#city_sunset-usage) and [`-n`](#city_sunset-usage), just like [`-t`](#city_sunset-usage) and [`-i`](#city_sunset-usage), are mutually exclusive. If both are provided, the program will exit with an error.
 - [`-o`](#city_sunset-usage) naturally has no effect if there is only one phrase, or [`-e`](#city_sunset-usage) is present.
-- A file named [source.log](./assets/source.log) serves as the default source file for phrases, emoji and nicknames.
-  - You may create your own `.log` source file (see above: [`-s`](#city_sunset-usage)). Open [source.log](./assets/source.log) to see how to format your own.
+- A file named [default.log](./assets/default.log) serves as the default source file for phrases, emoji and nicknames.
+  - You may create your own `.log` source file (see above: [`-s`](#city_sunset-usage)). Open [default.log](./assets/default.log) to see how to format your own.
 - The [`--for-whom`](#city_sunset-usage) option overrides nicknames provided by a source file.
 
 &#xa0;
@@ -118,11 +118,12 @@ make default_run
 ## :gear: Requirements
 
 This program was tested on and designed for Ubuntu 22.04; it is WSL2-compatible.  
-It uses the **Pyperclip** module to copy its results to your clipboard; you may need to install it with `make install`.  
+It uses the **Pyperclip** module to copy its results to your clipboard; you may need to install it through `make install`, using [`pip`](https://pip.pypa.io/en/stable/installation/).  
 Pyperclip itself uses a clipboard package, which you may need to install as well. Refer to [Pyperclip's documentation](https://pyperclip.readthedocs.io/en/latest/) for more information.
 
 > [!CAUTION]
-> **goodnight.py**'s code is written in Python **3.10** and is **not** compatible with anterior versions.
+> **goodnight.py**'s code is written in Python **3.10** and is **not** compatible with anterior versions.  
+> You can check your Python version by running `python --version` in your terminal.
 
 &#xa0;
 
