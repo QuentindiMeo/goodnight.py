@@ -6,11 +6,12 @@ from random import randint as rand
 from typing import TypeAlias
 
 IdxList:         TypeAlias = list[int] # a list of indices of used P/Es
-ElementList:     TypeAlias = list[str] # a list of P/E/N elements
-WeightedElement: TypeAlias = (str, int) # a P/E/N and its weight
-WeightedList:    TypeAlias = (ElementList, int) # a list of P/E/N elements and its weight
-UnweightedList:  TypeAlias = list[ElementList] # an unweighted list of P/E/N elements
-ParamDict:       TypeAlias = dict[str]
+ElementsList:    TypeAlias = list[str] # a list of P/E/N elements
+WeightedElement: TypeAlias = tuple[str, int] # a P/E/N and its weight
+WeightedList:    TypeAlias = tuple[ElementsList, int] # a list of P/E/N elements and its weight
+UnweightedList:  TypeAlias = list[ElementsList] # an unweighted list of P/E/N elements
+SetParams:       TypeAlias = list[str] | None
+ParamDict:       TypeAlias = dict[str, bool | str | float | SetParams]
 
 DEF_PREFFPATH:   str = "./assets/preferences.sav"
 DEF_COPY:       bool = True
@@ -32,8 +33,8 @@ DEF_SAVE_PREF:  bool = False
 
 class Goodnight:
     def __init__(self, txt: str) -> None:
-        self.txt = txt
-        self.step = False
+        self.txt:   str = txt
+        self.step: bool = False
 
 class Parameters:
     def pickNbPhrases(self) -> None:
@@ -81,26 +82,26 @@ class Parameters:
                 f"\tsaving preferences: {self.saving}"
 
     def __init__(self, p: ParamDict) -> None:
-        self.copy      = p.get("copy")
+        self.copy:      bool = bool(p.get("copy"))
 
-        self.nbPhrases = p.get("nbPhrases")
-        self.emoji     = p.get("emoji")
-        self.source    = p.get("source")
-        self.forWhom   = p.get("forWhom")
-        self.nickNth   = p.get("nickNth")
+        self.nbPhrases:  str = str(p.get("nbPhrases"))
+        self.emoji:     bool = bool(p.get("emoji"))
+        self.source:     str = str(p.get("source"))
+        self.forWhom:    str = str(p.get("forWhom"))
+        self.nickNth:    str = str(p.get("nickNth"))
 
-        self.allowRep  = p.get("allowRep")
-        self.step      = p.get("step")
-        self.alternate = p.get("alternate")
-        self.times     = p.get("times")
-        self.infinite  = p.get("infinite")
-        self.delay     = p.get("delay")
+        self.allowRep:  bool = bool(p.get("allowRep"))
+        self.step:      bool = bool(p.get("step"))
+        self.alternate: bool = bool(p.get("alternate"))
+        self.times:      str = str(p.get("times"))
+        self.infinite:  bool = bool(p.get("infinite"))
+        self.delay:    float = p.get("delay")
 
-        self.verbose   = p.get("verbose")
-        self.saving    = p.get("saving")
+        self.verbose:   bool = bool(p.get("verbose"))
+        self.saving:    bool = bool(p.get("saving"))
 
-        self.prefFile  = p.get("prefFile", DEF_PREFFPATH)
-        self.setParams = p.get("setParams", [])
+        self.prefFile:   str = str(p.get("prefFile", DEF_PREFFPATH))
+        self.setParams: SetParams = p.get("setParams", [])
 
 class Contents:
     def pickNick(self, p: Parameters) -> str:
@@ -129,7 +130,7 @@ class Contents:
         return [999]
 
     def pickPhrase(self, gn: Goodnight, usedPhrases: IdxList) -> IdxList:
-        unpickedPhrases: WeightedList = duplicate(self.phrases)
+        unpickedPhrases = duplicate(self.phrases)
         for i in usedPhrases: unpickedPhrases.pop(i)
         randWeight: int = rand(0, sum([p[1] for p in unpickedPhrases]))
         for p in unpickedPhrases:
@@ -153,6 +154,6 @@ class Contents:
 
     def __init__(self, p: WeightedList, e: WeightedList, n: WeightedList) -> None:
         # I have a peeeeeeen
-        self.phrases = p
-        self.emoji   = e
-        self.nicks   = n
+        self.phrases: WeightedList = p
+        self.emoji:   WeightedList = e
+        self.nicks:   WeightedList = n

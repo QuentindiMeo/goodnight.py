@@ -8,7 +8,7 @@ from copy import deepcopy as dup
 
 from Utils import isIn, sendSignal, beval, askConfirmation, askConfirmationNumber, runParameterDuplicateChecks
 from Longparam import applyLongParameters
-from Types import Parameters
+from Types import Parameters, SetParams
 from Exit import exitCode, gnExit
 
 FILE_AV:     list[str] = ["--no-copy", "-n", "-e", "-s", "-w", "-N", "-r", "-o", "-a", "-t", "-d"]
@@ -61,9 +61,9 @@ def saveParameters(p: Parameters) -> None:
     except PermissionError as e:
         print(f"Error writing to file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_PER)
 
-def deduceRemaining(alreadySet: list[str]) -> list[str]:
+def deduceRemaining(alreadySet: SetParams) -> list[str]:
     remaining: list[str] = dup(FILE_AV)
-    if (alreadySet == None): return remaining
+    if (alreadySet is None): return remaining
     for s in alreadySet:
         if (s in remaining): remaining.remove(s)
     return remaining
@@ -82,6 +82,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     delay:    float = p.delay
     randomOrNumber:  str = DEF_NB_PHRASES
     timesOrInfinite: str = DEF_TIMES
+    buf: str = "" # buffer for user input
 
     if (p.verbose): print(f"VVVV: Entering CLI handling with set parameters: {p.setParams}")
     toSet: list[str] = deduceRemaining([] if (p.setParams is None) else p.setParams)
@@ -114,7 +115,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 isMatching: bool = False
                 while (not isMatching):
                     buf = input("Number of phrases to draw: ").strip()
-                    isMatching = matches(MAT_INTEGER_INPUT, buf)
+                    isMatching = matches(MAT_INTEGER_INPUT, buf) is not None
                     if (not isMatching):
                         print("\tInvalid input: must be a positive integer.")
                 nbPhrases = str(rand(2, 5) if buf == "" else int(buf))
@@ -139,7 +140,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
         isMatching: bool = False
         while (not isMatching):
             source = input("What source file to use: ").strip()
-            isMatching = matches(MAT_NAME_LOGFILE, source)
+            isMatching = matches(MAT_NAME_LOGFILE, source) is not None
             if (source == ""):
                 source = DEF_SOURCE
                 print(f"\t... using default value: {DEF_SOURCE.strip()}.")
@@ -156,7 +157,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
             buf: str = ""
             while (not isMatching):
                 buf = input("Place the nickname after the nth phrase\n\t(-1 [nowhere] | 0 [random] | int): ").strip()
-                isMatching = matches(MAT_INTEGER_INPUT, buf)
+                isMatching = matches(MAT_INTEGER_INPUT, buf) is not None
                 if (not isMatching):
                     print("\tInvalid input: N must be positive, 0 (random position) or -1 (no nickname).")
             nickNth = str(0 if buf == "" else int(buf))
@@ -197,7 +198,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 buf: str = ""
                 while (not isMatching):
                     buf = input("Number of times to iterate (int): ").strip()
-                    isMatching = matches(MAT_INTEGER_INPUT, buf)
+                    isMatching = matches(MAT_INTEGER_INPUT, buf) is not None
                     if (not isMatching):
                         print("\tInvalid input: must be a positive integer.")
                 times = str(1 if buf == "" else int(buf))
@@ -213,25 +214,27 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 if (p.verbose): print(f"VVVV: Infinite mode set to {infinite}.")
             else: print(MAT_DEFAULTING_N)
     if ("-d" in toSet):
+        newDelay = DEF_DELAY
         isMatching: bool = False
-        while (delay == DEF_DELAY and not isMatching):
+        while (newDelay == DEF_DELAY and not isMatching):
             while (not isMatching):
                 buf = input("Delay between every iteration (in ms), or p (press Enter): ").strip()
-                isMatching = matches(MAT_FLOATNB_INPUT, buf) or matches(MAT_THEPKEY_INPUT, buf)
+                isMatching = matches(MAT_FLOATNB_INPUT, buf) is not None or matches(MAT_THEPKEY_INPUT, buf) is not None
                 if (not isMatching):
                     print("\tInvalid input: must be a positive float number or p.")
             if (buf[0] != 'p'):
-                delay = str(0 if buf == "" else int(buf))
+                newDelay = str(0 if buf == "" else int(buf))
                 if (buf == ""):
-                    print(f"\t... using default value: {delay}.")
-                elif (int(delay) < 0):
-                    print("The number of iterations cannot be negative."); delay = DEF_DELAY
-                while (int(delay) > 10000):
-                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay.strip()})")
+                    print(f"\t... using default value: {newDelay}.")
+                elif (int(newDelay) < 0):
+                    print("The number of iterations cannot be negative."); newDelay = DEF_DELAY
+                while (int(newDelay) > 10000):
+                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({newDelay.strip()})")
                     if (buf == "y"): break
-                    delay = buf
-            else: delay = buf
-            if (p.verbose): print(f"VVVV: Delay between iterations set to {delay}.")
+                    newDelay = buf
+            else: newDelay = buf
+            if (p.verbose): print(f"VVVV: Delay between iterations set to {newDelay}.")
+        delay = float(newDelay)
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters({
         "copy": copy,
@@ -252,14 +255,14 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     verbose: bool = False if ("--verbose" not in av or "--verbose=false" in str(av).lower()) else True
 
     if (verbose): print(f"VVVV: Entering sanitization with av: {av}")
-    def getSanitizedAv(ac: int, av: list[str]) -> (int, list[str]):
+    def getSanitizedAv(ac: int, av: list[str]) -> tuple[int, list[str]]:
         newAv: list[str] = [av[0]]
 
-        def isMultioptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
+        def isMultiOptional(s: str) -> bool: return (len(s) > 2 and s[0] == '-' and s[1] != '-')
 
         try:
-            for i in range(1, ac): # check for multioptional parameters and unwrap them
-                if (isMultioptional(av[i])):
+            for i in range(1, ac): # check for multi-optional parameters and unwrap them
+                if (isMultiOptional(av[i])):
                     s = "".join(dict.fromkeys(av[i]))[1:] # av[i] without duplicates
                     if (isIn(PAR_HAS_ARG, s)):
                         raise ValueError(f"One of the parameters in '{s}' needs an argument.")
@@ -315,7 +318,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     delay:    float = extractP.delay
     saving:    bool = extractP.saving
     prefFile:   str = extractP.prefFile
-    setParams: list[str] = extractP.setParams
+    setParams: SetParams = extractP.setParams
 
     i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
     while (i < ac): # hence can't use a for in range loop
@@ -436,8 +439,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 try:
                     if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_THEPKEY_INPUT, av[i + 1])):
                         raise ValueError("Delay must be a positive float number or 'p'.")
-                    delay = str(int(av[i + 1])) if av[i + 1] != 'p' else av[i + 1]
-                    if (int(delay) < 0):
+                    newDelay: str = str(int(av[i + 1])) if av[i + 1] != 'p' else av[i + 1]
+                    if (int(newDelay) < 0):
                         raise ValueError("The delay cannot be negative.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -490,7 +493,7 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
     except FileNotFoundError as e:
         print(f"Error reading file '{p.prefFile}': {e}"); gnExit(exitCode.ERR_INV_FIL)
 
-    lines = [line.strip() for line in lines]
+    lines: list[str] = [line.strip() for line in lines]
     try:
         for line in lines:
             if (len(line) == 0 or line.startswith(COMMENT_MARKER)): continue # comments
@@ -529,6 +532,7 @@ def getParameters(ac: int, av: list[str]) -> Parameters:
         p = fromParameters(ac, av) if (ac > 1) else fromFile(extraction = False, noParam = True)
     except EOFError:
         sendSignal(SIGTERM) # SIGTERM is caught by CtrlDHandler, which terminates the program
+        exit(exitCode.FAILURE.value) # this is a failsafe in case the signal is not caught
     p.source = p.source.strip(); p.forWhom = p.forWhom.strip() # eliminate trailing spaces used to dodge CLI cases
     if (p.times == "infinite"): p.infinite = True; p.times = DEF_TIMES
     return p
