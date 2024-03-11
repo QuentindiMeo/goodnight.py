@@ -2,17 +2,22 @@
 
 from os import name as osName
 from signal import signal as bindSignal, SIGINT, SIGTERM
+from types import FrameType
 
-def getContext(frame: str) -> str:
-    return   frame.f_code.co_filename.split("\\")[-1] + ":" + str(frame.f_lineno) if osName == 'nt' \
-        else frame.f_code.co_filename.split("/")[-1]  + ":" + str(frame.f_lineno)
+def getContext(frame: FrameType | None) -> str:
+    try:
+        if (osName == 'nt'): # Windows path type
+            return frame.f_code.co_filename.split("\\")[-1] + ":" + str(frame.f_lineno) # type: ignore
+        return frame.f_code.co_filename.split("/")[-1] + ":" + str(frame.f_lineno) # type: ignore
+    except AttributeError | NameError:
+        return "unknown context"
 
-def CtrlDHandler(signal_received: int, frame: str) -> None:
-    print(f"\n! SIGTERM ({signal_received}) interruption caught in {getContext(frame)} !", flush=True)
+def CtrlDHandler(signalReceived: int, frame: FrameType | None) -> None:
+    print(f"\n! SIGTERM ({signalReceived}) interruption caught in {getContext(frame)} !", flush=True)
     exit(0)
 
-def CtrlCHandler(signal_received: int, frame: str) -> None:
-    print(f"\n! SIGINT ({signal_received}) interruption caught in {getContext(frame)} !", flush=True)
+def CtrlCHandler(signalReceived: int, frame: FrameType | None) -> None:
+    print(f"\n! SIGINT ({signalReceived}) interruption caught in {getContext(frame)} !", flush=True)
     exit(0)
 
 def handler() -> None:

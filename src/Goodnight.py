@@ -1,6 +1,6 @@
 # GOODNIGHT.PY #
 
-from pyperclip import copy # for copying the result to the clipboard
+from pyperclip import copy as copyToClipboard
 
 from random import randint as rand
 from time import sleep
@@ -56,7 +56,7 @@ def main(ac: int, av: list[str]) -> int:
         print(f"Result: \"{result.txt}\"")
         if (p.verbose): print(f"\nVVVV: for parameters: {p.toString()}")
         if (p.copy):
-            copy(result.txt)
+            copyToClipboard(result.txt)
             print("\nCopied the result to your clipboard!")
         times -= 1
         if (times > 0 or p.infinite):

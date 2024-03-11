@@ -5,7 +5,7 @@ from re import search as matches
 
 from Utils import rreplace, askConfirmation, hasDuplicates
 from Parameters import Parameters
-from Types import WeightedList as Wlist, UnweightedList as Ulist, Contents
+from Types import WeightedElement as WElement, UnweightedList as Ulist, Contents
 from Exit import exitCode, gnExit
 
 COMMENT_MARKER: str = "--"
@@ -17,26 +17,26 @@ ASK_CONCAT:     str = "\nDo you want to concatenate the contents?"
 MAT_WEI_MARKER: str = r"^':"
 MAT_WEI_WEIGHT: str = r"^'[0-9]+:"
 
-def pickRandElement(elems: list[str]) -> str: return elems[rand(0, len(elems) - 1)]
+def pickRandElement(elements: list[str]) -> str: return elements[rand(0, len(elements) - 1)]
 
-def applyWeighting(input: Ulist) -> list[Wlist]:
-    output: list[Wlist] = []
+def applyWeighting(input: Ulist) -> list[WElement]:
+    output: list[WElement] = []
     for line in input:
         line = str(line).replace("\"'", "\"").replace("'\"", "\"").replace("\\'", "'") \
             .replace("[", "").replace("]", "")
         line = rreplace(rreplace(line, ", ", ","), "\\'", "'")
         if   (matches(MAT_WEI_MARKER, line)): raise ValueError("weighting marker with no value")
         elif (not matches(MAT_WEI_WEIGHT, line)): # no weighting marker
-            elems: list[str] = line.split(",")
-            output.append((pickRandElement(elems), 1))
+            elements: list[str] = line.split(",")
+            output.append((pickRandElement(elements), 1))
         else: # has weighting marker
             weight = int(line[1:].split(":")[0])
             if (weight == 0): continue # no weighting means element is never picked
-            elems: list[str] = line[1:].split(":")[1].strip().split(",")
-            output.append((pickRandElement(elems), weight))
+            elements: list[str] = line[1:].split(":")[1].strip().split(",")
+            output.append((pickRandElement(elements), weight))
     return output
 
-def extractor(lines: list[str], i: int) -> (Ulist, int):
+def extractor(lines: list[str], i: int) -> tuple[Ulist, int]:
     output: Ulist = []
 
     diff: int = 1
@@ -50,6 +50,7 @@ def contentsExtractor(p: Parameters) -> Contents:
     phrases: Ulist = []
     emoji:   Ulist = []
     nicks:   Ulist = []
+    lines:   list[str] = []
 
     try:
         with open(p.source, "r") as f: lines = f.readlines()
@@ -59,7 +60,7 @@ def contentsExtractor(p: Parameters) -> Contents:
             line = rreplace(rreplace(line, "  ", " "), ", ", ",")
         if (HEAD_PHRASES not in lines or (p.emoji and HEAD_EMOJI not in lines)):
             raise ValueError("Corrupted or invalid file: missing header")
-    except (FileNotFoundError, ValueError) as e:
+    except FileNotFoundError | ValueError as e:
         print(f"Error reading from file '{p.source}': {e}")
         gnExit(exitCode.ERR_INV_FIL if isinstance(e, FileNotFoundError) else exitCode.ERR_INV_HEA)
 
@@ -97,6 +98,7 @@ def contentsExtractor(p: Parameters) -> Contents:
         if (demoji):   print("VVVV: Log file contains duplicate emoji.")
         if (dnicks):   print("VVVV: Log file contains duplicate nicknames.")
 
+    c: Contents = Contents([], [], [])
     try:
         c = Contents(
             applyWeighting(phrases), applyWeighting(emoji), applyWeighting(nicks)

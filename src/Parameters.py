@@ -79,7 +79,7 @@ def fromCommandLine(p: Parameters) -> Parameters:
     alternate: bool = p.alternate
     times:      str = p.times
     infinite:  bool = p.infinite
-    delay:    float = p.delay
+    delay:      str = p.delay
     randomOrNumber:  str = DEF_NB_PHRASES
     timesOrInfinite: str = DEF_TIMES
     buf: str = "" # buffer for user input
@@ -87,13 +87,13 @@ def fromCommandLine(p: Parameters) -> Parameters:
     if (p.verbose): print(f"VVVV: Entering CLI handling with set parameters: {p.setParams}")
     toSet: list[str] = deduceRemaining([] if (p.setParams is None) else p.setParams)
     if (p.verbose): print(f"VVVV: Remaining parameters to set: {toSet}")
-    if ("--no-copy" in toSet):
+    if ("--no-copy" in toSet): # copy
         confirmed: bool = askConfirmation("Copy the result to your clipboard")
         if (not confirmed):
             copy = False
             if (p.verbose): print(f"VVVV: Clipboard copy toggle set to {copy}.")
         else: print(MAT_DEFAULTING_Y)
-    if ("-n" in toSet):
+    if ("-n" in toSet): # nbPhrases
         while (randomOrNumber != "r" and randomOrNumber != "n"):
             randomOrNumber = input("Use a random range or number of phrases (r/n): ").strip().lower()
         if (randomOrNumber == "r"): # random quantity of phrases in bounds...
@@ -129,13 +129,13 @@ def fromCommandLine(p: Parameters) -> Parameters:
                     if (buf == "y"): break
                     nbPhrases = buf
         if (p.verbose): print(f"VVVV: Number of phrases set to {nbPhrases}.")
-    if ("-e" in toSet):
+    if ("-e" in toSet): # emoji
         confirmed: bool = askConfirmation("Add emoji between phrases")
         if (confirmed):
             emoji = True
             if (p.verbose): print(f"VVVV: Emoji toggle set to {emoji}.")
         else: print(MAT_DEFAULTING_N)
-    if ("-s" in toSet):
+    if ("-s" in toSet): # source
         source: str = ""
         isMatching: bool = False
         while (not isMatching):
@@ -146,12 +146,12 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 print(f"\t... using default value: {DEF_SOURCE.strip()}.")
             elif (isMatching and p.verbose): print(f"VVVV: Source file set to '{source}'.")
             elif (not isMatching): print("\tInvalid input: must be a .log file.")
-    if ("-w" in toSet):
+    if ("-w" in toSet): # forWhom
         forWhom = input("For whom the goodnight is: ").strip()
         if (forWhom == ""):
             print(f"\t... using default value: '{DEF_FOR_WHOM.strip()}' (no name used)).")
         elif (p.verbose): print(f"VVVV: For whom the goodnight is set to '{forWhom}'.")
-    if ("-N" in toSet):
+    if ("-N" in toSet): # nickNth
         isMatching: bool = False
         while (nickNth == DEF_NICK_NTH and not isMatching):
             buf: str = ""
@@ -171,25 +171,25 @@ def fromCommandLine(p: Parameters) -> Parameters:
                     case "0":  nth = "random"
                     case _:    nth = nickNth
                 print(f"VVVV: Index of phrase after which the nickname is printed set to {nth}.")
-    if ("-r" in toSet):
+    if ("-r" in toSet): # repetition
         confirmed: bool = askConfirmation("Allow repetition of phrases if you ask for more than there are in the source file")
         if (confirmed):
             allowRep = True
             if (p.verbose): print(f"VVVV: Repetition toggle set to {allowRep}.")
         else: print(MAT_DEFAULTING_N)
-    if ("-o" in toSet):
+    if ("-o" in toSet): # step
         confirmed: bool = askConfirmation("Use the even-numbered phrase gaps as \"and\"s instead of commas")
         if (confirmed):
             step = True
             if (p.verbose): print(f"VVVV: Step toggle set to {step}.")
         else: print(MAT_DEFAULTING_N)
-    if (emoji and "-a" in toSet):
+    if (emoji and "-a" in toSet): # alternate
         confirmed: bool = askConfirmation("Alternate between \"and\"s, and emoji instead of commas")
         if (confirmed):
             alternate = True
             if (p.verbose): print(f"VVVV: Alternating set to {alternate}.")
         else: print(MAT_DEFAULTING_N)
-    if ("-t" in toSet):
+    if ("-t" in toSet): # times
         while (timesOrInfinite != "t" and timesOrInfinite != "i"):
             timesOrInfinite = input("Play the goodnight x times or infinitely (t/i): ").strip().lower()
         if (timesOrInfinite == "t"): # play x times...
@@ -213,28 +213,26 @@ def fromCommandLine(p: Parameters) -> Parameters:
                 infinite = True
                 if (p.verbose): print(f"VVVV: Infinite mode set to {infinite}.")
             else: print(MAT_DEFAULTING_N)
-    if ("-d" in toSet):
-        newDelay = DEF_DELAY
+    if ("-d" in toSet): # delay
         isMatching: bool = False
-        while (newDelay == DEF_DELAY and not isMatching):
+        while (delay == DEF_DELAY and not isMatching):
             while (not isMatching):
                 buf = input("Delay between every iteration (in ms), or p (press Enter): ").strip()
                 isMatching = matches(MAT_FLOATNB_INPUT, buf) is not None or matches(MAT_THEPKEY_INPUT, buf) is not None
                 if (not isMatching):
                     print("\tInvalid input: must be a positive float number or p.")
             if (buf[0] != 'p'):
-                newDelay = str(0 if buf == "" else int(buf))
+                delay = str(0 if buf == "" else int(buf))
                 if (buf == ""):
-                    print(f"\t... using default value: {newDelay}.")
-                elif (int(newDelay) < 0):
-                    print("The number of iterations cannot be negative."); newDelay = DEF_DELAY
-                while (int(newDelay) > 10000):
-                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({newDelay.strip()})")
+                    print(f"\t... using default value: {delay}.")
+                elif (int(delay) < 0):
+                    print("The number of iterations cannot be negative."); delay = DEF_DELAY
+                while (int(delay) > 10000):
+                    buf = askConfirmationNumber(f"\twarning: you set the delay to a long time ({delay.strip()})")
                     if (buf == "y"): break
-                    newDelay = buf
-            else: newDelay = buf
-            if (p.verbose): print(f"VVVV: Delay between iterations set to {newDelay}.")
-        delay = float(newDelay)
+                    delay = buf
+            else: delay = buf
+            if (p.verbose): print(f"VVVV: Delay between iterations set to {delay}.")
     if (p.verbose): print("") # marking the end of parameter prints if any
     newP = Parameters({
         "copy": copy,
@@ -315,10 +313,10 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
     alternate: bool = extractP.alternate
     times:      str = extractP.times
     infinite:  bool = extractP.infinite
-    delay:    float = extractP.delay
+    delay:      str = extractP.delay
     saving:    bool = extractP.saving
     prefFile:   str = extractP.prefFile
-    setParams: SetParams = extractP.setParams
+    setParams: SetParams = extractP.setParams if extractP.setParams is not None else []
 
     i: int = 1 # iterator needs tracking for jumping over PAR_HAS_ARG arguments
     while (i < ac): # hence can't use a for in range loop
@@ -439,8 +437,8 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
                 try:
                     if (not matches(MAT_FLOATNB_INPUT, av[i + 1]) and not matches(MAT_THEPKEY_INPUT, av[i + 1])):
                         raise ValueError("Delay must be a positive float number or 'p'.")
-                    newDelay: str = str(int(av[i + 1])) if av[i + 1] != 'p' else av[i + 1]
-                    if (int(newDelay) < 0):
+                    delay: str = str(int(av[i + 1])) if av[i + 1] != 'p' else av[i + 1]
+                    if (int(delay) < 0):
                         raise ValueError("The delay cannot be negative.")
                 except ValueError as e:
                     print(f"Invalid argument for '{av[i]}': {e}"); gnExit(exitCode.ERR_INV_ARG)
@@ -480,6 +478,7 @@ def fromParameters(ac: int, av: list[str]) -> Parameters:
 
 def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: bool = False) -> Parameters:
     p: Parameters = defaultParameters(savefile)
+    p.setParams = [] if p.setParams is None else p.setParams
 
     if (not path.isfile(p.prefFile)):
         print(f"File '{p.prefFile}' does not exist...", end = "\n" if p.saving or (not extraction and noParam) else "")
@@ -488,6 +487,7 @@ def fromFile(savefile: str = DEF_PREFFPATH, extraction: bool = False, noParam: b
         if (p.saving or (not extraction and noParam)): saveParameters(p)
         print(" using default parameters.")
         return p
+    lines: list[str] = []
     try:
         with open(p.prefFile, "r") as f: lines = f.readlines()
     except FileNotFoundError as e:

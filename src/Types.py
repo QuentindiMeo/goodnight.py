@@ -10,7 +10,7 @@ ElementsList:    TypeAlias = list[str] # a list of P/E/N elements
 WeightedElement: TypeAlias = tuple[str, int] # a P/E/N and its weight
 WeightedList:    TypeAlias = tuple[ElementsList, int] # a list of P/E/N elements and its weight
 UnweightedList:  TypeAlias = list[ElementsList] # an unweighted list of P/E/N elements
-SetParams:       TypeAlias = list[str] | None
+SetParams:       TypeAlias = list[str] | None # a list of already set parameters, as strings
 ParamDict:       TypeAlias = dict[str, bool | str | float | SetParams]
 
 DEF_PREFFPATH:   str = "./assets/preferences.sav"
@@ -95,7 +95,7 @@ class Parameters:
         self.alternate: bool = bool(p.get("alternate"))
         self.times:      str = str(p.get("times"))
         self.infinite:  bool = bool(p.get("infinite"))
-        self.delay:    float = p.get("delay")
+        self.delay:      str = str(p.get("delay"))
 
         self.verbose:   bool = bool(p.get("verbose"))
         self.saving:    bool = bool(p.get("saving"))
@@ -118,7 +118,7 @@ class Contents:
         return ""
 
     def pickEmoji(self, gn: Goodnight, usedEmoji: IdxList) -> IdxList:
-        unpickedEmoji: WeightedList = duplicate(self.emoji)
+        unpickedEmoji = duplicate(self.emoji)
         for i in usedEmoji: unpickedEmoji.pop(i)
         randWeight: int = rand(0, sum([e[1] for e in unpickedEmoji]))
         for e in unpickedEmoji:
@@ -152,8 +152,8 @@ class Contents:
         for n in self.nicks:   s += f"\t\t{n[0]} (weighted {n[1]})\n"
         return s
 
-    def __init__(self, p: WeightedList, e: WeightedList, n: WeightedList) -> None:
+    def __init__(self, p: list[WeightedElement], e: list[WeightedElement], n: list[WeightedElement]) -> None:
         # I have a peeeeeeen
-        self.phrases: WeightedList = p
-        self.emoji:   WeightedList = e
-        self.nicks:   WeightedList = n
+        self.phrases: list[WeightedElement] = p
+        self.emoji:   list[WeightedElement] = e
+        self.nicks:   list[WeightedElement] = n

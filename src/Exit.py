@@ -6,6 +6,7 @@ class exitCode(Enum):
     SUCCESS = 0x00
     HELP    = 0x01
     FAILURE = 0x84
+    ERR_ERR = 0x99
 
     ERR_INV_SAV = 0x10
     ERR_INV_ARG = 0x11
