@@ -13,15 +13,16 @@
 First release
 Announcing the release on Reddit & Discord
 
-### DEV 0.3.4 - Feb ?? 2024 [[#x]()]
+### DEV 0.3.4 - Mar ?? 2024 [[#x]()]
 
 Adding and implementing `--version` aka `-v`: print the program's version.  
 Redacting and making unit tests.  
 Announcing the release date of the first release on Reddit & Discord.
 
-### DEV 0.3.3 - Feb ?? 2024 [[#x]()]
+### DEV 0.3.3 - Mar ?? 2024 [[#x]()]
 
 Adjusting the Makefile error prints, improving the `install` target.  
+Refining type handling and redefining class types with new extensions.  
 Making `--ignore` not ignore other parameters.  
 Redacting a demonstration script and a demonstration source file.  
 Updating the [README demonstration gif](README.md).
@@ -34,7 +35,9 @@ Updating the [README demonstration gif](README.md).
 
 Added a Ctrl+D handler, exiting the program gracefully with a context message.  
 Fixed the long overdue bug of FILE_AV suppressing the CLI asking for parameters.  
-Added True/False logic to boolean program parameters; allowing `--no-copy=False`, etc.  
+Added True/False logic to boolean program parameters
+    this allows `--no-copy=False`, to counter the preferences file's values if needed.  
+Added [default.log](assets/default.log), a tutorial source file.  
 Fixed inability to use default values in some CLI prompts, shebangs oddity.  
 Added more issue templates to the repository.  
 Reached the 100 commits milestone. (YOOHOO! 🎉)
